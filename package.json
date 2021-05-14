@@ -1,0 +1,19 @@
+{
+  "name": "meep",
+  "version": "1.0.0",
+  "description": "Simple Web Game Library",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+	"prepare" : "npm run build",
+	"version" : "npm run format && git add -A src",
+	"postversion" : "git push && git push --tags",
+	"build": "tsc"
+  },
+  “files”: [“lib/**/*”],
+  "author": "Kevin Glass",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.2.4"
+  }
+}
