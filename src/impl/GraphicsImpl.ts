@@ -1,13 +1,26 @@
 import { Bitmap, Graphics } from "..";
-import { BitmapImpl } from "./BitmapImpl";
 
-export class GraphcisImpl implements Graphics {
+declare let InstallTrigger: any;
+
+var isFirefox = typeof InstallTrigger !== 'undefined';
+
+export class GraphicsImpl implements Graphics {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
 
   constructor() {
     this.canvas = <HTMLCanvasElement> document.getElementById("gamecanvas");
-    this.ctx = <CanvasRenderingContext2D> this.canvas.getContext("2d");
+    this.ctx = <CanvasRenderingContext2D> this.canvas.getContext("2d", { alpha: false });
+    
+    (<any> this.ctx).webkitImageSmoothingEnabled = false;
+    (<any> this.ctx).mozImageSmoothingEnabled = false;
+    this.ctx.imageSmoothingEnabled = false;
+    
+    if (isFirefox) {
+      this.canvas.style.imageRendering = "crisp-edges";
+    } else {
+      this.canvas.style.imageRendering = "pixelated";
+    }
   }
 
   fillRect(x: number, y: number, width: number, height: number, col: string): void {

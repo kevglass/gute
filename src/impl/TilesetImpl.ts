@@ -17,6 +17,9 @@ class Tile implements Bitmap {
   getDrawable(): CanvasImageSource {
     return this.canvas;
   }
+  
+  initOnFirstClick(): void {
+  }
 }
 
 export class TilesetImpl implements Tileset {
@@ -48,6 +51,9 @@ export class TilesetImpl implements Tileset {
       this.loaded = true;
     };
     this.image.src = url;
+  }
+
+  initOnFirstClick(): void {
   }
 
   getTile(tile: number): Bitmap {

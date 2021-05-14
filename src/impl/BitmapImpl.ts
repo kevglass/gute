@@ -16,6 +16,9 @@ export class BitmapImpl implements Bitmap {
     this.image.src = url;
   }
   
+  initOnFirstClick(): void {
+  }
+  
   getDrawable(): CanvasImageSource {
     return this.image;
   }

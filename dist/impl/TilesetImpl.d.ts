@@ -8,5 +8,6 @@ export declare class TilesetImpl implements Tileset {
     bitmaps: Bitmap[];
     scanline: number;
     constructor(url: string, tileWidth: number, tileHeight: number);
+    initOnFirstClick(): void;
     getTile(tile: number): Bitmap;
 }
