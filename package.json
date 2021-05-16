@@ -5,7 +5,7 @@
 	"main": "dist/bundle.js",
 	"types": "dist/bundle.d.ts",
 	"scripts": {
-		"doc": "typedoc src/index.ts --out docs",
+		"doc": "mv docs/test .; typedoc src/index.ts --out docs; mv test docs",
 		"prepare": "webpack",
 		"version": "git add -A src",
 		"postversion": "git push && git push --tags",
