@@ -1,8 +1,10 @@
 import { Bitmap } from "./Bitmap";
+import { Font } from "./Font";
 import { Game } from "./Game";
 import { GameContext } from "./GameContext";
 import { Graphics } from "./Graphics";
 import { BitmapImpl } from "./impl/BitmapImpl";
+import { FontImpl } from "./impl/FontImpl";
 import { GraphicsImpl } from "./impl/GraphicsImpl";
 import { SoundImpl } from "./impl/SoundImpl";
 import { TilesetImpl } from "./impl/TilesetImpl";
@@ -136,6 +138,7 @@ class GameLoop implements GameContext {
     }
     this.lastFrame = now;
 
+    this.graphics.applyFont();
     this.game.update(this, delta);
     this.game.render(this, this.graphics);
 
@@ -169,5 +172,9 @@ class GameLoop implements GameContext {
     const tileset: Tileset = new TilesetImpl(url, tileWidth, tileHeight);
     this.resources.push(tileset);
     return tileset;
+  }
+
+  loadFont(url: string, name: string): Font {
+    return new FontImpl(url, name);
   }
 }
