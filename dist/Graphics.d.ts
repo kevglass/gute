@@ -6,4 +6,10 @@ export interface Graphics {
     setFont(font: Font): void;
     setFontSize(size: number): void;
     drawString(x: number, y: number, text: string, col: string): void;
+    translate(x: number, y: number): void;
+    scale(x: number, y: number): void;
+    push(): void;
+    pop(): void;
+    getWidth(): number;
+    getHeight(): number;
 }

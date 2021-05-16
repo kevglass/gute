@@ -6,3 +6,4 @@ export { Bitmap } from "./Bitmap";
 export { Font } from "./Font";
 export { Sound } from "./Sound";
 export { Tileset } from "./Tileset";
+export { Keys } from "./Keys";

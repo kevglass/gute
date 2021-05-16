@@ -29,7 +29,8 @@ export class TilesetImpl implements Tileset {
   image: HTMLImageElement;
   bitmaps: Bitmap[] = [];
   scanline: number = 0;
-
+  tileCount: number = 0;
+  
   constructor(url: string, tileWidth: number, tileHeight: number) {
     this.tileWidth = tileWidth;
     this.tileHeight = tileHeight;
@@ -38,6 +39,8 @@ export class TilesetImpl implements Tileset {
     this.image.onload = () => {
       this.scanline = Math.floor(this.image.width / tileWidth);
       const depth: number = Math.floor(this.image.height / tileHeight);
+      this.tileCount = depth * this.scanline;
+
       // cut the image into pieces
       for (let y=0;y<depth;y++) {
         for (let x=0;x<this.scanline;x++) {
@@ -51,6 +54,18 @@ export class TilesetImpl implements Tileset {
       this.loaded = true;
     };
     this.image.src = url;
+  }
+
+  getTileWidth(): number {
+    return this.tileWidth;
+  }
+  
+  getTileHeight(): number {
+    return this.tileHeight;
+  }
+  
+  getTileCount(): number {
+    return this.tileCount;
   }
 
   initOnFirstClick(): void {

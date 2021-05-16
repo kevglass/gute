@@ -34,6 +34,30 @@ export class GraphicsImpl implements Graphics {
     }
   }
 
+  getWidth(): number {
+    return this.canvas.width;
+  }
+
+  getHeight(): number {
+    return this.canvas.height;
+  }
+  
+  push(): void {
+    this.ctx.save();
+  }
+
+  pop(): void {
+    this.ctx.restore();
+  }
+
+  translate(x: number, y: number): void {
+    this.ctx.translate(x,y);
+  }
+
+  scale(x: number, y: number): void {
+    this.ctx.scale(x,y);
+  }
+
   applyFont(): void {
     this.font.apply(this.ctx, this.fontSize);
   }

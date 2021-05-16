@@ -6,6 +6,12 @@ export declare class GraphicsImpl implements Graphics {
     font: Font;
     fontSize: number;
     constructor();
+    getWidth(): number;
+    getHeight(): number;
+    push(): void;
+    pop(): void;
+    translate(x: number, y: number): void;
+    scale(x: number, y: number): void;
     applyFont(): void;
     setFont(font: Font): void;
     setFontSize(size: number): void;
