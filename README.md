@@ -1,4 +1,4 @@
-![logo](docs/test/logo.png)
+![logo](https://kevglass.github.io/gute/test/logo.png)
 
 # gute
 
