@@ -1,5 +1,8 @@
 export { startGame } from "./Gute";
+export { GameContext } from "./GameContext";
 export { Graphics } from "./Graphics";
 export { Game } from "./Game";
-export { Resource } from "./Resource";
 export { Bitmap } from "./Bitmap";
+export { Font } from "./Font";
+export { Sound } from "./Sound";
+export { Tileset } from "./Tileset";

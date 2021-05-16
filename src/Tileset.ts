@@ -1,4 +1,4 @@
-import { Resource } from ".";
+import { Resource } from "./Resource";
 import { Bitmap } from "./Bitmap";
 
 export interface Tileset extends Resource {

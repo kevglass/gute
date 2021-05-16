@@ -2,7 +2,6 @@ import { Bitmap } from "./Bitmap";
 import { Font } from "./Font";
 import { Game } from "./Game";
 import { GameContext } from "./GameContext";
-import { Graphics } from "./Graphics";
 import { BitmapImpl } from "./impl/BitmapImpl";
 import { FontImpl } from "./impl/FontImpl";
 import { GraphicsImpl } from "./impl/GraphicsImpl";
