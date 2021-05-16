@@ -1,3 +1,6 @@
+const JUMP = 7;
+const GRAVITY = 0.5;
+
 class TestGame {
   keySound;
   mouseSound;
