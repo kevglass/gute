@@ -17,6 +17,10 @@ JS Source code: https://kevglass.github.io/gute/test/game.js
 
 TS/Webpack Example: https://github.com/kevglass/gute-test
 
+# Guide
+
+https://github.com/kevglass/gute/wiki
+
 # Docs
 
 https://kevglass.github.io/gute/
