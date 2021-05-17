@@ -6,10 +6,10 @@
 	"types": "dist/bundle.d.ts",
 	"scripts": {
 		"doc": "mv docs/test .; typedoc src/index.ts --out docs; mv test docs",
-		"prepare": "webpack",
+		"prepare": "webpack; webpack --config webpack.config.prod.js",
 		"version": "git add -A src",
 		"postversion": "git push && git push --tags",
-		"build": "webpack",
+		"build": "webpack; webpack --config webpack.config.prod.js",
 		"watch": "webpack --watch"
 	},
 	"files": [
