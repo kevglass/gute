@@ -1,3 +1,4 @@
+import { LDTKWorld } from ".";
 import { Bitmap } from "./Bitmap";
 import { Font } from "./Font";
 import { Game } from "./Game";
@@ -175,5 +176,23 @@ class GameLoop implements GameContext {
 
   loadFont(url: string, name: string): Font {
     return new FontImpl(url, name);
+  }
+
+  loadLDTK(url: string): LDTKWorld {
+    const world: LDTKWorld = new LDTKWorld();
+    this.resources.push(world);
+    
+    var req = new XMLHttpRequest();
+    req.open("GET", url, true);
+    
+    req.onload = (event) => {
+      if (req.responseText) {
+        world.load(JSON.parse(req.responseText));
+      }
+    };
+    
+    req.send(null);
+
+    return world
   }
 }

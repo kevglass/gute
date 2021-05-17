@@ -1,9 +1,11 @@
 import { Bitmap } from "./Bitmap";
 import { Font } from "./Font";
+import { LDTKWorld } from "./ldtk/LDTKWorld";
 import { Sound } from "./Sound";
 import { Tileset } from "./Tileset";
 export interface GameContext {
     allResourcesLoaded(): boolean;
+    loadLDTK(url: string): LDTKWorld;
     loadMusic(url: string): Sound;
     loadSound(url: string): Sound;
     loadTileset(url: string, tileWidth: number, tileHeight: number): Tileset;

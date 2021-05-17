@@ -1,6 +1,10 @@
 import { Sound } from "../Sound";
 
-let AudioContext = window.AudioContext || (<any>window).webkitAudioContext;
+let AudioContext: any;
+
+if (typeof window !== "undefined") {
+  AudioContext = window.AudioContext || (<any>window).webkitAudioContext;
+}
 let AUDIO_CONTEXT: AudioContext;
 
 function handleVisibilityChange() {
@@ -12,7 +16,9 @@ function handleVisibilityChange() {
     }
   }
 }
-document.addEventListener("visibilitychange", handleVisibilityChange);
+if (typeof document !== "undefined") {
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+}
 
 export class SoundImpl implements Sound {
   static CURRENT_MUSIC: SoundImpl | null;

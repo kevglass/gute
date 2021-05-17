@@ -33,6 +33,7 @@ module.exports = {
     contentBase: './lib',
   },
   output: {
+    globalObject: 'this',
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
     library: "gute",
