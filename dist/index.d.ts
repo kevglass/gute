@@ -7,3 +7,8 @@ export { Font } from "./Font";
 export { Sound } from "./Sound";
 export { Tileset } from "./Tileset";
 export { Keys } from "./Keys";
+export { AStarPathFinder } from "./path/AStarPathFinder";
+export { PathFinderMap } from "./path/PathFinderMap";
+export { Path } from "./path/Path";
+export { PathMover } from "./path/PathMover";
+export { Step } from "./path/Step";
