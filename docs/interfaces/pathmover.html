@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Tileset | gute</title>
+	<title>PathMover | gute</title>
 	<meta name="description" content="Documentation for gute">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">gute</a>
 				</li>
 				<li>
-					<a href="tileset.html">Tileset</a>
+					<a href="pathmover.html">PathMover</a>
 				</li>
 			</ul>
-			<h1>Interface Tileset</h1>
+			<h1>Interface PathMover</h1>
 		</div>
 	</div>
 </header>
@@ -69,12 +69,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="tsd-signature-type">Resource</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">Tileset</span>
-							</li>
-						</ul>
+						<span class="target">PathMover</span>
 					</li>
 				</ul>
 			</section>
@@ -82,75 +77,32 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-inherited">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="tileset.html#loaded" class="tsd-kind-icon">loaded</a></li>
-							</ul>
-						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="tileset.html#gettile" class="tsd-kind-icon">get<wbr>Tile</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="tileset.html#gettilecount" class="tsd-kind-icon">get<wbr>Tile<wbr>Count</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="tileset.html#gettileheight" class="tsd-kind-icon">get<wbr>Tile<wbr>Height</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="tileset.html#gettilewidth" class="tsd-kind-icon">get<wbr>Tile<wbr>Width</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface tsd-is-inherited"><a href="tileset.html#initonfirstclick" class="tsd-kind-icon">init<wbr>OnFirst<wbr>Click</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="pathmover.html#getheight" class="tsd-kind-icon">get<wbr>Height</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="pathmover.html#gettarget" class="tsd-kind-icon">get<wbr>Target</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="pathmover.html#getwidth" class="tsd-kind-icon">get<wbr>Width</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="pathmover.html#getx" class="tsd-kind-icon">getX</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="pathmover.html#gety" class="tsd-kind-icon">getY</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-					<a name="loaded" class="tsd-anchor"></a>
-					<h3>loaded</h3>
-					<div class="tsd-signature tsd-kind-icon">loaded<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<p>Inherited from Resource.loaded</p>
-						<ul>
-							<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/Resource.ts#L2">Resource.ts:2</a></li>
-						</ul>
-					</aside>
-				</section>
-			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="gettile" class="tsd-anchor"></a>
-					<h3>get<wbr>Tile</h3>
+					<a name="getheight" class="tsd-anchor"></a>
+					<h3>get<wbr>Height</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Tile<span class="tsd-signature-symbol">(</span>tile<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="bitmap.html" class="tsd-signature-type" data-tsd-kind="Interface">Bitmap</a></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Height<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/Tileset.ts#L5">Tileset.ts:5</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>tile: <span class="tsd-signature-type">number</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="bitmap.html" class="tsd-signature-type" data-tsd-kind="Interface">Bitmap</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="gettilecount" class="tsd-anchor"></a>
-					<h3>get<wbr>Tile<wbr>Count</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Tile<wbr>Count<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/Tileset.ts#L7">Tileset.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/path/PathMover.ts#L5">path/PathMover.ts:5</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -158,16 +110,33 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="gettileheight" class="tsd-anchor"></a>
-					<h3>get<wbr>Tile<wbr>Height</h3>
+					<a name="gettarget" class="tsd-anchor"></a>
+					<h3>get<wbr>Target</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Tile<wbr>Height<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Target<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="pathmover.html" class="tsd-signature-type" data-tsd-kind="Interface">PathMover</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/Tileset.ts#L11">Tileset.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/path/PathMover.ts#L7">path/PathMover.ts:7</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="pathmover.html" class="tsd-signature-type" data-tsd-kind="Interface">PathMover</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="getwidth" class="tsd-anchor"></a>
+					<h3>get<wbr>Width</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Width<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/path/PathMover.ts#L3">path/PathMover.ts:3</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -175,37 +144,36 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="gettilewidth" class="tsd-anchor"></a>
-					<h3>get<wbr>Tile<wbr>Width</h3>
+					<a name="getx" class="tsd-anchor"></a>
+					<h3>getX</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Tile<wbr>Width<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+						<li class="tsd-signature tsd-kind-icon">getX<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/Tileset.ts#L9">Tileset.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/path/PathMover.ts#L11">path/PathMover.ts:11</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-					<a name="initonfirstclick" class="tsd-anchor"></a>
-					<h3>init<wbr>OnFirst<wbr>Click</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">init<wbr>OnFirst<wbr>Click<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="gety" class="tsd-anchor"></a>
+					<h3>getY</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">getY<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from Resource.initOnFirstClick</p>
 								<ul>
-									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/Resource.ts#L4">Resource.ts:4</a></li>
+									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/path/PathMover.ts#L9">path/PathMover.ts:9</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -251,39 +219,36 @@
 					<li class=" tsd-kind-interface">
 						<a href="pathfindermap.html" class="tsd-kind-icon">Path<wbr>Finder<wbr>Map</a>
 					</li>
-					<li class=" tsd-kind-interface">
-						<a href="pathmover.html" class="tsd-kind-icon">Path<wbr>Mover</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="sound.html" class="tsd-kind-icon">Sound</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="tileset.html" class="tsd-kind-icon">Tileset</a>
+						<a href="pathmover.html" class="tsd-kind-icon">Path<wbr>Mover</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-								<a href="tileset.html#loaded" class="tsd-kind-icon">loaded</a>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="pathmover.html#getheight" class="tsd-kind-icon">get<wbr>Height</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="tileset.html#gettile" class="tsd-kind-icon">get<wbr>Tile</a>
+								<a href="pathmover.html#gettarget" class="tsd-kind-icon">get<wbr>Target</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="tileset.html#gettilecount" class="tsd-kind-icon">get<wbr>Tile<wbr>Count</a>
+								<a href="pathmover.html#getwidth" class="tsd-kind-icon">get<wbr>Width</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="tileset.html#gettileheight" class="tsd-kind-icon">get<wbr>Tile<wbr>Height</a>
+								<a href="pathmover.html#getx" class="tsd-kind-icon">getX</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="tileset.html#gettilewidth" class="tsd-kind-icon">get<wbr>Tile<wbr>Width</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface tsd-is-inherited">
-								<a href="tileset.html#initonfirstclick" class="tsd-kind-icon">init<wbr>OnFirst<wbr>Click</a>
+								<a href="pathmover.html#gety" class="tsd-kind-icon">getY</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface">
+						<a href="sound.html" class="tsd-kind-icon">Sound</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="tileset.html" class="tsd-kind-icon">Tileset</a>
+					</li>
 					<li class=" tsd-kind-function">
 						<a href="../modules.html#startgame" class="tsd-kind-icon">start<wbr>Game</a>
 					</li>

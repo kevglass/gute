@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Game | gute</title>
+	<title>PathFinderMap | gute</title>
 	<meta name="description" content="Documentation for gute">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,10 +55,10 @@
 					<a href="../modules.html">gute</a>
 				</li>
 				<li>
-					<a href="game.html">Game</a>
+					<a href="pathfindermap.html">PathFinderMap</a>
 				</li>
 			</ul>
-			<h1>Interface Game</h1>
+			<h1>Interface PathFinderMap</h1>
 		</div>
 	</div>
 </header>
@@ -69,7 +69,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Game</span>
+						<span class="target">PathFinderMap</span>
 					</li>
 				</ul>
 			</section>
@@ -80,13 +80,13 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="game.html#init" class="tsd-kind-icon">init</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="game.html#onkeydown" class="tsd-kind-icon">on<wbr>Key<wbr>Down</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="game.html#onkeyup" class="tsd-kind-icon">on<wbr>Key<wbr>Up</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="game.html#onmousedown" class="tsd-kind-icon">on<wbr>Mouse<wbr>Down</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="game.html#onmouseup" class="tsd-kind-icon">on<wbr>Mouse<wbr>Up</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="game.html#render" class="tsd-kind-icon">render</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="game.html#update" class="tsd-kind-icon">update</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="pathfindermap.html#blocked" class="tsd-kind-icon">blocked</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="pathfindermap.html#getheight" class="tsd-kind-icon">get<wbr>Height</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="pathfindermap.html#getmoverat" class="tsd-kind-icon">get<wbr>Mover<wbr>At</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="pathfindermap.html#getwidth" class="tsd-kind-icon">get<wbr>Width</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="pathfindermap.html#locationdiscovered" class="tsd-kind-icon">location<wbr>Discovered</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="pathfindermap.html#notvalidlocation" class="tsd-kind-icon">not<wbr>Valid<wbr>Location</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="pathfindermap.html#validlocation" class="tsd-kind-icon">valid<wbr>Location</a></li>
 							</ul>
 						</section>
 					</div>
@@ -95,97 +95,31 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="init" class="tsd-anchor"></a>
-					<h3>init</h3>
+					<a name="blocked" class="tsd-anchor"></a>
+					<h3>blocked</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">init<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">blocked<span class="tsd-signature-symbol">(</span>mover<span class="tsd-signature-symbol">: </span><a href="pathmover.html" class="tsd-signature-type" data-tsd-kind="Interface">PathMover</a>, object<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="pathmover.html" class="tsd-signature-type" data-tsd-kind="Interface">PathMover</a>, sx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, sy<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, ignoreActors<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, lastStep<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/Game.ts#L5">Game.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/path/PathFinderMap.ts#L11">path/PathFinderMap.ts:11</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>context: <a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="onkeydown" class="tsd-anchor"></a>
-					<h3>on<wbr>Key<wbr>Down</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">on<wbr>Key<wbr>Down<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a>, key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/Game.ts#L11">Game.ts:11</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>context: <a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a></h5>
+									<h5>mover: <a href="pathmover.html" class="tsd-signature-type" data-tsd-kind="Interface">PathMover</a></h5>
 								</li>
 								<li>
-									<h5>key: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="onkeyup" class="tsd-anchor"></a>
-					<h3>on<wbr>Key<wbr>Up</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">on<wbr>Key<wbr>Up<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a>, key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/Game.ts#L13">Game.ts:13</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>context: <a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a></h5>
+									<h5>object: <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="pathmover.html" class="tsd-signature-type" data-tsd-kind="Interface">PathMover</a></h5>
 								</li>
 								<li>
-									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<h5>sx: <span class="tsd-signature-type">number</span></h5>
 								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="onmousedown" class="tsd-anchor"></a>
-					<h3>on<wbr>Mouse<wbr>Down</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">on<wbr>Mouse<wbr>Down<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/Game.ts#L7">Game.ts:7</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
 								<li>
-									<h5>context: <a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a></h5>
+									<h5>sy: <span class="tsd-signature-type">number</span></h5>
 								</li>
 								<li>
 									<h5>x: <span class="tsd-signature-type">number</span></h5>
@@ -193,29 +127,92 @@
 								<li>
 									<h5>y: <span class="tsd-signature-type">number</span></h5>
 								</li>
+								<li>
+									<h5>ignoreActors: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
+								<li>
+									<h5>lastStep: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="onmouseup" class="tsd-anchor"></a>
-					<h3>on<wbr>Mouse<wbr>Up</h3>
+					<a name="getheight" class="tsd-anchor"></a>
+					<h3>get<wbr>Height</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">on<wbr>Mouse<wbr>Up<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a>, x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Height<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/Game.ts#L9">Game.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/path/PathFinderMap.ts#L7">path/PathFinderMap.ts:7</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="getmoverat" class="tsd-anchor"></a>
+					<h3>get<wbr>Mover<wbr>At</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Mover<wbr>At<span class="tsd-signature-symbol">(</span>tx<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, ty<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="pathmover.html" class="tsd-signature-type" data-tsd-kind="Interface">PathMover</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/path/PathFinderMap.ts#L14">path/PathFinderMap.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>context: <a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a></h5>
+									<h5>tx: <span class="tsd-signature-type">number</span></h5>
 								</li>
+								<li>
+									<h5>ty: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="pathmover.html" class="tsd-signature-type" data-tsd-kind="Interface">PathMover</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="getwidth" class="tsd-anchor"></a>
+					<h3>get<wbr>Width</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Width<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/path/PathFinderMap.ts#L5">path/PathFinderMap.ts:5</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="locationdiscovered" class="tsd-anchor"></a>
+					<h3>location<wbr>Discovered</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">location<wbr>Discovered<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/path/PathFinderMap.ts#L9">path/PathFinderMap.ts:9</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
 								<li>
 									<h5>x: <span class="tsd-signature-type">number</span></h5>
 								</li>
@@ -223,59 +220,59 @@
 									<h5>y: <span class="tsd-signature-type">number</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="render" class="tsd-anchor"></a>
-					<h3>render</h3>
+					<a name="notvalidlocation" class="tsd-anchor"></a>
+					<h3>not<wbr>Valid<wbr>Location</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">render<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a>, g<span class="tsd-signature-symbol">: </span><a href="graphics.html" class="tsd-signature-type" data-tsd-kind="Interface">Graphics</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">not<wbr>Valid<wbr>Location<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/Game.ts#L17">Game.ts:17</a></li>
+									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/path/PathFinderMap.ts#L18">path/PathFinderMap.ts:18</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>context: <a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a></h5>
+									<h5>x: <span class="tsd-signature-type">number</span></h5>
 								</li>
 								<li>
-									<h5>g: <a href="graphics.html" class="tsd-signature-type" data-tsd-kind="Interface">Graphics</a></h5>
+									<h5>y: <span class="tsd-signature-type">number</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="update" class="tsd-anchor"></a>
-					<h3>update</h3>
+					<a name="validlocation" class="tsd-anchor"></a>
+					<h3>valid<wbr>Location</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>context<span class="tsd-signature-symbol">: </span><a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a>, delta<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">valid<wbr>Location<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, y<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/Game.ts#L15">Game.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/kevglass/gute/blob/d2563f7/src/path/PathFinderMap.ts#L16">path/PathFinderMap.ts:16</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>context: <a href="gamecontext.html" class="tsd-signature-type" data-tsd-kind="Interface">GameContext</a></h5>
+									<h5>x: <span class="tsd-signature-type">number</span></h5>
 								</li>
 								<li>
-									<h5>delta: <span class="tsd-signature-type">number</span></h5>
+									<h5>y: <span class="tsd-signature-type">number</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -309,45 +306,45 @@
 					<li class=" tsd-kind-interface">
 						<a href="font.html" class="tsd-kind-icon">Font</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-interface">
+					<li class=" tsd-kind-interface">
 						<a href="game.html" class="tsd-kind-icon">Game</a>
-						<ul>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="game.html#init" class="tsd-kind-icon">init</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="game.html#onkeydown" class="tsd-kind-icon">on<wbr>Key<wbr>Down</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="game.html#onkeyup" class="tsd-kind-icon">on<wbr>Key<wbr>Up</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="game.html#onmousedown" class="tsd-kind-icon">on<wbr>Mouse<wbr>Down</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="game.html#onmouseup" class="tsd-kind-icon">on<wbr>Mouse<wbr>Up</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="game.html#render" class="tsd-kind-icon">render</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="game.html#update" class="tsd-kind-icon">update</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="gamecontext.html" class="tsd-kind-icon">Game<wbr>Context</a>
 					</li>
 					<li class=" tsd-kind-interface">
 						<a href="graphics.html" class="tsd-kind-icon">Graphics</a>
 					</li>
-					<li class=" tsd-kind-interface">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface">
 						<a href="pathfindermap.html" class="tsd-kind-icon">Path<wbr>Finder<wbr>Map</a>
+						<ul>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="pathfindermap.html#blocked" class="tsd-kind-icon">blocked</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="pathfindermap.html#getheight" class="tsd-kind-icon">get<wbr>Height</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="pathfindermap.html#getmoverat" class="tsd-kind-icon">get<wbr>Mover<wbr>At</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="pathfindermap.html#getwidth" class="tsd-kind-icon">get<wbr>Width</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="pathfindermap.html#locationdiscovered" class="tsd-kind-icon">location<wbr>Discovered</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="pathfindermap.html#notvalidlocation" class="tsd-kind-icon">not<wbr>Valid<wbr>Location</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="pathfindermap.html#validlocation" class="tsd-kind-icon">valid<wbr>Location</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface">
 						<a href="pathmover.html" class="tsd-kind-icon">Path<wbr>Mover</a>
 					</li>
