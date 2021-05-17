@@ -25,4 +25,9 @@ https://github.com/kevglass/gute/wiki
 
 https://kevglass.github.io/gute/
 
+# Next Up
+
+* [LDTk](https://ldtk.io/) Map Loading
+* A-Star Pathfinder 
+* Bitmap Font support if I can find a common standard
 
