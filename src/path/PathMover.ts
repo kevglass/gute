@@ -4,7 +4,7 @@ export interface PathMover {
 
     getHeight(): number;
 
-    getTarget(): PathMover;
+    getTarget(): PathMover | null;
     
     getY(): number;
 
