@@ -1,12 +1,12 @@
 export interface PathMover {
     
-    getWidth(): number;
+    getTilesWidth(): number;
 
-    getHeight(): number;
+    getTilesHeight(): number;
 
     getTarget(): PathMover | null;
     
-    getY(): number;
+    getTileMapY(): number;
 
-    getX(): number;
+    getTileMapX(): number;
 }

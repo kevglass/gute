@@ -27,8 +27,8 @@ export class AStarPathFinder {
     private max!: number;
 
     public constructor(map: PathFinderMap) {
-        this.width = map.getWidth();
-        this.height = map.getHeight();
+        this.width = map.getMapWidth();
+        this.height = map.getMapHeight();
         this.map = map;
 
         this.open = new Array<Array<number>>();
@@ -82,8 +82,8 @@ export class AStarPathFinder {
     }
 
     private atTarget(x: number, y: number): boolean {
-        for (var xs = 0; xs < this.mover.getWidth(); xs++) {
-            for (var ys = 0; ys < this.mover.getHeight(); ys++) {
+        for (var xs = 0; xs < this.mover.getTilesWidth(); xs++) {
+            for (var ys = 0; ys < this.mover.getTilesHeight(); ys++) {
                 if ((x + xs == this.tx) && (y + ys == this.ty)) {
                     return true;
                 }
@@ -111,7 +111,7 @@ export class AStarPathFinder {
         }
         this.clear();
 
-        this.addLocation(null, Math.floor(mover.getX()), Math.floor(mover.getY()));
+        this.addLocation(null, Math.floor(mover.getTileMapX()), Math.floor(mover.getTileMapY()));
         while (this.openList.length > 0) {
             var best: MapNode = this.openList[0];
             this.openList.splice(0,1);
@@ -157,7 +157,7 @@ export class AStarPathFinder {
         }
 
 
-        if (this.map.notValidLocation(x, y)) {
+        if (!this.map.validLocation(x, y)) {
             return;
         }
         

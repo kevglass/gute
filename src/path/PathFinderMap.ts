@@ -2,9 +2,9 @@ import { PathMover } from "./PathMover";
 
 export interface PathFinderMap {
 
-    getWidth(): number;
+    getMapWidth(): number;
 
-    getHeight(): number;
+    getMapHeight(): number;
 
     locationDiscovered(x: number, y: number): boolean;
 
@@ -14,6 +14,4 @@ export interface PathFinderMap {
     getMoverAt(tx: number, ty: number): PathMover | null;
 
     validLocation(x: number, y: number): boolean;
-    
-    notValidLocation(x: number, y: number): boolean;
 }
