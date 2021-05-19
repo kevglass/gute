@@ -168,8 +168,13 @@ class GameLoop implements GameContext {
     return bitmap;
   }
 
+  loadScaledTileset(url: string, tileWidth: number, tileHeight: number, scale: number): Tileset {
+    const tileset: Tileset = new TilesetImpl(url, tileWidth, tileHeight, scale);
+    this.resources.push(tileset);
+    return tileset;
+  }
   loadTileset(url: string, tileWidth: number, tileHeight: number): Tileset {
-    const tileset: Tileset = new TilesetImpl(url, tileWidth, tileHeight);
+    const tileset: Tileset = new TilesetImpl(url, tileWidth, tileHeight, 1);
     this.resources.push(tileset);
     return tileset;
   }

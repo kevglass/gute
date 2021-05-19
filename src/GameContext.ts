@@ -13,6 +13,8 @@ export interface GameContext {
 
   loadSound(url: string): Sound;
 
+  loadScaledTileset(url: string, tileWidth: number, tileHeight: number, scale: number): Tileset;
+  
   loadTileset(url: string, tileWidth: number, tileHeight: number): Tileset;
 
   loadBitmap(url: string): Bitmap;

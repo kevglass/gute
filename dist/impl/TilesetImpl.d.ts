@@ -4,11 +4,13 @@ export declare class TilesetImpl implements Tileset {
     loaded: boolean;
     tileWidth: number;
     tileHeight: number;
-    image: HTMLImageElement;
+    image: HTMLImageElement | null;
+    transformed: HTMLCanvasElement | null;
     bitmaps: Bitmap[];
     scanline: number;
     tileCount: number;
-    constructor(url: string, tileWidth: number, tileHeight: number);
+    constructor(url: string, tileWidth: number, tileHeight: number, scale?: number);
+    scaled(scale: number): void;
     getTileWidth(): number;
     getTileHeight(): number;
     getTileCount(): number;

@@ -34,6 +34,20 @@ export class GraphicsImpl implements Graphics {
     }
   }
 
+  fitScreen(pixelScale: number): void {
+    const realWidth: number = Math.floor(window.innerWidth / pixelScale) * pixelScale;
+    const realHeight: number = Math.floor(window.innerHeight / pixelScale) * pixelScale;
+    const virtualWidth: number = realWidth / pixelScale;
+    const virtualHeight: number = realHeight / pixelScale;
+    this.canvas.style.position = "absolute";
+    this.canvas.style.top = "0px";
+    this.canvas.style.left = "0px";
+    this.canvas.width = virtualWidth;
+    this.canvas.height = virtualHeight;
+    this.canvas.style.width = realWidth + "px";
+    this.canvas.style.height = realHeight + "px";
+  }
+
   getWidth(): number {
     return this.canvas.width;
   }

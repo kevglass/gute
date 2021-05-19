@@ -23,4 +23,6 @@ export interface Graphics {
   getWidth(): number;
 
   getHeight(): number;
+
+  fitScreen(widthInVirtualPixels: number): void;
 }

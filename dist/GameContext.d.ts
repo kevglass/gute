@@ -8,6 +8,7 @@ export interface GameContext {
     loadLDTK(url: string): LDTKWorld;
     loadMusic(url: string): Sound;
     loadSound(url: string): Sound;
+    loadScaledTileset(url: string, tileWidth: number, tileHeight: number, scale: number): Tileset;
     loadTileset(url: string, tileWidth: number, tileHeight: number): Tileset;
     loadBitmap(url: string): Bitmap;
     loadFont(url: string, name: string): Font;

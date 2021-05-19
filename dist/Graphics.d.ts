@@ -12,4 +12,5 @@ export interface Graphics {
     pop(): void;
     getWidth(): number;
     getHeight(): number;
+    fitScreen(widthInVirtualPixels: number): void;
 }
