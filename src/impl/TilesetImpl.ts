@@ -68,6 +68,10 @@ export class TilesetImpl implements Tileset {
     this.image.src = url;
   }
 
+  getTilesAcross(): number {
+    return this.scanline;
+  }
+
   scaled(scale: number): void {
     const srcCanvas: HTMLCanvasElement = document.createElement("canvas");
     const canvas: HTMLCanvasElement = document.createElement("canvas");

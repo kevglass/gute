@@ -9,4 +9,6 @@ export interface Tileset extends Resource {
   getTileWidth(): number;
 
   getTileHeight(): number;
+
+  getTilesAcross(): number;
 }
