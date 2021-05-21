@@ -1,7 +1,9 @@
-import { Bitmap } from ".";
+import { Bitmap } from "./Bitmap";
 import { Font } from "./Font";
 
 export interface Graphics {
+  copy(): Bitmap;
+
   fillRect(x: number, y: number, width: number, height: number, col: string): void;
 
   drawBitmap(x: number, y: number, bitmap: Bitmap): void;

@@ -6,6 +6,27 @@ declare let InstallTrigger: any;
 
 var isFirefox = typeof InstallTrigger !== 'undefined';
 
+class CopyBitmap implements Bitmap {
+  width: number;
+  height: number;
+  canvas: HTMLCanvasElement;
+  loaded: boolean;
+
+  constructor(canvas: HTMLCanvasElement) {
+    this.canvas = canvas;
+    this.width = canvas.width;
+    this.height = canvas.height;
+    this.loaded = true;
+  }
+
+  getDrawable(): CanvasImageSource {
+    return this.canvas;
+  }
+
+  initOnFirstClick(): void {
+  }
+}
+
 export class GraphicsImpl implements Graphics {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
@@ -46,6 +67,15 @@ export class GraphicsImpl implements Graphics {
     this.canvas.height = virtualHeight;
     this.canvas.style.width = realWidth + "px";
     this.canvas.style.height = realHeight + "px";
+  }
+
+  copy(): Bitmap {
+    const canvas: HTMLCanvasElement = document.createElement("canvas");
+    canvas.width = this.getWidth();
+    canvas.height = this.getHeight();
+  
+    canvas.getContext("2d")?.drawImage(this.canvas, 0, 0);
+    return new CopyBitmap(canvas);
   }
 
   getWidth(): number {
