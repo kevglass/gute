@@ -4,5 +4,6 @@ export declare class LDTKEntity {
     x: number;
     y: number;
     level: LDTKLevel;
+    fields: any;
     constructor(level: LDTKLevel, layerData: any, data: any);
 }
