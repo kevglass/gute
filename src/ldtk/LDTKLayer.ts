@@ -35,6 +35,9 @@ export class LDTKLayer {
   }
 
   get(x: number, y: number): number {
+    if ((x < 0) || (y < 0) || (x >= this.width) || (y >= this.height)) {
+      return 0;
+    }
     const posIndex: number = x + (y * this.width);
     
     return this.tiles[posIndex];

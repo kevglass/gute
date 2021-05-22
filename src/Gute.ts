@@ -93,18 +93,22 @@ class GameLoop implements GameContext {
 
     this.graphics.canvas.addEventListener("mousedown", (event) => {
       try {
-        this.mouseDownHandler(event.offsetX, event.offsetY);
-        event.preventDefault();
-        event.stopPropagation();
+        if (event.button === 0) {
+          this.mouseDownHandler(event.offsetX, event.offsetY);
+          event.preventDefault();
+          event.stopPropagation();
+        }
       } catch (e) {
         console.log(e);
       }
     });
     this.graphics.canvas.addEventListener("mouseup", (event) => {
       try {
-        this.mouseUpHandler(event.offsetX, event.offsetY);
-        event.preventDefault();
-        event.stopPropagation();
+        if (event.button === 0) {
+          this.mouseUpHandler(event.offsetX, event.offsetY);
+          event.preventDefault();
+          event.stopPropagation();
+        }
       } catch (e) {
         console.log(e);
       }
