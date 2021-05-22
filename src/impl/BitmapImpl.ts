@@ -15,11 +15,11 @@ export class BitmapImpl implements Bitmap {
     };
     this.image.src = url;
   }
-  
-  initOnFirstClick(): void {
+
+  draw(ctx: CanvasRenderingContext2D, x: number, y: number): void {
+    ctx.drawImage(this.image, x, y);
   }
   
-  getDrawable(): CanvasImageSource {
-    return this.image;
+  initOnFirstClick(): void {
   }
 }

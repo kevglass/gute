@@ -1,6 +1,6 @@
 export { startGame } from "./Gute";
 export { GameContext } from "./GameContext";
-export { Graphics } from "./Graphics";
+export { Graphics, WHITE, BLACK, GREEN, RED, BLUE } from "./Graphics";
 export { Game } from "./Game";
 export { Bitmap } from "./Bitmap";
 export { Font } from "./Font";

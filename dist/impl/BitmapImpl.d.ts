@@ -5,6 +5,6 @@ export declare class BitmapImpl implements Bitmap {
     loaded: boolean;
     image: HTMLImageElement;
     constructor(url: string);
+    draw(ctx: CanvasRenderingContext2D, x: number, y: number): void;
     initOnFirstClick(): void;
-    getDrawable(): CanvasImageSource;
 }

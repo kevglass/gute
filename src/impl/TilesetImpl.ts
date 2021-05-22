@@ -6,16 +6,20 @@ class Tile implements Bitmap {
   width: number;
   height: number;
   loaded: boolean;
-
-  constructor(canvas: HTMLCanvasElement) {
+  x: number;
+  y: number;
+  
+  constructor(canvas: HTMLCanvasElement, x: number, y: number, width: number, height: number) {
     this.canvas = canvas;
-    this.width = canvas.width;
-    this.height = canvas.height;
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
     this.loaded = true;
   }
 
-  getDrawable(): CanvasImageSource {
-    return this.canvas;
+  draw(ctx: CanvasRenderingContext2D, x: number, y: number): void {
+    ctx.drawImage(this.canvas, this.x, this.y, this.width, this.height, x, y, this.width, this.height);
   }
 
   initOnFirstClick(): void {
@@ -50,19 +54,12 @@ export class TilesetImpl implements Tileset {
         // cut the image into pieces
         for (let y = 0; y < depth; y++) {
           for (let x = 0; x < this.scanline; x++) {
-            const canvas: HTMLCanvasElement = document.createElement("canvas");
-            canvas.width = tileWidth;
-            canvas.height = tileHeight;
-            canvas.getContext("2d")?.drawImage(this.transformed, -x * tileWidth, -y * tileHeight);
-            this.bitmaps.push(new Tile(canvas));
+            this.bitmaps.push(new Tile(this.transformed, x * tileWidth, y * tileHeight, tileWidth, tileHeight));
           }
         }
       }
 
-      // free image bases
-      this.image = null;
       this.transformed = null;
-
       this.loaded = true;
     };
     this.image.src = url;
@@ -85,7 +82,6 @@ export class TilesetImpl implements Tileset {
       return;
     }
     if (this.image) {
-
       srcCanvas.width = this.image.width;
       srcCanvas.height = this.image.height;
 

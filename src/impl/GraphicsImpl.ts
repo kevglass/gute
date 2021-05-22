@@ -19,6 +19,10 @@ class CopyBitmap implements Bitmap {
     this.loaded = true;
   }
 
+  draw(ctx: CanvasRenderingContext2D, x: number, y: number): void {
+    ctx.drawImage(this.canvas, x, y);
+  }
+
   getDrawable(): CanvasImageSource {
     return this.canvas;
   }
@@ -116,6 +120,10 @@ export class GraphicsImpl implements Graphics {
     this.applyFont();
   }
 
+  getStringWidth(text: string): number {
+    return this.ctx.measureText(text).width;
+  }
+
   drawString(x: number, y: number, text: string, col: string): void {
     this.ctx.fillStyle = col;
     this.ctx.fillText(text, x, y);
@@ -127,7 +135,7 @@ export class GraphicsImpl implements Graphics {
   }
 
   drawBitmap(x: number, y: number, bitmap: Bitmap): void {
-    this.ctx.drawImage(bitmap.getDrawable(), x, y);
+    bitmap.draw(this.ctx, x, y);
   }
 
 }

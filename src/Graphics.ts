@@ -1,6 +1,12 @@
 import { Bitmap } from "./Bitmap";
 import { Font } from "./Font";
 
+export const WHITE: string = "white";
+export const BLACK: string = "black";
+export const RED: string = "red";
+export const GREEN: string = "green";
+export const BLUE: string = "blue";
+
 export interface Graphics {
   copy(): Bitmap;
 
@@ -27,4 +33,6 @@ export interface Graphics {
   getHeight(): number;
 
   fitScreen(widthInVirtualPixels: number): void;
+
+  getStringWidth(text: string): number;
 }
