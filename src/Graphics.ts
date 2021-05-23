@@ -14,6 +14,8 @@ export interface Graphics {
 
   drawBitmap(x: number, y: number, bitmap: Bitmap): void;
 
+  drawScaledBitmap(x: number, y: number, width: number, height: number, bitmap: Bitmap): void;
+
   setFont(font: Font): void;
   
   setFontSize(size: number): void;

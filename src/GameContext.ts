@@ -1,5 +1,6 @@
 import { Bitmap } from "./Bitmap";
 import { Font } from "./Font";
+import { Graphics } from "./Graphics";
 import { LDTKWorld } from "./ldtk/LDTKWorld";
 import { Sound } from "./Sound";
 import { Tileset } from "./Tileset";
@@ -20,4 +21,7 @@ export interface GameContext {
   loadBitmap(url: string): Bitmap;
 
   loadFont(url: string, name: string): Font;
+
+  getGraphics(): Graphics;
+
 }

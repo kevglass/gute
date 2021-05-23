@@ -19,6 +19,10 @@ export class BitmapImpl implements Bitmap {
   draw(ctx: CanvasRenderingContext2D, x: number, y: number): void {
     ctx.drawImage(this.image, x, y);
   }
+
+  drawScaled(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
+    ctx.drawImage(this.image, x, y, width, height);
+  }
   
   initOnFirstClick(): void {
   }

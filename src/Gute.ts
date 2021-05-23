@@ -1,4 +1,4 @@
-import { LDTKWorld } from ".";
+import { Graphics, LDTKWorld } from ".";
 import { Bitmap } from "./Bitmap";
 import { Font } from "./Font";
 import { Game } from "./Game";
@@ -24,6 +24,10 @@ class GameLoop implements GameContext {
   lastFrame: number = 0;
   graphics!: GraphicsImpl;
   inited: boolean = false;
+
+  getGraphics(): Graphics {
+    return this.graphics;
+  }
 
   allResourcesLoaded(): boolean {
     for (const resource of this.resources) {

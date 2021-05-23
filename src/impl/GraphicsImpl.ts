@@ -23,6 +23,10 @@ class CopyBitmap implements Bitmap {
     ctx.drawImage(this.canvas, x, y);
   }
 
+  drawScaled(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
+    ctx.drawImage(this.canvas, x, y, width, height);
+  }
+
   getDrawable(): CanvasImageSource {
     return this.canvas;
   }
@@ -138,4 +142,7 @@ export class GraphicsImpl implements Graphics {
     bitmap.draw(this.ctx, x, y);
   }
 
+  drawScaledBitmap(x: number, y: number, width: number, height: number, bitmap: Bitmap): void {
+    bitmap.drawScaled(this.ctx, x, y, width, height);
+  }
 }
