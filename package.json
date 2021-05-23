@@ -6,7 +6,6 @@
 	"types": "dist/bundle.d.ts",
 	"scripts": {
 		"doc": "mv docs/test .; typedoc src/index.ts --out docs; mv test docs",
-		"prepare": "npm run doc; webpack; webpack --config webpack.config.prod.js",
 		"version": "git add -A src",
 		"postversion": "git push && git push --tags",
 		"build": "webpack; webpack --config webpack.config.prod.js",
