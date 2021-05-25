@@ -24,4 +24,5 @@ export interface GameContext {
 
   getGraphics(): Graphics;
 
+  loadJson(url: string): Promise<any>;
 }

@@ -206,6 +206,24 @@ class GameLoop implements GameContext {
     
     req.send(null);
 
-    return world
+    return world;
+  }
+
+  loadJson(url: string): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      var req = new XMLHttpRequest();
+      req.open("GET", url, true);
+      
+      req.onload = (event) => {
+        if (req.responseText) {
+          resolve(JSON.parse(req.responseText));
+        }
+      };
+      req.onerror = (e) => {
+        reject(e);
+      };
+      
+      req.send(null);
+    })
   }
 }

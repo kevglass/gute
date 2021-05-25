@@ -14,4 +14,5 @@ export interface GameContext {
     loadBitmap(url: string): Bitmap;
     loadFont(url: string, name: string): Font;
     getGraphics(): Graphics;
+    loadJson(url: string): Promise<any>;
 }
