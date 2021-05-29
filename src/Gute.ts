@@ -120,13 +120,9 @@ class GameLoop implements GameContext {
 
     window.addEventListener("keydown", (event) => {
       this.keyDownHandler(event.key);
-      event.preventDefault();
-      event.stopPropagation();
     });
     window.addEventListener("keyup", (event) => {
       this.keyUpHandler(event.key);
-      event.preventDefault();
-      event.stopPropagation();
     });
 
     game.init(this);
