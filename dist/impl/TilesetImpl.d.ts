@@ -9,6 +9,7 @@ export declare class TilesetImpl implements Tileset {
     bitmaps: Bitmap[];
     scanline: number;
     tileCount: number;
+    tints: Record<string, HTMLCanvasElement>;
     constructor(url: string, tileWidth: number, tileHeight: number, scale?: number);
     getTilesAcross(): number;
     scaled(scale: number): void;
@@ -17,4 +18,5 @@ export declare class TilesetImpl implements Tileset {
     getTileCount(): number;
     initOnFirstClick(): void;
     getTile(tile: number): Bitmap;
+    getTintedTile(tile: number, tintName: string, tint: number[]): Bitmap;
 }

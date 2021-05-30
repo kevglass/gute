@@ -39,6 +39,7 @@ export class TilesetImpl implements Tileset {
   bitmaps: Bitmap[] = [];
   scanline: number = 0;
   tileCount: number = 0;
+  tints: Record<string, HTMLCanvasElement> = {};
 
   constructor(url: string, tileWidth: number, tileHeight: number, scale: number = 1) {
     tileWidth *= scale;
@@ -63,7 +64,6 @@ export class TilesetImpl implements Tileset {
         }
       }
 
-      this.transformed = null;
       this.loaded = true;
     };
     this.image.src = url;
@@ -142,4 +142,29 @@ export class TilesetImpl implements Tileset {
     return this.bitmaps[tile];
   }
 
+  getTintedTile(tile: number, tintName: string, tint: number[]): Bitmap {
+    const x:number = tile % this.scanline;
+    const y:number = Math.floor(tile / this.scanline);
+    let canvas: HTMLCanvasElement = this.tints[tintName];
+    if ((!canvas) && (this.transformed)) {
+      canvas = document.createElement("canvas");
+      canvas.width = this.transformed.width;
+      canvas.height = this.transformed.height;
+      this.tints[tintName] = canvas;
+      const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+      if (ctx) {
+        ctx.drawImage(this.transformed, 0 , 0);
+        const id: ImageData = ctx.getImageData(0,0,canvas.width,canvas.height);
+        for (let i=0;i<id.data.length;i+=4) {
+          // leave black alone
+          id.data[i] = Math.floor(id.data[i] * tint[0]);
+          id.data[i + 1] = Math.floor(id.data[i+1] * tint[1]);
+          id.data[i + 2] = Math.floor(id.data[i+2] * tint[2]);
+        }
+        ctx.putImageData(id, 0, 0);
+      }
+    }
+
+    return new Tile(canvas, x * this.tileWidth, y * this.tileHeight, this.tileWidth, this.tileHeight)
+  }
 }
