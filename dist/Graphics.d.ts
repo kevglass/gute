@@ -21,4 +21,5 @@ export interface Graphics {
     getHeight(): number;
     fitScreen(widthInVirtualPixels: number): void;
     getStringWidth(text: string): number;
+    setAlpha(alpha: number): void;
 }

@@ -37,4 +37,6 @@ export interface Graphics {
   fitScreen(widthInVirtualPixels: number): void;
 
   getStringWidth(text: string): number;
+
+  setAlpha(alpha: number): void;
 }

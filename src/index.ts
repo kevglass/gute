@@ -13,3 +13,6 @@ export { Path } from "./path/Path";
 export { PathMover } from "./path/PathMover";
 export { Step } from "./path/Step";
 export { LDTKWorld } from "./ldtk/LDTKWorld";
+export { LDTKLevel } from "./ldtk/LDTKLevel";
+export { LDTKLayer } from "./ldtk/LDTKLayer";
+export { LDTKEntity } from "./ldtk/LDTKEntity";

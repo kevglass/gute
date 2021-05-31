@@ -77,6 +77,10 @@ export class GraphicsImpl implements Graphics {
     this.canvas.style.height = realHeight + "px";
   }
 
+  setAlpha(alpha: number): void {
+    this.ctx.globalAlpha = alpha;
+  }
+  
   copy(): Bitmap {
     const canvas: HTMLCanvasElement = document.createElement("canvas");
     canvas.width = this.getWidth();
