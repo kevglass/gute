@@ -74,51 +74,20 @@ export class TilesetImpl implements Tileset {
   }
 
   scaled(scale: number): void {
-    const srcCanvas: HTMLCanvasElement = document.createElement("canvas");
     const canvas: HTMLCanvasElement = document.createElement("canvas");
-    const src: CanvasRenderingContext2D | null = srcCanvas.getContext("2d");
     const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
 
-    if (src === null) {
-      return;
-    }
     if (ctx === null) {
       return;
     }
     if (this.image) {
-      srcCanvas.width = this.image.width;
-      srcCanvas.height = this.image.height;
-
       canvas.width = this.image.width * scale;
       canvas.height = this.image.height * scale;
 
-      src.drawImage(this.image, 0, 0);
-      const imageData: ImageData = src.getImageData(0, 0, this.image.width, this.image.height);
-      const scaled: ImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-      for (var row = 0; row < imageData.height; row++) {
-        for (var col = 0; col < imageData.width; col++) {
-          var sourcePixel = [
-            imageData.data[(row * imageData.width + col) * 4 + 0],
-            imageData.data[(row * imageData.width + col) * 4 + 1],
-            imageData.data[(row * imageData.width + col) * 4 + 2],
-            imageData.data[(row * imageData.width + col) * 4 + 3]
-          ];
-          for (var y = 0; y < scale; y++) {
-            var destRow = row * scale + y;
-            for (var x = 0; x < scale; x++) {
-              var destCol = col * scale + x;
-              for (var i = 0; i < 4; i++) {
-                scaled.data[(destRow * scaled.width + destCol) * 4 + i] =
-                  sourcePixel[i];
-              }
-            }
-          }
-        }
-      }
-
-      ctx.putImageData(scaled, 0, 0);
-
+      (<any> ctx).webkitImageSmoothingEnabled = false;
+      (<any> ctx).mozImageSmoothingEnabled = false;
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(this.image, 0,0, canvas.width,canvas.height);
       this.transformed = canvas;
     }
   }

@@ -1,6 +1,6 @@
 {
 	"name": "gute",
-	"version": "1.0.29",
+	"version": "1.0.30",
 	"description": "Simple Web Game Library",
 	"main": "dist/bundle.js",
 	"types": "dist/bundle.d.ts",
