@@ -1,14 +1,14 @@
 import { Bitmap } from "./Bitmap";
 import { Font } from "./Font";
 import { Graphics } from "./Graphics";
-import { LDTKWorld } from "./ldtk/LDTKWorld";
+import { MapWorld } from "./tilemaps/MapWorld";
 import { Sound } from "./Sound";
 import { Tileset } from "./Tileset";
 
 export interface GameContext {
   allResourcesLoaded(): boolean;
 
-  loadLDTK(url: string): LDTKWorld;
+  loadLDTK(url: string): MapWorld;
   
   loadMusic(url: string): Sound;
 

@@ -1,8 +1,8 @@
-import { Graphics, LDTKWorld } from ".";
 import { Bitmap } from "./Bitmap";
 import { Font } from "./Font";
 import { Game } from "./Game";
 import { GameContext } from "./GameContext";
+import { Graphics } from "./Graphics";
 import { BitmapImpl } from "./impl/BitmapImpl";
 import { FontImpl } from "./impl/FontImpl";
 import { GraphicsImpl } from "./impl/GraphicsImpl";
@@ -10,6 +10,8 @@ import { SoundImpl } from "./impl/SoundImpl";
 import { TilesetImpl } from "./impl/TilesetImpl";
 import { Resource } from "./Resource";
 import { Sound } from "./Sound";
+import { LDTKWorld } from "./tilemaps/LDTKWorld";
+import { MapWorld } from "./tilemaps/MapWorld";
 import { Tileset } from "./Tileset";
 
 let GAME_LOOP: GameLoop;
@@ -187,7 +189,7 @@ class GameLoop implements GameContext {
     return new FontImpl(url, name);
   }
 
-  loadLDTK(url: string): LDTKWorld {
+  loadLDTK(url: string): MapWorld {
     const world: LDTKWorld = new LDTKWorld();
     this.resources.push(world);
     
