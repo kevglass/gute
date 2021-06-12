@@ -25,4 +25,14 @@ export interface GameContext {
   getGraphics(): Graphics;
 
   loadJson(url: string): Promise<any>;
+
+  isRunningStandalone(): boolean;
+
+  isMobile(): boolean;
+
+  isAndroid(): boolean;
+
+  isIOS(): boolean;
+
+  isPhone(): boolean;
 }

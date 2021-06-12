@@ -15,4 +15,9 @@ export interface GameContext {
     loadFont(url: string, name: string): Font;
     getGraphics(): Graphics;
     loadJson(url: string): Promise<any>;
+    isRunningStandalone(): boolean;
+    isMobile(): boolean;
+    isAndroid(): boolean;
+    isIOS(): boolean;
+    isPhone(): boolean;
 }

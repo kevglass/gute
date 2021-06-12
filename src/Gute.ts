@@ -224,4 +224,33 @@ class GameLoop implements GameContext {
       req.send(null);
     })
   }
+
+  isRunningStandalone(): boolean {
+    return ((<any> window.navigator).standalone === true) || (window.matchMedia('(display-mode: standalone)').matches);
+  }
+
+  isMobile(): boolean {
+    return this.isIOS() || this.isAndroid();
+  }
+
+  isAndroid(): boolean {
+    return navigator.userAgent.match(/Android/i) != null;
+  }
+
+  isIOS(): boolean {
+    return [
+      'iPad Simulator',
+      'iPhone Simulator',
+      'iPod Simulator',
+      'iPad',
+      'iPhone',
+      'iPod'
+    ].indexOf(navigator.platform) >= 0
+    // iPad on iOS 13 detection
+    || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+  }
+
+  isPhone(): boolean {
+    return window.matchMedia("only screen and (max-width: 760px)").matches;
+  }
 }
