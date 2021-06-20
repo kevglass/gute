@@ -21,6 +21,7 @@ export declare class GraphicsImpl implements Graphics {
     getStringWidth(text: string): number;
     drawString(x: number, y: number, text: string, col: string): void;
     fillRect(x: number, y: number, width: number, height: number, col: string): void;
+    drawLine(x1: number, y1: number, x2: number, y2: number, col: string): void;
     drawBitmap(x: number, y: number, bitmap: Bitmap): void;
     drawScaledBitmap(x: number, y: number, width: number, height: number, bitmap: Bitmap): void;
 }

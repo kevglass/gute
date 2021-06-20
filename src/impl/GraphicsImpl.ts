@@ -142,6 +142,13 @@ export class GraphicsImpl implements Graphics {
     this.ctx.fillRect(x,y,width,height);
   }
 
+  drawLine(x1: number, y1: number, x2: number, y2: number, col: string): void {
+    this.ctx.strokeStyle = col;
+    this.ctx.moveTo(x1, y1);
+    this.ctx.lineTo(x2, y2);
+    this.ctx.stroke();
+  }
+
   drawBitmap(x: number, y: number, bitmap: Bitmap): void {
     bitmap.draw(this.ctx, x, y);
   }
