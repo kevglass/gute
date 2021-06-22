@@ -11,7 +11,9 @@ export interface Graphics {
     drawLine(x1: number, y1: number, x2: number, y2: number, col: string): void;
     drawBitmap(x: number, y: number, bitmap: Bitmap): void;
     drawScaledBitmap(x: number, y: number, width: number, height: number, bitmap: Bitmap): void;
+    clear(): void;
     setFont(font: Font): void;
+    setComposite(name: string): void;
     setFontSize(size: number): void;
     drawString(x: number, y: number, text: string, col: string): void;
     translate(x: number, y: number): void;

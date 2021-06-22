@@ -18,8 +18,12 @@ export interface Graphics {
 
   drawScaledBitmap(x: number, y: number, width: number, height: number, bitmap: Bitmap): void;
 
+  clear(): void;
+
   setFont(font: Font): void;
   
+  setComposite(name: string): void;
+
   setFontSize(size: number): void;
 
   drawString(x: number, y: number, text: string, col: string): void;

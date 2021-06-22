@@ -63,6 +63,10 @@ export class GraphicsImpl implements Graphics {
     }
   }
 
+  clear(): void {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
   fitScreen(pixelScale: number): void {
     const realWidth: number = Math.floor(window.innerWidth / pixelScale) * pixelScale;
     const realHeight: number = Math.floor(window.innerHeight / pixelScale) * pixelScale;
@@ -135,6 +139,10 @@ export class GraphicsImpl implements Graphics {
   drawString(x: number, y: number, text: string, col: string): void {
     this.ctx.fillStyle = col;
     this.ctx.fillText(text, x, y);
+  }
+
+  setComposite(name: string): void {
+    this.ctx.globalCompositeOperation = name;
   }
 
   fillRect(x: number, y: number, width: number, height: number, col: string): void {

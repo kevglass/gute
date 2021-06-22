@@ -6,6 +6,7 @@ export declare class GraphicsImpl implements Graphics {
     font: Font;
     fontSize: number;
     constructor();
+    clear(): void;
     fitScreen(pixelScale: number): void;
     setAlpha(alpha: number): void;
     copy(): Bitmap;
@@ -20,6 +21,7 @@ export declare class GraphicsImpl implements Graphics {
     setFontSize(size: number): void;
     getStringWidth(text: string): number;
     drawString(x: number, y: number, text: string, col: string): void;
+    setComposite(name: string): void;
     fillRect(x: number, y: number, width: number, height: number, col: string): void;
     drawLine(x1: number, y1: number, x2: number, y2: number, col: string): void;
     drawBitmap(x: number, y: number, bitmap: Bitmap): void;
