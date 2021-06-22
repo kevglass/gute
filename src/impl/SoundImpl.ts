@@ -1,3 +1,4 @@
+import { isMusicOn, isSoundOn } from "../Gute";
 import { Sound } from "../Sound";
 
 let AudioContext: any;
@@ -8,11 +9,13 @@ if (typeof window !== "undefined") {
 let AUDIO_CONTEXT: AudioContext;
 
 function handleVisibilityChange() {
-  if (SoundImpl.CURRENT_MUSIC) {
-    if (document.hidden) {
-      SoundImpl.CURRENT_MUSIC.stop();
-    } else {
-      SoundImpl.CURRENT_MUSIC.play(SoundImpl.CURRENT_MUSIC.volume);
+  if (isMusicOn()) {
+    if (SoundImpl.CURRENT_MUSIC) {
+      if (document.hidden) {
+        SoundImpl.CURRENT_MUSIC.stop();
+      } else {
+        SoundImpl.CURRENT_MUSIC.play(SoundImpl.CURRENT_MUSIC.volume);
+      }
     }
   }
 }
@@ -97,6 +100,12 @@ export class SoundImpl implements Sound {
       }
     }
     
+    if (this.music && !isMusicOn()) {
+      return;
+    } else if (!isSoundOn()) {
+      return;
+    }
+
     this.source = AUDIO_CONTEXT.createBufferSource();
     this.source.buffer = this.buffer;
     this.gain = AUDIO_CONTEXT.createGain();

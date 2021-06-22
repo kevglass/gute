@@ -15,6 +15,36 @@ import { MapWorld } from "./tilemaps/MapWorld";
 import { Tileset } from "./Tileset";
 
 let GAME_LOOP: GameLoop;
+let SOUND_ON: boolean = true;
+let MUSIC_ON: boolean = true;
+
+export function isSoundOn(): boolean {
+  return SOUND_ON;
+}
+
+export function isMusicOn(): boolean {
+  return MUSIC_ON;
+}
+
+export function setSoundOn(on: boolean): void {
+  SOUND_ON = on;
+}
+
+export function setMusicOn(on: boolean): void {
+  if (!on && MUSIC_ON) {
+    MUSIC_ON = false;
+    if (SoundImpl.CURRENT_MUSIC) {
+      SoundImpl.CURRENT_MUSIC.stop();
+    }
+  }
+
+  if (on && !MUSIC_ON) {
+    MUSIC_ON = true;
+    if (SoundImpl.CURRENT_MUSIC) {
+      SoundImpl.CURRENT_MUSIC.play(SoundImpl.CURRENT_MUSIC.volume);
+    }
+  }
+}
 
 export function startGame(game: Game) {
   GAME_LOOP = new GameLoop().start(game);
