@@ -10,7 +10,8 @@ export class MapLevel {
   height!: number;
   world: MapWorld;
   entities: MapEntity[] = [];
-
+  fields: any = {};
+  
   constructor(world: MapWorld, id: string) {
     this.world = world;
     this.id = id;
