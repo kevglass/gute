@@ -17,10 +17,10 @@
 	"author": "Kevin Glass",
 	"license": "MIT",
 	"devDependencies": {
-		"ts-loader": "^9.1.2",
-		"typedoc": "^0.20.36",
-		"typescript": "^4.2.4",
-		"webpack": "^5.37.0",
-		"webpack-cli": "^4.7.0"
+		"ts-loader": "^9.2.3",
+		"typedoc": "^0.20.37",
+		"typescript": "^4.3.4",
+		"webpack": "^5.40.0",
+		"webpack-cli": "^4.7.2"
 	}
 }

@@ -81,6 +81,9 @@ export class SoundImpl implements Sound {
 
     if (!this.buffer) {
       if (this.music) {
+        if (SoundImpl.CURRENT_MUSIC) {
+          SoundImpl.CURRENT_MUSIC.stop();
+        }
         SoundImpl.CURRENT_MUSIC = this;
       }
       return;
