@@ -67,6 +67,10 @@ export class GraphicsImpl implements Graphics {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
+  clearRect(x: number, y: number, width: number, height: number): void {
+    this.ctx.clearRect(x, y, width, height);
+  }
+
   fitScreen(pixelScale: number): void {
     const realWidth: number = Math.floor(window.innerWidth / pixelScale) * pixelScale;
     const realHeight: number = Math.floor(window.innerHeight / pixelScale) * pixelScale;

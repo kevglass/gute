@@ -7,6 +7,7 @@ export declare class GraphicsImpl implements Graphics {
     fontSize: number;
     constructor();
     clear(): void;
+    clearRect(x: number, y: number, width: number, height: number): void;
     fitScreen(pixelScale: number): void;
     setAlpha(alpha: number): void;
     copy(): Bitmap;
