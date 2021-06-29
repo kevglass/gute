@@ -1,10 +1,29 @@
 import { Bitmap, Graphics } from "..";
 import { Font } from "../Font";
+import { Offscreen } from "../Graphics";
 import { FontImpl } from "./FontImpl";
 
 declare let InstallTrigger: any;
 
 var isFirefox = typeof InstallTrigger !== 'undefined';
+
+class OffscreenImpl implements Offscreen {
+  ctx: CanvasRenderingContext2D;
+  canvas: HTMLCanvasElement;
+
+  constructor(canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D) {
+    this.canvas = canvas;
+    this.ctx = ctx;
+  }
+
+  getWidth(): number {
+    return this.canvas.width;
+  }
+
+  getHeight(): number {
+    return this.canvas.height;
+  }
+}
 
 class CopyBitmap implements Bitmap {
   width: number;
@@ -38,13 +57,15 @@ class CopyBitmap implements Bitmap {
 export class GraphicsImpl implements Graphics {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
+  mainCtx: CanvasRenderingContext2D;
   font: Font;
   fontSize: number = 20;
 
   constructor() {
     this.canvas = <HTMLCanvasElement> document.getElementById("gamecanvas");
     this.ctx = <CanvasRenderingContext2D> this.canvas.getContext("2d", { alpha: false });
-    
+    this.mainCtx = this.ctx;
+
     (<any> this.ctx).webkitImageSmoothingEnabled = false;
     (<any> this.ctx).mozImageSmoothingEnabled = false;
     this.ctx.imageSmoothingEnabled = false;
@@ -65,6 +86,36 @@ export class GraphicsImpl implements Graphics {
 
   clear(): void {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  createOffscreen(): Offscreen {
+    const canvas: HTMLCanvasElement = document.createElement("canvas");
+    canvas.width = this.getWidth();
+    canvas.height = this.getHeight();
+    const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+    if (ctx) {
+      (<any> ctx).webkitImageSmoothingEnabled = false;
+      (<any> ctx).mozImageSmoothingEnabled = false;
+      ctx.imageSmoothingEnabled = false;
+      (<any> canvas).style.fontSmooth = "never";
+      (<any> canvas).style.webkitFontSmoothing = "none";
+
+      return new OffscreenImpl(canvas, ctx);
+    } else {
+      throw new Error("Unable to create offscreen canvas");
+    }
+  }
+
+  drawToOffscreen(screen: Offscreen | null): void {
+    if (screen) {
+      this.ctx = (screen as OffscreenImpl).ctx;
+    } else {
+      this.ctx = this.mainCtx;
+    }
+  }
+
+  drawOffscreen(screen: Offscreen): void {
+    this.ctx.drawImage((screen as OffscreenImpl).canvas, 0,  0);
   }
 
   clearRect(x: number, y: number, width: number, height: number): void {

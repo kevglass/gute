@@ -5,8 +5,15 @@ export declare const BLACK: string;
 export declare const RED: string;
 export declare const GREEN: string;
 export declare const BLUE: string;
+export interface Offscreen {
+    getWidth(): number;
+    getHeight(): number;
+}
 export interface Graphics {
     copy(): Bitmap;
+    createOffscreen(): Offscreen;
+    drawToOffscreen(screen: Offscreen | null): void;
+    drawOffscreen(screen: Offscreen): void;
     fillRect(x: number, y: number, width: number, height: number, col: string): void;
     drawLine(x1: number, y1: number, x2: number, y2: number, col: string): void;
     drawBitmap(x: number, y: number, bitmap: Bitmap): void;

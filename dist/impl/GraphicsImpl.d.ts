@@ -1,12 +1,17 @@
 import { Bitmap, Graphics } from "..";
 import { Font } from "../Font";
+import { Offscreen } from "../Graphics";
 export declare class GraphicsImpl implements Graphics {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
+    mainCtx: CanvasRenderingContext2D;
     font: Font;
     fontSize: number;
     constructor();
     clear(): void;
+    createOffscreen(): Offscreen;
+    drawToOffscreen(screen: Offscreen | null): void;
+    drawOffscreen(screen: Offscreen): void;
     clearRect(x: number, y: number, width: number, height: number): void;
     fitScreen(pixelScale: number): void;
     setAlpha(alpha: number): void;

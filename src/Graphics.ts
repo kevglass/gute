@@ -7,8 +7,20 @@ export const RED: string = "red";
 export const GREEN: string = "green";
 export const BLUE: string = "blue";
 
+export interface Offscreen {
+  getWidth(): number;
+
+  getHeight(): number;
+}
+
 export interface Graphics {
   copy(): Bitmap;
+
+  createOffscreen(): Offscreen;
+
+  drawToOffscreen(screen: Offscreen | null): void;
+
+  drawOffscreen(screen: Offscreen): void;
 
   fillRect(x: number, y: number, width: number, height: number, col: string): void;
 
