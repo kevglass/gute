@@ -23,6 +23,11 @@ class OffscreenImpl implements Offscreen {
   getHeight(): number {
     return this.canvas.height;
   }
+
+  setDimension(width: number, height: number): void {
+    this.canvas.width = width;
+    this.canvas.height = height;
+  }
 }
 
 class CopyBitmap implements Bitmap {
@@ -63,7 +68,7 @@ export class GraphicsImpl implements Graphics {
 
   constructor() {
     this.canvas = <HTMLCanvasElement> document.getElementById("gamecanvas");
-    this.ctx = <CanvasRenderingContext2D> this.canvas.getContext("2d", { alpha: false });
+    this.ctx = <CanvasRenderingContext2D> this.canvas.getContext("2d");
     this.mainCtx = this.ctx;
 
     (<any> this.ctx).webkitImageSmoothingEnabled = false;
