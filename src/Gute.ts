@@ -61,6 +61,14 @@ class GameLoop implements GameContext {
     return this.graphics;
   }
 
+  resourcesRemaining(): number {
+    return this.resources.filter(r => !r.loaded).length;
+  }
+
+  resourcesTotal(): number {
+    return this.resources.length;
+  }
+  
   allResourcesLoaded(): boolean {
     for (const resource of this.resources) {
       if (!resource.loaded) {

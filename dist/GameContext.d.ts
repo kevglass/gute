@@ -5,6 +5,8 @@ import { MapWorld } from "./tilemaps/MapWorld";
 import { Sound } from "./Sound";
 import { Tileset } from "./Tileset";
 export interface GameContext {
+    resourcesRemaining(): number;
+    resourcesTotal(): number;
     allResourcesLoaded(): boolean;
     loadLDTK(url: string): MapWorld;
     loadMusic(url: string): Sound;
