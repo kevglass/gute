@@ -85,6 +85,21 @@ class GameLoop implements GameContext {
     }
   }
 
+  private mouseMoveHandler(x: number, y: number, id: number = 0): void {
+    this.initResourcesOnFirstClick();
+
+    const canvas: HTMLCanvasElement = this.graphics.canvas;
+    canvas.focus();
+
+    const width: number = canvas.clientWidth;
+    const height: number = canvas.clientHeight;
+
+    x = Math.floor((x / width) * canvas.width);
+    y = Math.floor((y / height) * canvas.height);
+
+    this.game.onMouseMove(this, x, y);
+  }
+
   private mouseDownHandler(x: number, y: number, id: number = 0): void {
     this.initResourcesOnFirstClick();
 
@@ -134,6 +149,15 @@ class GameLoop implements GameContext {
           event.preventDefault();
           event.stopPropagation();
         }
+      } catch (e) {
+        console.log(e);
+      }
+    });
+    this.graphics.canvas.addEventListener("mousemove", (event) => {
+      try {
+        this.mouseMoveHandler(event.offsetX, event.offsetY);
+        event.preventDefault();
+        event.stopPropagation();
       } catch (e) {
         console.log(e);
       }
