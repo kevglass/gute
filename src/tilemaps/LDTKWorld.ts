@@ -27,6 +27,8 @@ export class LDTKWorld extends MapWorld implements Resource {
             const entity: MapEntity = new MapEntity(level,
               entityData.px[0] / layerData.__gridSize,
               entityData.px[1] / layerData.__gridSize,
+              entityData.width / layerData.__gridSize,
+              entityData.height / layerData.__gridSize,
               entityData.__identifier)
             for (const fieldInstance of entityData.fieldInstances) {
               entity.fields[fieldInstance.__identifier] = fieldInstance.__value;
