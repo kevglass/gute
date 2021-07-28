@@ -9,9 +9,11 @@ export declare class GraphicsImpl implements Graphics {
     fontSize: number;
     constructor();
     clear(): void;
+    clip(x: number, y: number, width: number, height: number): void;
     createOffscreen(): Offscreen;
     drawToOffscreen(screen: Offscreen | null): void;
     drawOffscreen(screen: Offscreen): void;
+    drawScaledOffscreen(screen: Offscreen, x: number, y: number, width: number, height: number): void;
     clearRect(x: number, y: number, width: number, height: number): void;
     fitScreen(pixelScale: number): void;
     setAlpha(alpha: number): void;

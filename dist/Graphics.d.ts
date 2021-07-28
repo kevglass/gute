@@ -12,9 +12,11 @@ export interface Offscreen {
 }
 export interface Graphics {
     copy(): Bitmap;
+    clip(x: number, y: number, width: number, height: number): void;
     createOffscreen(): Offscreen;
     drawToOffscreen(screen: Offscreen | null): void;
     drawOffscreen(screen: Offscreen): void;
+    drawScaledOffscreen(screen: Offscreen, x: number, y: number, width: number, height: number): void;
     fillRect(x: number, y: number, width: number, height: number, col: string): void;
     drawLine(x1: number, y1: number, x2: number, y2: number, col: string): void;
     drawBitmap(x: number, y: number, bitmap: Bitmap): void;

@@ -93,6 +93,12 @@ export class GraphicsImpl implements Graphics {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
+  clip(x: number, y: number, width: number, height: number): void {
+    let squarePath = new Path2D();
+    squarePath.rect(x, y, width, height);
+    this.ctx.clip(squarePath);
+  }
+
   createOffscreen(): Offscreen {
     const canvas: HTMLCanvasElement = document.createElement("canvas");
     canvas.width = this.getWidth();
@@ -121,6 +127,13 @@ export class GraphicsImpl implements Graphics {
 
   drawOffscreen(screen: Offscreen): void {
     this.ctx.drawImage((screen as OffscreenImpl).canvas, 0,  0);
+  }
+
+  drawScaledOffscreen(screen: Offscreen, x: number, y: number, width: number, height: number): void {
+    (<any> this.ctx).webkitImageSmoothingEnabled = false;
+    (<any> this.ctx).mozImageSmoothingEnabled = false;
+    this.ctx.imageSmoothingEnabled = false;
+    this.ctx.drawImage((screen as OffscreenImpl).canvas, x, y, width, height);
   }
 
   clearRect(x: number, y: number, width: number, height: number): void {
