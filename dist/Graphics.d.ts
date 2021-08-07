@@ -18,7 +18,7 @@ export interface Graphics {
     drawOffscreen(screen: Offscreen): void;
     drawScaledOffscreen(screen: Offscreen, x: number, y: number, width: number, height: number): void;
     fillRect(x: number, y: number, width: number, height: number, col: string): void;
-    drawLine(x1: number, y1: number, x2: number, y2: number, col: string): void;
+    drawLine(x1: number, y1: number, x2: number, y2: number, col: string, width?: number): void;
     drawBitmap(x: number, y: number, bitmap: Bitmap): void;
     drawScaledBitmap(x: number, y: number, width: number, height: number, bitmap: Bitmap): void;
     clearRect(x: number, y: number, width: number, height: number): void;

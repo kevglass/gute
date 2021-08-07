@@ -223,8 +223,9 @@ export class GraphicsImpl implements Graphics {
     this.ctx.fillRect(x,y,width,height);
   }
 
-  drawLine(x1: number, y1: number, x2: number, y2: number, col: string): void {
+  drawLine(x1: number, y1: number, x2: number, y2: number, col: string, width: number = 1): void {
     this.ctx.strokeStyle = col;
+    this.ctx.lineWidth = width;
     this.ctx.moveTo(x1, y1);
     this.ctx.lineTo(x2, y2);
     this.ctx.stroke();
