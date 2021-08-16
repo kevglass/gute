@@ -218,6 +218,12 @@ export class GraphicsImpl implements Graphics {
     this.ctx.globalCompositeOperation = name;
   }
 
+  drawRect(x: number, y: number, width: number, height: number, col: string, lineWidth: number = 1): void {
+    this.ctx.strokeStyle = col;
+    this.ctx.lineWidth = lineWidth;
+    this.ctx.strokeRect(x, y, width, height);
+  }
+
   fillRect(x: number, y: number, width: number, height: number, col: string): void {
     this.ctx.fillStyle = col;
     this.ctx.fillRect(x, y, width, height);
@@ -230,6 +236,21 @@ export class GraphicsImpl implements Graphics {
     this.ctx.moveTo(x1, y1);
     this.ctx.lineTo(x2, y2);
     this.ctx.stroke();
+  }
+
+  drawCircle(cx: number, cy: number, radius: number, col: string, width: number = 1): void {
+    this.ctx.strokeStyle = col;
+    this.ctx.lineWidth = width;
+    this.ctx.beginPath();
+    this.ctx.arc(cx, cy, radius, 0, 2 * Math.PI, false);
+    this.ctx.stroke();
+  }
+
+  fillCircle(cx: number, cy: number, radius: number, col: string): void {
+    this.ctx.fillStyle = col;
+    this.ctx.beginPath();
+    this.ctx.arc(cx, cy, radius, 0, 2 * Math.PI, false);
+    this.ctx.fill();
   }
 
   drawBitmap(x: number, y: number, bitmap: Bitmap): void {
