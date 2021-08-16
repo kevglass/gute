@@ -67,15 +67,15 @@ export class GraphicsImpl implements Graphics {
   fontSize: number = 20;
 
   constructor() {
-    this.canvas = <HTMLCanvasElement> document.getElementById("gamecanvas");
-    this.ctx = <CanvasRenderingContext2D> this.canvas.getContext("2d");
+    this.canvas = <HTMLCanvasElement>document.getElementById("gamecanvas");
+    this.ctx = <CanvasRenderingContext2D>this.canvas.getContext("2d");
     this.mainCtx = this.ctx;
 
-    (<any> this.ctx).webkitImageSmoothingEnabled = false;
-    (<any> this.ctx).mozImageSmoothingEnabled = false;
+    (<any>this.ctx).webkitImageSmoothingEnabled = false;
+    (<any>this.ctx).mozImageSmoothingEnabled = false;
     this.ctx.imageSmoothingEnabled = false;
-    (<any> this.canvas).style.fontSmooth = "never";
-    (<any> this.canvas).style.webkitFontSmoothing = "none";
+    (<any>this.canvas).style.fontSmooth = "never";
+    (<any>this.canvas).style.webkitFontSmoothing = "none";
 
     if (isFirefox) {
       this.canvas.style.imageRendering = "crisp-edges";
@@ -105,11 +105,11 @@ export class GraphicsImpl implements Graphics {
     canvas.height = this.getHeight();
     const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
     if (ctx) {
-      (<any> ctx).webkitImageSmoothingEnabled = false;
-      (<any> ctx).mozImageSmoothingEnabled = false;
+      (<any>ctx).webkitImageSmoothingEnabled = false;
+      (<any>ctx).mozImageSmoothingEnabled = false;
       ctx.imageSmoothingEnabled = false;
-      (<any> canvas).style.fontSmooth = "never";
-      (<any> canvas).style.webkitFontSmoothing = "none";
+      (<any>canvas).style.fontSmooth = "never";
+      (<any>canvas).style.webkitFontSmoothing = "none";
 
       return new OffscreenImpl(canvas, ctx);
     } else {
@@ -126,12 +126,12 @@ export class GraphicsImpl implements Graphics {
   }
 
   drawOffscreen(screen: Offscreen): void {
-    this.ctx.drawImage((screen as OffscreenImpl).canvas, 0,  0);
+    this.ctx.drawImage((screen as OffscreenImpl).canvas, 0, 0);
   }
 
   drawScaledOffscreen(screen: Offscreen, x: number, y: number, width: number, height: number): void {
-    (<any> this.ctx).webkitImageSmoothingEnabled = false;
-    (<any> this.ctx).mozImageSmoothingEnabled = false;
+    (<any>this.ctx).webkitImageSmoothingEnabled = false;
+    (<any>this.ctx).mozImageSmoothingEnabled = false;
     this.ctx.imageSmoothingEnabled = false;
     this.ctx.drawImage((screen as OffscreenImpl).canvas, x, y, width, height);
   }
@@ -157,12 +157,12 @@ export class GraphicsImpl implements Graphics {
   setAlpha(alpha: number): void {
     this.ctx.globalAlpha = alpha;
   }
-  
+
   copy(): Bitmap {
     const canvas: HTMLCanvasElement = document.createElement("canvas");
     canvas.width = this.getWidth();
     canvas.height = this.getHeight();
-  
+
     canvas.getContext("2d")?.drawImage(this.canvas, 0, 0);
     return new CopyBitmap(canvas);
   }
@@ -174,7 +174,7 @@ export class GraphicsImpl implements Graphics {
   getHeight(): number {
     return this.canvas.height;
   }
-  
+
   push(): void {
     this.ctx.save();
   }
@@ -184,11 +184,11 @@ export class GraphicsImpl implements Graphics {
   }
 
   translate(x: number, y: number): void {
-    this.ctx.translate(x,y);
+    this.ctx.translate(x, y);
   }
 
   scale(x: number, y: number): void {
-    this.ctx.scale(x,y);
+    this.ctx.scale(x, y);
   }
 
   applyFont(): void {
@@ -218,17 +218,39 @@ export class GraphicsImpl implements Graphics {
     this.ctx.globalCompositeOperation = name;
   }
 
+  drawRect(x: number, y: number, width: number, height: number, col: string, lineWidth: number = 1): void {
+    this.ctx.strokeStyle = col;
+    this.ctx.lineWidth = lineWidth;
+    this.ctx.strokeRect(x, y, width, height);
+  }
+
   fillRect(x: number, y: number, width: number, height: number, col: string): void {
     this.ctx.fillStyle = col;
-    this.ctx.fillRect(x,y,width,height);
+    this.ctx.fillRect(x, y, width, height);
   }
 
   drawLine(x1: number, y1: number, x2: number, y2: number, col: string, width: number = 1): void {
     this.ctx.strokeStyle = col;
     this.ctx.lineWidth = width;
+    this.ctx.beginPath();
     this.ctx.moveTo(x1, y1);
     this.ctx.lineTo(x2, y2);
     this.ctx.stroke();
+  }
+
+  drawCircle(cx: number, cy: number, radius: number, col: string, width: number = 1): void {
+    this.ctx.strokeStyle = col;
+    this.ctx.lineWidth = width;
+    this.ctx.beginPath();
+    this.ctx.arc(cx, cy, radius, 0, 2 * Math.PI, false);
+    this.ctx.stroke();
+  }
+
+  fillCircle(cx: number, cy: number, radius: number, col: string): void {
+    this.ctx.fillStyle = col;
+    this.ctx.beginPath();
+    this.ctx.arc(cx, cy, radius, 0, 2 * Math.PI, false);
+    this.ctx.fill();
   }
 
   drawBitmap(x: number, y: number, bitmap: Bitmap): void {

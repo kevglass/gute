@@ -28,20 +28,26 @@ export interface Graphics {
 
   drawScaledOffscreen(screen: Offscreen, x: number, y: number, width: number, height: number): void;
 
+  drawRect(x: number, y: number, width: number, height: number, col: string, lineWidth?: number): void;
+
   fillRect(x: number, y: number, width: number, height: number, col: string): void;
 
   drawLine(x1: number, y1: number, x2: number, y2: number, col: string, width?: number): void;
 
+  drawCircle(cx: number, cy: number, radius: number, col: string, width?: number): void;
+
+  fillCircle(cx: number, cy: number, radius: number, col: string, width?: number): void;
+
   drawBitmap(x: number, y: number, bitmap: Bitmap): void;
 
   drawScaledBitmap(x: number, y: number, width: number, height: number, bitmap: Bitmap): void;
-  
+
   clearRect(x: number, y: number, width: number, height: number): void;
-   
+
   clear(): void;
 
   setFont(font: Font): void;
-  
+
   setComposite(name: string): void;
 
   setFontSize(size: number): void;
