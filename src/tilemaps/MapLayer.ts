@@ -19,6 +19,14 @@ export class MapLayer {
     }
   }
 
+  set(x: number, y: number, value: number): void {
+    if ((x < 0) || (y < 0) || (x >= this.width) || (y >= this.height)) {
+      return;
+    }
+    const posIndex: number = x + (y * this.width);
+    this.tiles[posIndex] = value;
+  }
+
   get(x: number, y: number): number {
     if ((x < 0) || (y < 0) || (x >= this.width) || (y >= this.height)) {
       return 0;
