@@ -10,6 +10,7 @@ export declare class TilesetImpl implements Tileset {
     scanline: number;
     tileCount: number;
     tints: Record<string, HTMLCanvasElement>;
+    onLoaded: () => void;
     constructor(url: string, tileWidth: number, tileHeight: number, scale?: number);
     getTilesAcross(): number;
     scaled(scale: number): void;

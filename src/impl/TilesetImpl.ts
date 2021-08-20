@@ -40,7 +40,8 @@ export class TilesetImpl implements Tileset {
   scanline: number = 0;
   tileCount: number = 0;
   tints: Record<string, HTMLCanvasElement> = {};
-
+  onLoaded: () => void = () => {};
+  
   constructor(url: string, tileWidth: number, tileHeight: number, scale: number = 1) {
     tileWidth *= scale;
     tileHeight *= scale;
@@ -64,6 +65,7 @@ export class TilesetImpl implements Tileset {
         }
       }
 
+      this.onLoaded();
       this.loaded = true;
     };
     this.image.src = url;
