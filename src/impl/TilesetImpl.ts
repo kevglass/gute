@@ -2,28 +2,36 @@ import { Bitmap } from "..";
 import { Tileset } from "../Tileset";
 
 class Tile implements Bitmap {
-  canvas: HTMLCanvasElement;
+  image: HTMLImageElement;
   width: number;
   height: number;
   loaded: boolean;
   x: number;
   y: number;
-  
-  constructor(canvas: HTMLCanvasElement, x: number, y: number, width: number, height: number) {
-    this.canvas = canvas;
+  scale: number;
+
+  constructor(canvas: HTMLImageElement, x: number, y: number, width: number, height: number, scale: number) {
+    this.image = canvas;
     this.width = width;
     this.height = height;
     this.x = x;
     this.y = y;
+    this.scale = scale;
     this.loaded = true;
   }
 
   draw(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-    ctx.drawImage(this.canvas, this.x, this.y, this.width, this.height, x, y, this.width, this.height);
+    (<any> ctx).webkitImageSmoothingEnabled = false;
+    (<any> ctx).mozImageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(this.image, this.x, this.y, this.width, this.height, x, y, this.width * this.scale, this.height * this.scale);
   }
 
   drawScaled(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
-    ctx.drawImage(this.canvas, this.x, this.y, this.width, this.height, x, y, width, height);
+    (<any> ctx).webkitImageSmoothingEnabled = false;
+    (<any> ctx).mozImageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(this.image, this.x, this.y, this.width, this.height, x, y, width, height);
   }
 
   initOnFirstClick(): void {
@@ -34,37 +42,35 @@ export class TilesetImpl implements Tileset {
   loaded: boolean = false;
   tileWidth: number;
   tileHeight: number;
+  originalTileWidth: number;
+  originalTileHeight: number;
   image: HTMLImageElement | null;
-  transformed!: HTMLCanvasElement | null;
   bitmaps: Bitmap[] = [];
   scanline: number = 0;
   tileCount: number = 0;
-  tints: Record<string, HTMLCanvasElement> = {};
+  tints: Record<string, HTMLImageElement> = {};
+  scale: number;
   onLoaded: () => void = () => {};
   
   constructor(url: string, tileWidth: number, tileHeight: number, scale: number = 1) {
-    tileWidth *= scale;
-    tileHeight *= scale;
-    this.tileWidth = tileWidth;
-    this.tileHeight = tileHeight;
-
+    this.tileWidth = this.originalTileWidth = tileWidth;
+    this.tileHeight = this.originalTileHeight = tileHeight;
+    this.scale = scale;
     this.image = new Image();
     this.image.onload = () => {
-      this.scaled(scale);
+      this.scanline = Math.floor(this.image!.width / this.tileWidth);
+      const depth: number = Math.floor(this.image!.height / this.tileHeight);
+      this.tileCount = depth * this.scanline;
 
-      if (this.transformed) {
-        this.scanline = Math.floor(this.transformed.width / tileWidth);
-        const depth: number = Math.floor(this.transformed.height / tileHeight);
-        this.tileCount = depth * this.scanline;
-
-        // cut the image into pieces
-        for (let y = 0; y < depth; y++) {
-          for (let x = 0; x < this.scanline; x++) {
-            this.bitmaps.push(new Tile(this.transformed, x * tileWidth, y * tileHeight, tileWidth, tileHeight));
-          }
+      // cut the image into pieces
+      for (let y = 0; y < depth; y++) {
+        for (let x = 0; x < this.scanline; x++) {
+          this.bitmaps.push(new Tile(this.image!, x * this.tileWidth, y * this.tileHeight, this.tileWidth, this.tileHeight, scale));
         }
       }
 
+      this.tileWidth *= scale;
+      this.tileHeight *= scale;
       this.onLoaded();
       this.loaded = true;
     };
@@ -73,25 +79,6 @@ export class TilesetImpl implements Tileset {
 
   getTilesAcross(): number {
     return this.scanline;
-  }
-
-  scaled(scale: number): void {
-    const canvas: HTMLCanvasElement = document.createElement("canvas");
-    const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
-
-    if (ctx === null) {
-      return;
-    }
-    if (this.image) {
-      canvas.width = this.image.width * scale;
-      canvas.height = this.image.height * scale;
-
-      (<any> ctx).webkitImageSmoothingEnabled = false;
-      (<any> ctx).mozImageSmoothingEnabled = false;
-      ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(this.image, 0,0, canvas.width,canvas.height);
-      this.transformed = canvas;
-    }
   }
 
   getTileWidth(): number {
@@ -116,15 +103,14 @@ export class TilesetImpl implements Tileset {
   getTintedTile(tile: number, tintName: string, tint: number[]): Bitmap {
     const x:number = tile % this.scanline;
     const y:number = Math.floor(tile / this.scanline);
-    let canvas: HTMLCanvasElement = this.tints[tintName];
-    if ((!canvas) && (this.transformed)) {
-      canvas = document.createElement("canvas");
-      canvas.width = this.transformed.width;
-      canvas.height = this.transformed.height;
-      this.tints[tintName] = canvas;
+    let image: HTMLImageElement = this.tints[tintName];
+    if (!image) {
+      const canvas: HTMLCanvasElement = document.createElement("canvas");
+      canvas.width = this.image!.width;
+      canvas.height = this.image!.height;
       const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
       if (ctx) {
-        ctx.drawImage(this.transformed, 0 , 0);
+        ctx.drawImage(this.image!, 0 , 0);
         const id: ImageData = ctx.getImageData(0,0,canvas.width,canvas.height);
         for (let i=0;i<id.data.length;i+=4) {
           // leave black alone
@@ -134,8 +120,11 @@ export class TilesetImpl implements Tileset {
         }
         ctx.putImageData(id, 0, 0);
       }
+      image = new Image();
+      image.src = canvas.toDataURL();
+      this.tints[tintName] = image;
     }
 
-    return new Tile(canvas, x * this.tileWidth, y * this.tileHeight, this.tileWidth, this.tileHeight)
+    return new Tile(image, x * this.originalTileWidth, y * this.originalTileHeight, this.originalTileWidth, this.originalTileHeight, this.scale)
   }
 }

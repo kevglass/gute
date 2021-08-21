@@ -126,6 +126,9 @@ export class GraphicsImpl implements Graphics {
   }
 
   drawOffscreen(screen: Offscreen): void {
+    (<any> this.ctx).webkitImageSmoothingEnabled = false;
+    (<any> this.ctx).mozImageSmoothingEnabled = false;
+    this.ctx.imageSmoothingEnabled = false;
     this.ctx.drawImage((screen as OffscreenImpl).canvas, 0,  0);
   }
 
@@ -232,10 +235,16 @@ export class GraphicsImpl implements Graphics {
   }
 
   drawBitmap(x: number, y: number, bitmap: Bitmap): void {
+    (<any> this.ctx).webkitImageSmoothingEnabled = false;
+    (<any> this.ctx).mozImageSmoothingEnabled = false;
+    this.ctx.imageSmoothingEnabled = false;
     bitmap.draw(this.ctx, x, y);
   }
 
   drawScaledBitmap(x: number, y: number, width: number, height: number, bitmap: Bitmap): void {
+    (<any> this.ctx).webkitImageSmoothingEnabled = false;
+    (<any> this.ctx).mozImageSmoothingEnabled = false;
+    this.ctx.imageSmoothingEnabled = false;
     bitmap.drawScaled(this.ctx, x, y, width, height);
   }
 }
