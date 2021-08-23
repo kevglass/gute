@@ -223,10 +223,10 @@ class GameLoop implements GameContext {
     });
 
     window.addEventListener("keydown", (event) => {
-      this.keyDownHandler(event.key);
+      this.keyDownHandler(event.code);
     });
     window.addEventListener("keyup", (event) => {
-      this.keyUpHandler(event.key);
+      this.keyUpHandler(event.code);
     });
 
     game.init(this);
