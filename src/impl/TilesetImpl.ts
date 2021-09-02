@@ -21,16 +21,10 @@ class Tile implements Bitmap {
   }
 
   draw(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-    (<any> ctx).webkitImageSmoothingEnabled = false;
-    (<any> ctx).mozImageSmoothingEnabled = false;
-    ctx.imageSmoothingEnabled = false;
     ctx.drawImage(this.image, this.x, this.y, this.width, this.height, x, y, this.width * this.scale, this.height * this.scale);
   }
 
   drawScaled(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
-    (<any> ctx).webkitImageSmoothingEnabled = false;
-    (<any> ctx).mozImageSmoothingEnabled = false;
-    ctx.imageSmoothingEnabled = false;
     ctx.drawImage(this.image, this.x, this.y, this.width, this.height, x, y, width, height);
   }
 

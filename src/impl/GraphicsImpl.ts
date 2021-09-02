@@ -235,16 +235,14 @@ export class GraphicsImpl implements Graphics {
   }
 
   drawBitmap(x: number, y: number, bitmap: Bitmap): void {
-    (<any> this.ctx).webkitImageSmoothingEnabled = false;
-    (<any> this.ctx).mozImageSmoothingEnabled = false;
     this.ctx.imageSmoothingEnabled = false;
+    (<any> this.ctx).webkitImageSmoothingEnabled = false;
     bitmap.draw(this.ctx, x, y);
   }
 
   drawScaledBitmap(x: number, y: number, width: number, height: number, bitmap: Bitmap): void {
-    (<any> this.ctx).webkitImageSmoothingEnabled = false;
-    (<any> this.ctx).mozImageSmoothingEnabled = false;
     this.ctx.imageSmoothingEnabled = false;
+    (<any> this.ctx).webkitImageSmoothingEnabled = false;
     bitmap.drawScaled(this.ctx, x, y, width, height);
   }
 }
