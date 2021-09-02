@@ -72,7 +72,6 @@ export class GraphicsImpl implements Graphics {
     this.mainCtx = this.ctx;
 
     (<any> this.ctx).webkitImageSmoothingEnabled = false;
-    (<any> this.ctx).mozImageSmoothingEnabled = false;
     this.ctx.imageSmoothingEnabled = false;
     (<any> this.canvas).style.fontSmooth = "never";
     (<any> this.canvas).style.webkitFontSmoothing = "none";
@@ -106,7 +105,6 @@ export class GraphicsImpl implements Graphics {
     const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
     if (ctx) {
       (<any> ctx).webkitImageSmoothingEnabled = false;
-      (<any> ctx).mozImageSmoothingEnabled = false;
       ctx.imageSmoothingEnabled = false;
       (<any> canvas).style.fontSmooth = "never";
       (<any> canvas).style.webkitFontSmoothing = "none";
@@ -127,14 +125,12 @@ export class GraphicsImpl implements Graphics {
 
   drawOffscreen(screen: Offscreen): void {
     (<any> this.ctx).webkitImageSmoothingEnabled = false;
-    (<any> this.ctx).mozImageSmoothingEnabled = false;
     this.ctx.imageSmoothingEnabled = false;
     this.ctx.drawImage((screen as OffscreenImpl).canvas, 0,  0);
   }
 
   drawScaledOffscreen(screen: Offscreen, x: number, y: number, width: number, height: number): void {
     (<any> this.ctx).webkitImageSmoothingEnabled = false;
-    (<any> this.ctx).mozImageSmoothingEnabled = false;
     this.ctx.imageSmoothingEnabled = false;
     this.ctx.drawImage((screen as OffscreenImpl).canvas, x, y, width, height);
   }
