@@ -108,6 +108,10 @@ class GameLoop implements GameContext {
     this.game.onMouseMove(this, x, y);
   }
 
+  private mouseWheelHandler(delta: number): void {
+    this.game.onMouseWheel(this, delta);
+  }
+
   private mouseDownHandler(x: number, y: number, id: number = 0): void {
     this.initResourcesOnFirstClick();
 
@@ -120,7 +124,7 @@ class GameLoop implements GameContext {
     x = Math.floor((x / width) * canvas.width);
     y = Math.floor((y / height) * canvas.height);
 
-    this.game.onMouseDown(this, x, y);
+    this.game.onMouseDown(this, x, y, id);
   }
 
   private mouseUpHandler(x: number, y: number, id: number = 0): void {
@@ -133,7 +137,7 @@ class GameLoop implements GameContext {
     x = Math.floor((x / width) * canvas.width);
     y = Math.floor((y / height) * canvas.height);
 
-    this.game.onMouseUp(this, x, y);
+    this.game.onMouseUp(this, x, y, id);
   }
 
   private keyDownHandler(key: string): void {
@@ -190,13 +194,23 @@ class GameLoop implements GameContext {
       }
     });
 
+    window.addEventListener("contextmenu", (event) => {
+      event.stopPropagation();
+      event.preventDefault();
+      return false;
+    });
+    this.graphics.canvas.addEventListener("wheel", (event) => {
+      try {
+        this.mouseWheelHandler(event.deltaY);
+      } catch (e) {
+        console.log(e);
+      }
+    });
     this.graphics.canvas.addEventListener("mousedown", (event) => {
       try {
-        if (event.button === 0) {
-          this.mouseDownHandler(event.offsetX, event.offsetY);
-          event.preventDefault();
-          event.stopPropagation();
-        }
+        this.mouseDownHandler(event.offsetX, event.offsetY, event.button);
+        event.preventDefault();
+        event.stopPropagation();
       } catch (e) {
         console.log(e);
       }
@@ -213,7 +227,7 @@ class GameLoop implements GameContext {
     this.graphics.canvas.addEventListener("mouseup", (event) => {
       try {
         if (event.button === 0) {
-          this.mouseUpHandler(event.offsetX, event.offsetY);
+          this.mouseUpHandler(event.offsetX, event.offsetY, event.button);
           event.preventDefault();
           event.stopPropagation();
         }
