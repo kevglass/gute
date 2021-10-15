@@ -9,7 +9,7 @@ Gute is a simple web games library. It gives you a game loop, input, sounds, mus
 
 ```npm install gute```
 
-or if you're using pure JS just grab https://kevglass.github.io/gute/dist/index.js and include it. See the example below.
+or if you're using pure JS just grab https://raw.githubusercontent.com/kevglass/gute/master/dist/index.js and include it. See the example below.
 
 # Example
 
