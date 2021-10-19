@@ -17,4 +17,11 @@ export class MapEntity {
     this.height = height;
     this.type = type;
   }
+
+  copy(level: MapLevel): MapEntity {
+    const result: MapEntity = new MapEntity(level, this.x, this.y, this.width, this.height, this.type);
+    result.fields = {...this.fields};
+
+    return result;
+  }
 }

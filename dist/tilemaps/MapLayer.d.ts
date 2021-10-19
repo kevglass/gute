@@ -8,4 +8,5 @@ export declare class MapLayer {
     constructor(level: MapLevel, name: string, width: number, height: number);
     set(x: number, y: number, value: number): void;
     get(x: number, y: number): number;
+    copy(level: MapLevel): MapLayer;
 }

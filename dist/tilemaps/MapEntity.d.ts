@@ -8,4 +8,5 @@ export declare class MapEntity {
     level: MapLevel;
     fields: any;
     constructor(level: MapLevel, x: number, y: number, width: number, height: number, type: string);
+    copy(level: MapLevel): MapEntity;
 }

@@ -26,4 +26,28 @@ export class MapLevel {
 
     return null;
   }
+
+  copy(id: string): MapLevel {
+    const worldCopy: MapWorld = new MapWorld();
+    worldCopy.gridSize = this.world.gridSize;
+    worldCopy.loaded = this.world.loaded;
+    worldCopy.tilesetScanline = this.world.tilesetScanline;
+    worldCopy.tilesetSize = this.world.tilesetSize;
+
+    const result: MapLevel = new MapLevel(worldCopy, id);
+    result.width = this.width;
+    result.height = this.height;
+    result.fields = {...this.fields};
+
+    for (const layer of this.layers) {
+      const copy: MapLayer = layer.copy(result);
+      result.layers.push(copy);
+      result.layerByName[copy.name] = copy;
+    }
+    for (const entity of this.entities) {
+      const copy: MapEntity = entity.copy(result);
+      result.entities.push(entity);
+    }
+    return result;
+  }
 }

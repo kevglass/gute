@@ -12,4 +12,5 @@ export declare class MapLevel {
     fields: any;
     constructor(world: MapWorld, id: string);
     getFirstEntityOfType(type: string): MapEntity | null;
+    copy(id: string): MapLevel;
 }

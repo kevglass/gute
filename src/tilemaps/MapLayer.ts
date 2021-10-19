@@ -35,4 +35,13 @@ export class MapLayer {
     
     return this.tiles[posIndex];
   }
+
+  copy(level: MapLevel): MapLayer {
+    const result: MapLayer = new MapLayer(level, this.name, this.width, this.height);
+    for (let i=0;i<this.width*this.height;i++) {
+      result.tiles[i] = this.tiles[i];
+    }
+
+    return result;
+  }
 }
