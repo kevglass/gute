@@ -2,6 +2,7 @@ import { Bitmap, Graphics } from "..";
 import { Font } from "../Font";
 import { Offscreen } from "../Graphics";
 import { FontImpl } from "./FontImpl";
+import { SoundImpl } from "./SoundImpl";
 
 declare let InstallTrigger: any;
 

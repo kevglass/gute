@@ -26,6 +26,31 @@ if (typeof document !== "undefined") {
 export class SoundImpl implements Sound {
   static CURRENT_MUSIC: SoundImpl | null;
 
+  static soundVolume: number = 1;
+  static musicVolume: number = 1;
+
+  static setSoundVolume(v: number): void {
+    this.soundVolume = v;
+  }
+
+  static getSoundVolume(): number {
+    return this.soundVolume;
+  }
+
+  static setMusicVolume(v: number): void {
+    this.musicVolume = v;
+
+    console.log("Setting current music: " +v);
+    if (SoundImpl.CURRENT_MUSIC) {
+      console.log("Ranmping current music to: " + v);
+      SoundImpl.CURRENT_MUSIC.gain.gain.linearRampToValueAtTime(SoundImpl.CURRENT_MUSIC.volume * SoundImpl.musicVolume, AUDIO_CONTEXT.currentTime + 2);
+    }
+  }
+
+  static getMusicVolume(): number {
+    return this.musicVolume;
+  }
+  
   loaded: boolean = false;
   data!: ArrayBuffer;
   volume: number = 1;
@@ -123,9 +148,9 @@ export class SoundImpl implements Sound {
     this.source.start(0);
     
     if (this.music) {
-      this.gain.gain.linearRampToValueAtTime(volume, AUDIO_CONTEXT.currentTime + 2);
+      this.gain.gain.linearRampToValueAtTime(volume * SoundImpl.musicVolume, AUDIO_CONTEXT.currentTime + 2);
     }  else {
-      this.gain.gain.value = volume;
+      this.gain.gain.value = volume * SoundImpl.soundVolume;
     }
   }
 

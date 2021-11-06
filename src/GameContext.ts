@@ -39,4 +39,12 @@ export interface GameContext {
   isIOS(): boolean;
 
   isPhone(): boolean;
+
+  setSoundVolume(v: number) : void;
+
+  getSoundVolume(): number;
+
+  setMusicVolume(v: number): void;
+
+  getMusicVolume(): number;
 }

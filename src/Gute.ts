@@ -368,6 +368,22 @@ class GameLoop implements GameContext {
   }
 
   isPhone(): boolean {
-    return window.matchMedia("only screen and (max-width: 760px)").matches;
+    return this.isIOS() && window.matchMedia("only screen and (max-width: 760px)").matches;
+  }
+
+  setSoundVolume(v: number) : void {
+    SoundImpl.setSoundVolume(v);
+  }
+
+  getSoundVolume(): number {
+    return SoundImpl.getSoundVolume();
+  }
+
+  setMusicVolume(v: number): void {
+    SoundImpl.setMusicVolume(v);
+  }
+
+  getMusicVolume(): number {
+    return SoundImpl.getMusicVolume();
   }
 }
