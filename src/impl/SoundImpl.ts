@@ -40,10 +40,8 @@ export class SoundImpl implements Sound {
   static setMusicVolume(v: number): void {
     this.musicVolume = v;
 
-    console.log("Setting current music: " +v);
     if (SoundImpl.CURRENT_MUSIC) {
-      console.log("Ranmping current music to: " + v);
-      SoundImpl.CURRENT_MUSIC.gain.gain.linearRampToValueAtTime(SoundImpl.CURRENT_MUSIC.volume * SoundImpl.musicVolume, AUDIO_CONTEXT.currentTime + 2);
+      SoundImpl.CURRENT_MUSIC.gain.gain.linearRampToValueAtTime(SoundImpl.CURRENT_MUSIC.volume * SoundImpl.musicVolume, AUDIO_CONTEXT.currentTime + 0.25);
     }
   }
 
