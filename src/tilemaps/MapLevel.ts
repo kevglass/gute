@@ -11,7 +11,9 @@ export class MapLevel {
   world: MapWorld;
   entities: MapEntity[] = [];
   fields: any = {};
-  
+  worldX: number = 0;
+  worldY: number = 0;
+
   constructor(world: MapWorld, id: string) {
     this.world = world;
     this.id = id;

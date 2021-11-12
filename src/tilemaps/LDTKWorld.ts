@@ -17,6 +17,9 @@ export class LDTKWorld extends MapWorld implements Resource {
     for (const levelData of json.levels) {
       const level: MapLevel = new MapLevel(this, levelData.identifier);
 
+      level.worldX = levelData.worldX;
+      level.worldY = levelData.worldY;
+      
       for (const fieldInstance of levelData.fieldInstances) {
         level.fields[fieldInstance.__identifier] = fieldInstance.__value;
       }
