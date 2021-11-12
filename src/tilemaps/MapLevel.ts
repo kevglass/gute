@@ -39,6 +39,8 @@ export class MapLevel {
     const result: MapLevel = new MapLevel(worldCopy, id);
     result.width = this.width;
     result.height = this.height;
+    result.worldX = this.worldX;
+    result.worldY = this.worldY;
     result.fields = {...this.fields};
 
     for (const layer of this.layers) {
