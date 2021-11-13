@@ -41,7 +41,9 @@ export class SoundImpl implements Sound {
     this.musicVolume = v;
 
     if (SoundImpl.CURRENT_MUSIC) {
-      SoundImpl.CURRENT_MUSIC.gain.gain.linearRampToValueAtTime(SoundImpl.CURRENT_MUSIC.volume * SoundImpl.musicVolume, AUDIO_CONTEXT.currentTime + 0.25);
+      if (SoundImpl.CURRENT_MUSIC.gain) {
+        SoundImpl.CURRENT_MUSIC.gain.gain.linearRampToValueAtTime(SoundImpl.CURRENT_MUSIC.volume * SoundImpl.musicVolume, AUDIO_CONTEXT.currentTime + 0.25);
+      }
     }
   }
 
