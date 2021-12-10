@@ -108,9 +108,10 @@ export class TilesetImpl implements Tileset {
         const id: ImageData = ctx.getImageData(0,0,canvas.width,canvas.height);
         for (let i=0;i<id.data.length;i+=4) {
           // leave black alone
-          id.data[i] = Math.floor(id.data[i] * tint[0]);
-          id.data[i + 1] = Math.floor(id.data[i+1] * tint[1]);
-          id.data[i + 2] = Math.floor(id.data[i+2] * tint[2]);
+          const avg: number = (id.data[i] + id.data[i+1] + id.data[i+2])/3;
+          id.data[i] = Math.floor(avg * tint[0]);
+          id.data[i + 1] = Math.floor(avg * tint[1]);
+          id.data[i + 2] = Math.floor(avg * tint[2]);
         }
         ctx.putImageData(id, 0, 0);
       }
