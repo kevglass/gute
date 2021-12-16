@@ -21,5 +21,5 @@ export declare class SoundImpl implements Sound {
     private tryLoad;
     initOnFirstClick(): void;
     play(volume: number, loop?: boolean): void;
-    stop(): void;
+    stop(remove?: boolean): void;
 }

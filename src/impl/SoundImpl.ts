@@ -18,7 +18,18 @@ function handleVisibilityChange() {
       }
     }
   }
+
+  if (isSoundOn()) {
+    for (const loop of SoundImpl.CURRENT_LOOPS) {
+      if (document.hidden) {
+        loop.stop(false);
+      } else {
+        loop.play(loop.volume);
+      }
+    }
+  }
 }
+
 if (typeof document !== "undefined") {
   document.addEventListener("visibilitychange", handleVisibilityChange);
 }
@@ -166,7 +177,7 @@ export class SoundImpl implements Sound {
     }
   }
 
-  stop(): void {
+  stop(remove: boolean = true): void {
     if (this.source) {
       if (this.looped) {
         this.gain.gain.linearRampToValueAtTime(0, AUDIO_CONTEXT.currentTime + 3);
@@ -181,9 +192,11 @@ export class SoundImpl implements Sound {
       this.source = null;
     }
 
-    const index: number = SoundImpl.CURRENT_LOOPS.findIndex(a => a === this);
-    if (index >= 0) {
-      SoundImpl.CURRENT_LOOPS.splice(index, 1);
+    if (remove) {
+      const index: number = SoundImpl.CURRENT_LOOPS.findIndex(a => a === this);
+      if (index >= 0) {
+        SoundImpl.CURRENT_LOOPS.splice(index, 1);
+      }
     }
   }
 }
