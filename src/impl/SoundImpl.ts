@@ -59,7 +59,8 @@ export class SoundImpl implements Sound {
   source!: AudioBufferSourceNode | null;
   gain!: GainNode;
   url: string;
-
+  looped: boolean = false;
+  
   constructor(url: string, music: boolean) {
     this.url = url;
     this.music = music;
@@ -101,7 +102,7 @@ export class SoundImpl implements Sound {
     this.tryLoad();
   }
 
-  play(volume: number): void {
+  play(volume: number, loop: boolean = false): void {
     this.volume = volume;
 
     if (!this.buffer) {
@@ -140,14 +141,16 @@ export class SoundImpl implements Sound {
     this.source.connect(this.gain);
     this.gain.connect(AUDIO_CONTEXT.destination);
 
-    if (this.music) {
+    this.looped = false;
+    if (this.music || loop) {
       this.gain.gain.value = 0;
       this.source.loop = true;
+      this.looped = true;
     } 
 
     this.source.start(0);
     
-    if (this.music) {
+    if (this.music || loop) {
       this.gain.gain.linearRampToValueAtTime(volume * SoundImpl.musicVolume, AUDIO_CONTEXT.currentTime + 2);
     }  else {
       this.gain.gain.value = volume * SoundImpl.soundVolume;
@@ -156,7 +159,7 @@ export class SoundImpl implements Sound {
 
   stop(): void {
     if (this.source) {
-      if (this.music) {
+      if (this.looped) {
         this.gain.gain.linearRampToValueAtTime(0, AUDIO_CONTEXT.currentTime + 3);
         const tempSource: AudioBufferSourceNode = this.source;
         setTimeout(() => {

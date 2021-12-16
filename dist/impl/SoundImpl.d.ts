@@ -15,9 +15,10 @@ export declare class SoundImpl implements Sound {
     source: AudioBufferSourceNode | null;
     gain: GainNode;
     url: string;
+    looped: boolean;
     constructor(url: string, music: boolean);
     private tryLoad;
     initOnFirstClick(): void;
-    play(volume: number): void;
+    play(volume: number, loop?: boolean): void;
     stop(): void;
 }
