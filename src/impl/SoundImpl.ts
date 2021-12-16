@@ -25,12 +25,17 @@ if (typeof document !== "undefined") {
 
 export class SoundImpl implements Sound {
   static CURRENT_MUSIC: SoundImpl | null;
+  static CURRENT_LOOPS: SoundImpl[] = [];
 
   static soundVolume: number = 1;
   static musicVolume: number = 1;
 
   static setSoundVolume(v: number): void {
     this.soundVolume = v;
+
+    for (const loop of this.CURRENT_LOOPS) {
+      loop.gain.gain.linearRampToValueAtTime(loop.volume * SoundImpl.soundVolume, AUDIO_CONTEXT.currentTime + 0.25);
+    }
   }
 
   static getSoundVolume(): number {
@@ -60,7 +65,7 @@ export class SoundImpl implements Sound {
   gain!: GainNode;
   url: string;
   looped: boolean = false;
-  
+
   constructor(url: string, music: boolean) {
     this.url = url;
     this.music = music;
@@ -151,9 +156,13 @@ export class SoundImpl implements Sound {
     this.source.start(0);
     
     if (this.music || loop) {
-      this.gain.gain.linearRampToValueAtTime(volume * SoundImpl.musicVolume, AUDIO_CONTEXT.currentTime + 2);
+      this.gain.gain.linearRampToValueAtTime(volume * (loop ? SoundImpl.soundVolume : SoundImpl.musicVolume), AUDIO_CONTEXT.currentTime + 2);
     }  else {
       this.gain.gain.value = volume * SoundImpl.soundVolume;
+    }
+
+    if (loop) {
+      SoundImpl.CURRENT_LOOPS.push(this);
     }
   }
 
@@ -170,6 +179,11 @@ export class SoundImpl implements Sound {
       }
 
       this.source = null;
+    }
+
+    const index: number = SoundImpl.CURRENT_LOOPS.findIndex(a => a === this);
+    if (index >= 0) {
+      SoundImpl.CURRENT_LOOPS.splice(index, 1);
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Sound } from "../Sound";
 export declare class SoundImpl implements Sound {
     static CURRENT_MUSIC: SoundImpl | null;
+    static CURRENT_LOOPS: SoundImpl[];
     static soundVolume: number;
     static musicVolume: number;
     static setSoundVolume(v: number): void;
