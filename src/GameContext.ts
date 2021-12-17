@@ -32,6 +32,8 @@ export interface GameContext {
 
   isRunningStandalone(): boolean;
 
+  isTablet(): boolean;
+
   isMobile(): boolean;
 
   isAndroid(): boolean;

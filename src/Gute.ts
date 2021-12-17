@@ -346,6 +346,12 @@ class GameLoop implements GameContext {
     return ((<any> window.navigator).standalone === true) || (window.matchMedia('(display-mode: standalone)').matches);
   }
 
+  isTablet(): boolean {
+    const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(navigator.userAgent.toLowerCase());
+
+    return isTablet;
+  }
+  
   isMobile(): boolean {
     return this.isIOS() || this.isAndroid();
   }
