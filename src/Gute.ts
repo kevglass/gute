@@ -347,6 +347,9 @@ class GameLoop implements GameContext {
   }
 
   isTablet(): boolean {
+    if (!this.isPhone() && this.isIOS()) {
+      return true;
+    }
     const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(navigator.userAgent.toLowerCase());
 
     return isTablet;
