@@ -94,7 +94,7 @@ export class SoundImpl implements Sound {
       }
     };
     
-    req.send(null);
+    req.send();
   }
 
   private tryLoad(): void {

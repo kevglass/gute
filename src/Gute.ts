@@ -318,7 +318,7 @@ class GameLoop implements GameContext {
       }
     };
     
-    req.send(null);
+    req.send();
 
     return world;
   }
@@ -338,7 +338,7 @@ class GameLoop implements GameContext {
         reject(e);
       };
       
-      req.send(null);
+      req.send();
     })
   }
 
