@@ -20,9 +20,9 @@ export class MapLevel {
   }
 
   entitiesOfType(type: string): MapEntity[] {
-    return this.entities.filter((entity) => { entity.type === type });
+    return this.entities.filter((entity) => { return entity.type === type });
   }
-  
+
   getFirstEntityOfType(type: string): MapEntity | null {
     for (const entity of this.entities) {
       if (entity.type === type) {
