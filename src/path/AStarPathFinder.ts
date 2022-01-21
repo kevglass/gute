@@ -12,6 +12,7 @@ export class AStarPathFinder {
 
     private objectPool: Array<MapNode> = [];
     private openList: Array<MapNode> = [];
+    private parentList: Array<MapNode> = [];
     private open: Array<Array<number>>;
     private closed: Array<Array<number>>;
 
@@ -20,10 +21,11 @@ export class AStarPathFinder {
     private width: number;
 
     private pathFindCounter: number = 1;
-    private ignoreFinalOccupation!: boolean;
     private mover!: PathMover;
-    private tx!: number;
-    private ty!: number;
+    private tx!: number[];
+    private ty!: number[];
+    private cx!: number;
+    private cy!: number;
     private max!: number;
 
     public constructor(map: PathFinderMap) {
@@ -33,26 +35,30 @@ export class AStarPathFinder {
 
         this.open = new Array<Array<number>>();
         this.closed = new Array<Array<number>>();
-        
-        for (var i=0;i<this.width*this.height;i++) {
+
+        for (var i = 0; i < this.width * this.height; i++) {
             var o = new Array<number>();
             var c = new Array<number>();
-            
-            for (var j=0;j<5;j++) {
+
+            for (var j = 0; j < 5; j++) {
                 o.push(0);
                 c.push(0);
             }
-            
+
             this.open.push(o);
             this.closed.push(c);
         }
     }
 
     public clear(): void {
-        for (var i=0;i<this.openList.length;i++) {
-            this.objectPool.push(this.openList[i]);
+        for (let node of this.openList) {
+            this.objectPool.push(node);
         }
-        this.openList = new Array<MapNode>();
+        for (let node of this.parentList) {
+            this.objectPool.push(node);
+        }
+        this.parentList = []
+        this.openList = []
         this.pathFindCounter++;
     }
 
@@ -69,53 +75,69 @@ export class AStarPathFinder {
     }
 
     private blocked(sx: number, sy: number, x: number, y: number): boolean {
-        var ignoreActors: boolean = this.ignoreFinalOccupation && this.atTarget(x, y);
-
         if (!this.map.locationDiscovered(x, y)) {
             return true;
         }
-        if (this.map.blocked(this.mover, null, sx, sy, x, y, ignoreActors, this.atTarget(x,y))) {
-            return true;
-        }
 
-        return false;
+        return this.map.blocked(this.mover, null, sx, sy, x, y, this.atTarget(x, y));
     }
 
     private atTarget(x: number, y: number): boolean {
-        for (var xs = 0; xs < this.mover.getTilesWidth(); xs++) {
-            for (var ys = 0; ys < this.mover.getTilesHeight(); ys++) {
-                if ((x + xs == this.tx) && (y + ys == this.ty)) {
-                    return true;
+        for (let i = 0; i < this.tx.length; i++) {
+            const tx = this.tx[i]
+            const ty = this.ty[i]
+            if (tx >= x && tx < x + this.mover.getTilesWidth()
+                && ty >= y && ty < y + this.mover.getTilesHeight())
+                return true
+        }
+        return false
+    }
+
+    public findPath(mover: PathMover, tx: number, ty: number, width: number, height: number, max: number): Path | null {
+
+        tx = Math.floor(tx);
+        ty = Math.floor(ty);
+
+
+        this.max = max;
+        this.mover = mover;
+        this.tx = [];
+        this.ty = [];
+        // central point for heuristic ordering
+        this.cx = tx + width / 2
+        this.cy = ty + height / 2
+
+        for (let i = 0; i < width; i++) {
+            this.tx.push(tx + i)
+            this.ty.push(ty)
+            if (height > 1) {
+                this.tx.push(tx + i)
+                this.ty.push(ty + height - 1)
+            }
+        }
+
+        if (height > 2) {
+            for (let i = 1; i < height - 1; i++) {
+                this.tx.push(tx)
+                this.ty.push(ty + i)
+                if (width > 1) {
+                    this.tx.push(tx + width - 1)
+                    this.ty.push(ty + i)
                 }
             }
         }
 
-        return false;
-    }
+        if (this.tx.length === 0)
+            return null // zero size
 
-    public findPath(mover: PathMover, tx: number, ty: number, max: number,
-        ignoreFinalOccupation: boolean, runAway: boolean): Path | null {
-        
-        tx = Math.floor(tx);
-        ty = Math.floor(ty);
-        
-        
-        this.max = max;
-        this.ignoreFinalOccupation = ignoreFinalOccupation;
-        this.mover = mover;
-        this.tx = tx;
-        this.ty = ty;
-
-        if (this.blocked(tx, ty, tx, ty)) {
-            return null;
-        }
+        // console.log(`Destinations: (${tx},${ty})x(${width},${height}) => [${this.tx}] x [${this.ty}]`)
         this.clear();
 
         this.addLocation(null, Math.floor(mover.getTileMapX()), Math.floor(mover.getTileMapY()));
         while (this.openList.length > 0) {
-            var best: MapNode = this.openList[0];
-            this.openList.splice(0,1);
-            
+            const best: MapNode = this.openList[0];
+            this.openList.splice(0, 1);
+
             // if best is the target then we've found it!
             if (this.atTarget(best.x, best.y)) {
                 return this.generatePath(best);
@@ -125,6 +147,8 @@ export class AStarPathFinder {
             this.addLocation(best, best.x - 1, best.y);
             this.addLocation(best, best.x, best.y + 1);
             this.addLocation(best, best.x, best.y - 1);
+
+            this.parentList.push(best)
         }
 
         return null;
@@ -133,7 +157,7 @@ export class AStarPathFinder {
     private addLocation(parent: MapNode | null, x: number, y: number): void {
         x = Math.floor(x);
         y = Math.floor(y);
-        
+
         var sx = x;
         var sy = y;
         var dir = AStarPathFinder.NONE;
@@ -160,7 +184,7 @@ export class AStarPathFinder {
         if (!this.map.validLocation(x, y)) {
             return;
         }
-        
+
         // if it's in the open list ignore
         if (this.open[x + (y * this.width)][dir] == this.pathFindCounter) {
             return;
@@ -188,37 +212,36 @@ export class AStarPathFinder {
         // otherwise it's a possible step add it to the open
         this.open[x + (y * this.width)][dir] = this.pathFindCounter;
 
-        var node: MapNode = this.createMapNode(x, y, parent, this.getHeuristic(x, y));
-        for (var i = 0; i < this.openList.length; i++) {
-            var current: MapNode = this.openList[i];
-            if (current.h > node.h) {
-                this.openList.splice(i, 0, node);
-                return;
+        const dx: number = Math.abs(this.cx - x);
+        const dy: number = Math.abs(this.cy - y);
+
+        const node: MapNode = this.createMapNode(x, y, parent, (dx * dx) + (dy * dy));
+        const index = AStarPathFinder.binarySearch(this.openList, node.h)
+        this.openList.splice(index, 0, node);
+    }
+
+    private static binarySearch(array: MapNode[], h: number) {
+        let lo = -1, hi = array.length;
+        while (1 + lo < hi) {
+            const mi = lo + ((hi - lo) >> 1);
+            if (array[mi].h > h) {
+                hi = mi;
+            } else {
+                lo = mi;
             }
         }
-
-        // if no where else add it at the end
-        this.openList.push(node);
+        return hi;
     }
-
-    private getHeuristic(x: number, y: number): number {
-        // distance squared
-        var dx: number = Math.abs(this.tx - x);
-        var dy: number = Math.abs(this.ty - y);
-
-        return (dx * dx) + (dy * dy);
-    }
-
 
     // object pool accessor - free is done in bulk
     private createMapNode(x: number, y: number, parent: MapNode | null, h: number): MapNode {
         if (this.objectPool.length == 0) {
-            var n : MapNode = new MapNode();
+            var n: MapNode = new MapNode();
             this.objectPool.push(n);
         }
 
         var node: MapNode = this.objectPool[0];
-        this.objectPool.splice(0,1);
+        this.objectPool.splice(0, 1);
         node.x = x;
         node.y = y;
         node.parent = parent;

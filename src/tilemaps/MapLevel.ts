@@ -20,17 +20,11 @@ export class MapLevel {
   }
 
   entitiesOfType(type: string): MapEntity[] {
-    return this.entities.filter((entity) => { return entity.type === type });
+    return this.entities.filter(entity => entity.type === type);
   }
 
-  getFirstEntityOfType(type: string): MapEntity | null {
-    for (const entity of this.entities) {
-      if (entity.type === type) {
-        return entity;
-      }
-    }
-
-    return null;
+  firstEntityOfType(type: string): MapEntity | undefined {
+    return this.entities.find(entity => entity.type === type);
   }
 
   copy(id: string): MapLevel {
@@ -40,22 +34,22 @@ export class MapLevel {
     worldCopy.tilesetScanline = this.world.tilesetScanline;
     worldCopy.tilesetSize = this.world.tilesetSize;
 
-    const result: MapLevel = new MapLevel(worldCopy, id);
-    result.width = this.width;
-    result.height = this.height;
-    result.worldX = this.worldX;
-    result.worldY = this.worldY;
-    result.fields = {...this.fields};
+    const levelCopy: MapLevel = new MapLevel(worldCopy, id);
+    levelCopy.width = this.width;
+    levelCopy.height = this.height;
+    levelCopy.worldX = this.worldX;
+    levelCopy.worldY = this.worldY;
+    levelCopy.fields = {...this.fields};
 
     for (const layer of this.layers) {
-      const copy: MapLayer = layer.copy(result);
-      result.layers.push(copy);
-      result.layerByName[copy.name] = copy;
+      const copy: MapLayer = layer.copy(levelCopy);
+      levelCopy.layers.push(copy);
+      levelCopy.layerByName[copy.name] = copy;
     }
     for (const entity of this.entities) {
-      const copy: MapEntity = entity.copy(result);
-      result.entities.push(entity);
+      const copy: MapEntity = entity.copy(levelCopy);
+      levelCopy.entities.push(copy);
     }
-    return result;
+    return levelCopy;
   }
 }
