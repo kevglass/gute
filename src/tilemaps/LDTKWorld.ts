@@ -14,6 +14,14 @@ export class LDTKWorld extends MapWorld implements Resource {
     this.tilesetScanline = tileset.pxWid / tileset.tileGridSize;
     this.tilesetSize = tileset.tileGridSize;
 
+    let levels = json.levels;
+    if (json.worlds && json.worlds.length > 0) {
+      levels = [];
+      for (const world of json.worlds) {
+        levels = levels.concat(world.levels);
+      }
+    }
+    
     for (const levelData of json.levels) {
       const level: MapLevel = new MapLevel(this, levelData.identifier);
 
