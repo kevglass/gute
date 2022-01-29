@@ -12,7 +12,7 @@ export interface GameContext {
 
   allResourcesLoaded(): boolean;
 
-  loadLDTK(url: string): MapWorld;
+  loadLDTK(name: string, locator: (name: string) => string): Promise<MapWorld>;
   
   loadMusic(url: string): Sound;
 

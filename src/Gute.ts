@@ -305,24 +305,13 @@ class GameLoop implements GameContext {
     return new FontImpl(url, name);
   }
 
-  loadLDTK(url: string): MapWorld {
+  loadLDTK(name: string, locator: (name: string) => string): Promise<MapWorld> {
     const world: LDTKWorld = new LDTKWorld();
     this.resources.push(world);
-    
-    var req = new XMLHttpRequest();
-    req.open("GET", url, true);
-    
-    req.onload = (event) => {
-      if (req.responseText) {
-        world.load(JSON.parse(req.responseText));
-      }
-    };
-    
-    req.send();
 
-    return world;
+    return world.load(name, file => this.loadJson(locator(file)))
   }
-
+  
   loadJson(url: string): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       var req = new XMLHttpRequest();
