@@ -99,20 +99,28 @@ export class SoundImpl implements Sound {
 
   private tryLoad(): void {
     if (AUDIO_CONTEXT && this.data) {
-      AUDIO_CONTEXT.decodeAudioData(this.data, (buffer: AudioBuffer) => {
-        this.buffer = buffer;
-        if (SoundImpl.CURRENT_MUSIC === this) {
-          SoundImpl.CURRENT_MUSIC = null;
-          this.play(this.volume);
-        }
-      }, (e) => { console.log("Failed to load: "+ this.url) });
+      try {
+        AUDIO_CONTEXT.decodeAudioData(this.data, (buffer: AudioBuffer) => {
+          this.buffer = buffer;
+          if (SoundImpl.CURRENT_MUSIC === this) {
+            SoundImpl.CURRENT_MUSIC = null;
+            this.play(this.volume);
+          }
+        }, (e) => { console.log("Failed to load: "+ this.url) });
+      } catch (e) {
+        console.log("decodeAudioData exception on loading " + this.url);
+      }
     }
   }
 
   initOnFirstClick(): void {
     if (!AUDIO_CONTEXT) {
-      AUDIO_CONTEXT = new AudioContext();
-      AUDIO_CONTEXT.resume();
+      try {
+        AUDIO_CONTEXT = new AudioContext();
+        AUDIO_CONTEXT.resume();
+      } catch (e) {
+        console.log("decodeAudioData exception on creating audio context");
+      }
     }
 
     this.tryLoad();
