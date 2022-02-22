@@ -7,10 +7,12 @@ export declare class GraphicsImpl implements Graphics {
     mainCtx: CanvasRenderingContext2D;
     font: Font;
     fontSize: number;
+    offscreen: Offscreen | null;
     constructor();
     clear(): void;
     clip(x: number, y: number, width: number, height: number): void;
     createOffscreen(): Offscreen;
+    getOffscreen(): Offscreen | null;
     drawToOffscreen(screen: Offscreen | null): void;
     drawOffscreen(screen: Offscreen): void;
     drawScaledOffscreen(screen: Offscreen, x: number, y: number, width: number, height: number): void;

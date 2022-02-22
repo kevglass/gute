@@ -66,6 +66,7 @@ export class GraphicsImpl implements Graphics {
   mainCtx: CanvasRenderingContext2D;
   font: Font;
   fontSize: number = 20;
+  offscreen: Offscreen | null = null;
 
   constructor() {
     this.canvas = <HTMLCanvasElement> document.getElementById("gamecanvas");
@@ -116,12 +117,17 @@ export class GraphicsImpl implements Graphics {
     }
   }
 
+  getOffscreen(): Offscreen | null {
+    return this.offscreen;
+  }
+
   drawToOffscreen(screen: Offscreen | null): void {
     if (screen) {
       this.ctx = (screen as OffscreenImpl).ctx;
     } else {
       this.ctx = this.mainCtx;
     }
+    this.offscreen = screen;
   }
 
   drawOffscreen(screen: Offscreen): void {

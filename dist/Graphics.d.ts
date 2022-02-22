@@ -12,6 +12,7 @@ export interface Offscreen {
 }
 export interface Graphics {
     copy(): Bitmap;
+    getOffscreen(): Offscreen | null;
     clip(x: number, y: number, width: number, height: number): void;
     createOffscreen(): Offscreen;
     drawToOffscreen(screen: Offscreen | null): void;

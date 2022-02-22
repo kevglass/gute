@@ -122,4 +122,32 @@ export class TilesetImpl implements Tileset {
 
     return new Tile(image, x * this.originalTileWidth, y * this.originalTileHeight, this.originalTileWidth, this.originalTileHeight, this.scale)
   }
+
+  getBlockColorTile(tile: number, tintName: string, col: number[]): Bitmap {
+    const x:number = tile % this.scanline;
+    const y:number = Math.floor(tile / this.scanline);
+    let image: HTMLImageElement = this.tints[tintName];
+    if (!image) {
+      const canvas: HTMLCanvasElement = document.createElement("canvas");
+      canvas.width = this.image!.width;
+      canvas.height = this.image!.height;
+      const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+      if (ctx) {
+        ctx.drawImage(this.image!, 0 , 0);
+        const id: ImageData = ctx.getImageData(0,0,canvas.width,canvas.height);
+        for (let i=0;i<id.data.length;i+=4) {
+          id.data[i] = Math.floor(255 * col[0]);
+          id.data[i + 1] = Math.floor(255 * col[1]);
+          id.data[i + 2] = Math.floor(255 * col[2]);
+          id.data[i + 3] = Math.floor(id.data[i+3] * col[3]);
+        }
+        ctx.putImageData(id, 0, 0);
+      }
+      image = new Image();
+      image.src = canvas.toDataURL();
+      this.tints[tintName] = image;
+    }
+
+    return new Tile(image, x * this.originalTileWidth, y * this.originalTileHeight, this.originalTileWidth, this.originalTileHeight, this.scale)
+  }
 }

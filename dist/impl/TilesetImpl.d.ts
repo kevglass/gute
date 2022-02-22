@@ -21,4 +21,5 @@ export declare class TilesetImpl implements Tileset {
     initOnFirstClick(): void;
     getTile(tile: number): Bitmap;
     getTintedTile(tile: number, tintName: string, tint: number[]): Bitmap;
+    getBlockColorTile(tile: number, tintName: string, col: number[]): Bitmap;
 }

@@ -6,6 +6,8 @@ export interface Tileset extends Resource {
   
   getTile(tile: number): Bitmap;
 
+  getBlockColorTile(tile: number, tintName: string, col: number[]): Bitmap;
+  
   getTintedTile(tile: number, tintName: string, tint: number[]): Bitmap;
 
   getTileCount(): number;
