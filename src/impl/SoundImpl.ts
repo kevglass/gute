@@ -100,13 +100,16 @@ export class SoundImpl implements Sound {
   private tryLoad(): void {
     if (AUDIO_CONTEXT && this.data) {
       try {
-        AUDIO_CONTEXT.decodeAudioData(this.data, (buffer: AudioBuffer) => {
+        const promise = AUDIO_CONTEXT.decodeAudioData(this.data, (buffer: AudioBuffer) => {
           this.buffer = buffer;
           if (SoundImpl.CURRENT_MUSIC === this) {
             SoundImpl.CURRENT_MUSIC = null;
             this.play(this.volume);
           }
         }, (e) => { console.log("Failed to load: "+ this.url) });
+        if (promise) {
+          promise.then(() => {}).catch((e) => {});
+        }
       } catch (e) {
         console.log("decodeAudioData exception on loading " + this.url);
       }
