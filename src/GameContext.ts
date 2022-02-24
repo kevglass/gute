@@ -12,6 +12,8 @@ export interface GameContext {
 
   allResourcesLoaded(): boolean;
 
+  loadZip(url: string): Promise<void>;
+
   loadLDTK(name: string, locator: (name: string) => string): Promise<MapWorld>;
   
   loadMusic(url: string): Sound;

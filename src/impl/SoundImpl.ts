@@ -77,24 +77,32 @@ export class SoundImpl implements Sound {
   url: string;
   looped: boolean = false;
 
-  constructor(url: string, music: boolean) {
+  constructor(url: string, music: boolean, arrayBuffer: Promise<ArrayBuffer> | undefined) {
     this.url = url;
     this.music = music;
     
-    var req = new XMLHttpRequest();
-    req.open("GET", url, true);
-    req.responseType = "arraybuffer";
-    
-    req.onload = (event) => {
-      var arrayBuffer = req.response; 
-      if (arrayBuffer) {
+    if (arrayBuffer) {
+      arrayBuffer.then((arrayBuffer: ArrayBuffer) => {
         this.data = arrayBuffer;
         this.loaded = true;
         this.tryLoad();
-      }
-    };
-    
-    req.send();
+      });
+    } else {
+      var req = new XMLHttpRequest();
+      req.open("GET", url, true);
+      req.responseType = "arraybuffer";
+      
+      req.onload = (event) => {
+        var arrayBuffer = req.response; 
+        if (arrayBuffer) {
+          this.data = arrayBuffer;
+          this.loaded = true;
+          this.tryLoad();
+        }
+      };
+      
+      req.send();
+    }
   }
 
   private tryLoad(): void {

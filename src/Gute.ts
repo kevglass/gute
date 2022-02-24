@@ -13,6 +13,7 @@ import { Sound } from "./Sound";
 import { LDTKWorld } from "./tilemaps/LDTKWorld";
 import { MapWorld } from "./tilemaps/MapWorld";
 import { Tileset } from "./Tileset";
+import * as JSZip from "jszip";
 
 let GAME_LOOP: GameLoop;
 let SOUND_ON: boolean = true;
@@ -56,6 +57,7 @@ class GameLoop implements GameContext {
   lastFrame: number = 0;
   graphics!: GraphicsImpl;
   inited: boolean = false;
+  mainZip: any | undefined = undefined;
 
   getGraphics(): Graphics {
     return this.graphics;
@@ -269,34 +271,73 @@ class GameLoop implements GameContext {
     });
   }
 
+  loadZip(url: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      fetch(url)      
+      .then(function (response) {                 
+          if (response.status === 200 || response.status === 0) {
+              return Promise.resolve(response.blob());
+          } else {
+              return Promise.reject(new Error(response.statusText));
+          }
+      })
+      .then(JSZip.loadAsync)
+      .then((zip) => {
+        this.mainZip = zip;
+        resolve();
+      }).catch(() => {
+        reject();
+      })
+    });
+  }
+
   loadMusic(url: string): Sound {
-    const sound: Sound = new SoundImpl(url, true);
+    let bufferPromise: undefined | Promise<ArrayBuffer>  = undefined;
+    if (url.indexOf("_/") >= 0) {
+      bufferPromise = this.mainZip.file(url.substring(url.indexOf("_/"))).async("arraybuffer");
+    } 
+
+    const sound: Sound = new SoundImpl(url, true, bufferPromise);
     this.resources.push(sound);
 
     return sound;
   }
 
   loadSound(url: string): Sound {
-    const sound: Sound = new SoundImpl(url, false);
+    let bufferPromise: undefined | Promise<ArrayBuffer>  = undefined;
+    if (url.indexOf("_/") >= 0) {
+      bufferPromise = this.mainZip.file(url.substring(url.indexOf("_/"))).async("arraybuffer");
+    } 
+
+    const sound: Sound = new SoundImpl(url, false, bufferPromise);
     this.resources.push(sound);
 
     return sound;
   }
 
+  private toPotentialZipLoad(url: string): Promise<string> | undefined {
+    if (url.indexOf("_/") >= 0) {
+      return this.mainZip.file(url.substring(url.indexOf("_/"))).async("base64");
+    } 
+
+    return undefined;
+  }
+
   loadBitmap(url: string): Bitmap {
-    const bitmap: Bitmap = new BitmapImpl(url);
+    const bitmap: Bitmap = new BitmapImpl(url, this.toPotentialZipLoad(url));
     this.resources.push(bitmap);
 
     return bitmap;
   }
 
   loadScaledTileset(url: string, tileWidth: number, tileHeight: number, scale: number): Tileset {
-    const tileset: Tileset = new TilesetImpl(url, tileWidth, tileHeight, scale);
+    const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoad(url), tileWidth, tileHeight, scale);
     this.resources.push(tileset);
     return tileset;
   }
+
   loadTileset(url: string, tileWidth: number, tileHeight: number): Tileset {
-    const tileset: Tileset = new TilesetImpl(url, tileWidth, tileHeight, 1);
+    const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoad(url), tileWidth, tileHeight, 1);
     this.resources.push(tileset);
     return tileset;
   }
@@ -314,20 +355,27 @@ class GameLoop implements GameContext {
   
   loadJson(url: string): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      var req = new XMLHttpRequest();
-      req.open("GET", url, true);
-      
-      req.onload = (event) => {
-        if (req.responseText) {
-          const result: string = req.responseText.replace(/\\"|"(?:\\"|[^"])*"|(\/\/.*|\/\*[\s\S]*?\*\/)/g, (m, g) => g ? "" : m);
+      // its an asset reference
+      if (url.indexOf("_/") >= 0) {
+        return this.mainZip.file(url.substring(url.indexOf("_/"))).async("string").then((result: string) => {
           resolve(JSON.parse(result));
-        }
-      };
-      req.onerror = (e) => {
-        reject(e);
-      };
-      
-      req.send();
+        })
+      } else {
+        var req = new XMLHttpRequest();
+        req.open("GET", url, true);
+        
+        req.onload = (event) => {
+          if (req.responseText) {
+            const result: string = req.responseText.replace(/\\"|"(?:\\"|[^"])*"|(\/\/.*|\/\*[\s\S]*?\*\/)/g, (m, g) => g ? "" : m);
+            resolve(JSON.parse(result));
+          }
+        };
+        req.onerror = (e) => {
+          reject(e);
+        };
+        
+        req.send();
+      }
     })
   }
 

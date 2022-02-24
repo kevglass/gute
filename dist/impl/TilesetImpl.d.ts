@@ -13,7 +13,7 @@ export declare class TilesetImpl implements Tileset {
     tints: Record<string, HTMLImageElement>;
     scale: number;
     onLoaded: () => void;
-    constructor(url: string, tileWidth: number, tileHeight: number, scale?: number);
+    constructor(url: string, dataUrlLoader: Promise<string> | undefined, tileWidth: number, tileHeight: number, scale?: number);
     getTilesAcross(): number;
     getTileWidth(): number;
     getTileHeight(): number;

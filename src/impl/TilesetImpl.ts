@@ -46,7 +46,7 @@ export class TilesetImpl implements Tileset {
   scale: number;
   onLoaded: () => void = () => {};
   
-  constructor(url: string, tileWidth: number, tileHeight: number, scale: number = 1) {
+  constructor(url: string, dataUrlLoader: Promise<string> | undefined, tileWidth: number, tileHeight: number, scale: number = 1) {
     this.tileWidth = this.originalTileWidth = tileWidth;
     this.tileHeight = this.originalTileHeight = tileHeight;
     this.scale = scale;
@@ -68,7 +68,14 @@ export class TilesetImpl implements Tileset {
       this.onLoaded();
       this.loaded = true;
     };
-    this.image.src = url;
+
+    if (dataUrlLoader) {
+      dataUrlLoader.then((base64: string) => {
+        this.image!.src = "data:"+url.substring(url.length-3)+";base64,"+base64;
+      })
+    } else {
+      this.image.src = url;
+    }
   }
 
   getTilesAcross(): number {

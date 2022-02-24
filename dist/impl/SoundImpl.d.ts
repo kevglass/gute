@@ -17,7 +17,7 @@ export declare class SoundImpl implements Sound {
     gain: GainNode;
     url: string;
     looped: boolean;
-    constructor(url: string, music: boolean);
+    constructor(url: string, music: boolean, arrayBuffer: Promise<ArrayBuffer> | undefined);
     private tryLoad;
     initOnFirstClick(): void;
     play(volume: number, loop?: boolean): void;
