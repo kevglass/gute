@@ -82,9 +82,9 @@ export class SoundImpl implements Sound {
     this.music = music;
     
     if (arrayBuffer) {
+      this.loaded = true;
       arrayBuffer.then((arrayBuffer: ArrayBuffer) => {
         this.data = arrayBuffer;
-        this.loaded = true;
         this.tryLoad();
       });
     } else {
