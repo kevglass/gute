@@ -26,6 +26,8 @@ export interface GameContext {
 
   loadBitmap(url: string): Bitmap;
 
+  getZipProgress(): number;
+  
   loadFont(url: string, name: string): Font;
 
   getGraphics(): Graphics;

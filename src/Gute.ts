@@ -58,6 +58,7 @@ class GameLoop implements GameContext {
   graphics!: GraphicsImpl;
   inited: boolean = false;
   mainZip: any | undefined = undefined;
+  zipPercentLoaded: number = 0;
 
   getGraphics(): Graphics {
     return this.graphics;
@@ -271,23 +272,29 @@ class GameLoop implements GameContext {
     });
   }
 
+  getZipProgress(): number {
+    return this.zipPercentLoaded;
+  }
+
   loadZip(url: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      fetch(url)      
-      .then(function (response) {                 
-          if (response.status === 200 || response.status === 0) {
-              return Promise.resolve(response.blob());
-          } else {
-              return Promise.reject(new Error(response.statusText));
-          }
-      })
-      .then(JSZip.loadAsync)
-      .then((zip) => {
-        this.mainZip = zip;
-        resolve();
-      }).catch(() => {
-        reject();
-      })
+      var req = new XMLHttpRequest();
+      req.open("GET", url, true);
+      req.responseType = "arraybuffer";
+      req.onprogress = (e) => {
+        this.zipPercentLoaded = (e.loaded / e.total);
+      };
+      req.onload = (event) => {
+        JSZip.loadAsync(req.response).then((zip) => {
+          this.mainZip = zip;
+          resolve();
+        });
+      };
+      req.onerror = (e) => {
+        reject(e);
+      };
+      
+      req.send();
     });
   }
 

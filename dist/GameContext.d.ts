@@ -15,6 +15,7 @@ export interface GameContext {
     loadScaledTileset(url: string, tileWidth: number, tileHeight: number, scale: number): Tileset;
     loadTileset(url: string, tileWidth: number, tileHeight: number): Tileset;
     loadBitmap(url: string): Bitmap;
+    getZipProgress(): number;
     loadFont(url: string, name: string): Font;
     getGraphics(): Graphics;
     loadJson(url: string): Promise<any>;
