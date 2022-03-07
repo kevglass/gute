@@ -1,5 +1,6 @@
 import { Bitmap } from "..";
 import { Tileset } from "../Tileset";
+import { Palette } from "./Palette";
 
 class Tile implements Bitmap {
   image: HTMLImageElement;
@@ -46,7 +47,7 @@ export class TilesetImpl implements Tileset {
   scale: number;
   onLoaded: () => void = () => {};
   
-  constructor(url: string, dataUrlLoader: Promise<string> | undefined, tileWidth: number, tileHeight: number, scale: number = 1) {
+  constructor(url: string, dataUrlLoader: Promise<string> | undefined, tileWidth: number, tileHeight: number, scale: number = 1, pal: Palette | undefined = undefined) {
     this.tileWidth = this.originalTileWidth = tileWidth;
     this.tileHeight = this.originalTileHeight = tileHeight;
     this.scale = scale;
@@ -56,17 +57,35 @@ export class TilesetImpl implements Tileset {
       const depth: number = Math.floor(this.image!.height / this.tileHeight);
       this.tileCount = depth * this.scanline;
 
-      // cut the image into pieces
-      for (let y = 0; y < depth; y++) {
-        for (let x = 0; x < this.scanline; x++) {
-          this.bitmaps.push(new Tile(this.image!, x * this.tileWidth, y * this.tileHeight, this.tileWidth, this.tileHeight, scale));
-        }
-      }
+      if (pal) {
+        pal.adjustImage(this.image!).then((image) => {
+          this.image = image;
 
-      this.tileWidth *= scale;
-      this.tileHeight *= scale;
-      this.onLoaded();
-      this.loaded = true;
+          // cut the image into pieces
+          for (let y = 0; y < depth; y++) {
+            for (let x = 0; x < this.scanline; x++) {
+              this.bitmaps.push(new Tile(this.image!, x * this.tileWidth, y * this.tileHeight, this.tileWidth, this.tileHeight, scale));
+            }
+          }
+          this.tileWidth *= scale;
+          this.tileHeight *= scale;
+  
+          this.onLoaded();
+          this.loaded = true;
+        })
+      } else {
+        // cut the image into pieces
+        for (let y = 0; y < depth; y++) {
+          for (let x = 0; x < this.scanline; x++) {
+            this.bitmaps.push(new Tile(this.image!, x * this.tileWidth, y * this.tileHeight, this.tileWidth, this.tileHeight, scale));
+          }
+        }
+        this.tileWidth *= scale;
+        this.tileHeight *= scale;
+
+        this.onLoaded();
+        this.loaded = true;
+      }
     };
 
     if (dataUrlLoader) {

@@ -12,6 +12,8 @@ export interface GameContext {
 
   allResourcesLoaded(): boolean;
 
+  applyPalette(hexFile: string): Promise<void>;
+
   loadZip(url: string): Promise<void>;
 
   loadLDTK(name: string, locator: (name: string) => string): Promise<MapWorld>;

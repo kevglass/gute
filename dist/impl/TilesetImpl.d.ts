@@ -1,5 +1,6 @@
 import { Bitmap } from "..";
 import { Tileset } from "../Tileset";
+import { Palette } from "./Palette";
 export declare class TilesetImpl implements Tileset {
     loaded: boolean;
     tileWidth: number;
@@ -13,7 +14,7 @@ export declare class TilesetImpl implements Tileset {
     tints: Record<string, HTMLImageElement>;
     scale: number;
     onLoaded: () => void;
-    constructor(url: string, dataUrlLoader: Promise<string> | undefined, tileWidth: number, tileHeight: number, scale?: number);
+    constructor(url: string, dataUrlLoader: Promise<string> | undefined, tileWidth: number, tileHeight: number, scale?: number, pal?: Palette | undefined);
     getTilesAcross(): number;
     getTileWidth(): number;
     getTileHeight(): number;

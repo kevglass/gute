@@ -1,4 +1,5 @@
 import { Bitmap } from "../Bitmap";
+import { Palette } from "./Palette";
 
 export class BitmapImpl implements Bitmap {
   width: number = 0;
@@ -6,12 +7,20 @@ export class BitmapImpl implements Bitmap {
   loaded: boolean = false;
   image: HTMLImageElement;
 
-  constructor(url: string, dataUrlLoader: Promise<string> | undefined) {
+  constructor(url: string, dataUrlLoader: Promise<string> | undefined, pal: Palette | undefined = undefined) {
     this.image = new Image();
     this.image.onload = () => {
       this.width = this.image.width;
       this.height = this.image.height;
-      this.loaded = true;
+
+      if (pal) {
+        pal.adjustImage(this.image).then((image: HTMLImageElement) => { 
+          this.image = image;
+          this.loaded = true;
+        });
+      } else {
+        this.loaded = true;
+      }
     };
 
     if (dataUrlLoader) {

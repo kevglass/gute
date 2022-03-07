@@ -221,7 +221,7 @@ export class GraphicsImpl implements Graphics {
   }
 
   setComposite(name: string): void {
-    this.ctx.globalCompositeOperation = name;
+    (<any> this.ctx.globalCompositeOperation) = name;
   }
 
   fillRect(x: number, y: number, width: number, height: number, col: string): void {

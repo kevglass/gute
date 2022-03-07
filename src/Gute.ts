@@ -14,6 +14,7 @@ import { LDTKWorld } from "./tilemaps/LDTKWorld";
 import { MapWorld } from "./tilemaps/MapWorld";
 import { Tileset } from "./Tileset";
 import * as JSZip from "jszip";
+import { Palette } from "./impl/Palette";
 
 let GAME_LOOP: GameLoop;
 let SOUND_ON: boolean = true;
@@ -59,6 +60,7 @@ class GameLoop implements GameContext {
   inited: boolean = false;
   mainZip: any | undefined = undefined;
   zipPercentLoaded: number = 0;
+  palette: Palette | undefined = undefined;
 
   getGraphics(): Graphics {
     return this.graphics;
@@ -94,6 +96,15 @@ class GameLoop implements GameContext {
         resource.initOnFirstClick();
       }
     }
+  }
+
+  public applyPalette(hexFile: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => { 
+      this.loadText(hexFile).then((text: string) => {
+        this.palette = new Palette(text);
+        resolve();
+      });
+    });
   }
 
   private mouseMoveHandler(x: number, y: number, id: number = 0): void {
@@ -331,20 +342,20 @@ class GameLoop implements GameContext {
   }
 
   loadBitmap(url: string): Bitmap {
-    const bitmap: Bitmap = new BitmapImpl(url, this.toPotentialZipLoad(url));
+    const bitmap: Bitmap = new BitmapImpl(url, this.toPotentialZipLoad(url), this.palette);
     this.resources.push(bitmap);
 
     return bitmap;
   }
 
   loadScaledTileset(url: string, tileWidth: number, tileHeight: number, scale: number): Tileset {
-    const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoad(url), tileWidth, tileHeight, scale);
+    const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoad(url), tileWidth, tileHeight, scale, this.palette);
     this.resources.push(tileset);
     return tileset;
   }
 
   loadTileset(url: string, tileWidth: number, tileHeight: number): Tileset {
-    const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoad(url), tileWidth, tileHeight, 1);
+    const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoad(url), tileWidth, tileHeight, 1, this.palette);
     this.resources.push(tileset);
     return tileset;
   }
@@ -360,6 +371,32 @@ class GameLoop implements GameContext {
     return world.load(name, file => this.loadJson(locator(file)))
   }
   
+  private loadText(url: string): Promise<string> {
+    return new Promise<any>((resolve, reject) => {
+      // its an asset reference
+      if (url.indexOf("_/") >= 0) {
+        return this.mainZip.file(url.substring(url.indexOf("_/"))).async("string").then((result: string) => {
+          resolve(result);
+        })
+      } else {
+        var req = new XMLHttpRequest();
+        req.open("GET", url, true);
+        
+        req.onload = (event) => {
+          if (req.responseText) {
+            const result: string = req.responseText.replace(/\\"|"(?:\\"|[^"])*"|(\/\/.*|\/\*[\s\S]*?\*\/)/g, (m, g) => g ? "" : m);
+            resolve(result);
+          }
+        };
+        req.onerror = (e) => {
+          reject(e);
+        };
+        
+        req.send();
+      }
+    })
+  }
+
   loadJson(url: string): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       // its an asset reference
