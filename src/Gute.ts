@@ -420,6 +420,7 @@ class GameLoop implements GameContext {
   }
 
   loadJson(url: string): Promise<any> {
+
     return new Promise<any>((resolve, reject) => {
       // its an asset reference
       if (url.indexOf("_/") >= 0) {
