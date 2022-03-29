@@ -98,13 +98,14 @@ export class SoundImpl implements Sound {
         var arrayBuffer = req.response; 
         if (arrayBuffer) {
           this.data = arrayBuffer;
-          this.loaded = true;
           this.tryLoad();
         }
       };
       
       req.send();
     }
+    
+    this.loaded = true;
   }
 
   private tryLoad(): void {
