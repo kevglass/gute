@@ -61,6 +61,8 @@ class GameLoop implements GameContext {
   mainZip: any | undefined = undefined;
   zipPercentLoaded: number = 0;
   palette: Palette | undefined = undefined;
+  lastWaiting: string | undefined = "";
+  wait: number = 0;
 
   getGraphics(): Graphics {
     return this.graphics;
@@ -77,8 +79,20 @@ class GameLoop implements GameContext {
   allResourcesLoaded(): boolean {
     for (const resource of this.resources) {
       if (!resource.loaded) {
+        if (this.lastWaiting !== resource.name) {
+          if (this.lastWaiting) {
+            console.log("[GUTE] Was waiting on: " + this.lastWaiting + " for "+this.wait+" frames");
+          }
+          this.lastWaiting = resource.name;
+          this.wait = 0;
+        }
+        this.wait++;
         return false;
       }
+    }
+    if (this.lastWaiting) {
+      console.log("[GUTE] Was waiting on last one: " + this.lastWaiting + " for "+this.wait+" frames");
+      this.lastWaiting = undefined;
     }
 
     return true;
@@ -333,6 +347,14 @@ class GameLoop implements GameContext {
     return sound;
   }
 
+  private toPotentialZipLoadBlob(url: string): Promise<Blob> | undefined {
+    if (url.indexOf("_/") >= 0) {
+      return this.mainZip.file(url.substring(url.indexOf("_/"))).async("blob");
+    } 
+
+    return undefined;
+  }
+
   private toPotentialZipLoad(url: string): Promise<string> | undefined {
     if (url.indexOf("_/") >= 0) {
       return this.mainZip.file(url.substring(url.indexOf("_/"))).async("base64");
@@ -349,13 +371,13 @@ class GameLoop implements GameContext {
   }
 
   loadScaledTileset(url: string, tileWidth: number, tileHeight: number, scale: number): Tileset {
-    const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoad(url), tileWidth, tileHeight, scale, this.palette);
+    const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoadBlob(url), tileWidth, tileHeight, scale, this.palette);
     this.resources.push(tileset);
     return tileset;
   }
 
   loadTileset(url: string, tileWidth: number, tileHeight: number): Tileset {
-    const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoad(url), tileWidth, tileHeight, 1, this.palette);
+    const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoadBlob(url), tileWidth, tileHeight, 1, this.palette);
     this.resources.push(tileset);
     return tileset;
   }

@@ -76,8 +76,10 @@ export class SoundImpl implements Sound {
   gain!: GainNode;
   url: string;
   looped: boolean = false;
+  name: string;
 
   constructor(url: string, music: boolean, arrayBuffer: Promise<ArrayBuffer> | undefined) {
+    this.name = url;
     this.url = url;
     this.music = music;
     

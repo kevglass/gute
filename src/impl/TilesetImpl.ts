@@ -10,6 +10,7 @@ class Tile implements Bitmap {
   x: number;
   y: number;
   scale: number;
+  name: string = "tile";
 
   constructor(canvas: HTMLImageElement, x: number, y: number, width: number, height: number, scale: number) {
     this.image = canvas;
@@ -46,12 +47,15 @@ export class TilesetImpl implements Tileset {
   tints: Record<string, HTMLImageElement> = {};
   scale: number;
   onLoaded: () => void = () => {};
-  
-  constructor(url: string, dataUrlLoader: Promise<string> | undefined, tileWidth: number, tileHeight: number, scale: number = 1, pal: Palette | undefined = undefined) {
+  name: string;
+
+  constructor(url: string, dataUrlLoader: Promise<Blob> | undefined, tileWidth: number, tileHeight: number, scale: number = 1, pal: Palette | undefined = undefined) {
     this.tileWidth = this.originalTileWidth = tileWidth;
     this.tileHeight = this.originalTileHeight = tileHeight;
     this.scale = scale;
+    this.name = url;
     this.image = new Image();
+
     this.image.onload = () => {
       this.scanline = Math.floor(this.image!.width / this.tileWidth);
       const depth: number = Math.floor(this.image!.height / this.tileHeight);
@@ -89,8 +93,9 @@ export class TilesetImpl implements Tileset {
     };
 
     if (dataUrlLoader) {
-      dataUrlLoader.then((base64: string) => {
-        this.image!.src = "data:"+url.substring(url.length-3)+";base64,"+base64;
+      dataUrlLoader.then((blob: Blob) => {
+        var urlCreator = window.URL || window.webkitURL;
+        this.image!.src = urlCreator.createObjectURL(blob);
       })
     } else {
       this.image.src = url;

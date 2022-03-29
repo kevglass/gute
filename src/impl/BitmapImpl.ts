@@ -6,8 +6,10 @@ export class BitmapImpl implements Bitmap {
   height: number = 0;
   loaded: boolean = false;
   image: HTMLImageElement;
+  name: string;
 
   constructor(url: string, dataUrlLoader: Promise<string> | undefined, pal: Palette | undefined = undefined) {
+    this.name = url;
     this.image = new Image();
     this.image.onload = () => {
       this.width = this.image.width;

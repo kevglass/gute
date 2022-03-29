@@ -5,10 +5,14 @@ import { MapLevel } from "./MapLevel";
 import { MapWorld } from "./MapWorld";
 
 export class LDTKWorld extends MapWorld implements Resource {
+  name: string = "world";
+
   initOnFirstClick(): void {
   }
 
   load(file: string, loader: (file: string) => Promise<any>) : Promise<MapWorld> {
+    this.name = file;
+
     return loader(file).then(json => {
       this.gridSize = json.defaultGridSize;
       const tileset: any = json.defs.tilesets[0];

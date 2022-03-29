@@ -36,6 +36,7 @@ class CopyBitmap implements Bitmap {
   height: number;
   canvas: HTMLCanvasElement;
   loaded: boolean;
+  name: string = "copy";
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
