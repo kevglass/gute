@@ -406,8 +406,7 @@ class GameLoop implements GameContext {
         
         req.onload = (event) => {
           if (req.responseText) {
-            const result: string = req.responseText.replace(/\\"|"(?:\\"|[^"])*"|(\/\/.*|\/\*[\s\S]*?\*\/)/g, (m, g) => g ? "" : m);
-            resolve(result);
+            resolve(req.responseText);
           }
         };
         req.onerror = (e) => {
