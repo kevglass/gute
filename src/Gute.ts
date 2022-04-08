@@ -433,7 +433,7 @@ class GameLoop implements GameContext {
         
         req.onload = (event) => {
           if (req.responseText) {
-            const result: string = req.responseText.replace(/\\"|"(?:\\"|[^"])*"|(\/\/.*|\/\*[\s\S]*?\*\/)/g, (m, g) => g ? "" : m);
+            const result: string = req.responseText;
             resolve(JSON.parse(result));
           }
         };
