@@ -6,7 +6,7 @@ let AudioContext: any;
 if (typeof window !== "undefined") {
   AudioContext = window.AudioContext || (<any>window).webkitAudioContext;
 }
-let AUDIO_CONTEXT: AudioContext;
+export let AUDIO_CONTEXT: AudioContext;
 
 function handleVisibilityChange() {
   if (isMusicOn()) {

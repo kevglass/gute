@@ -1,4 +1,5 @@
 import { Sound } from "../Sound";
+export declare let AUDIO_CONTEXT: AudioContext;
 export declare class SoundImpl implements Sound {
     static CURRENT_MUSIC: SoundImpl | null;
     static CURRENT_LOOPS: SoundImpl[];
