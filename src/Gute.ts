@@ -390,7 +390,7 @@ class GameLoop implements GameContext {
     const world: LDTKWorld = new LDTKWorld();
     this.resources.push(world);
 
-    return world.load(name, file => this.loadJson(locator(file)))
+    return world.load(name, file => this.loadJson(locator(file), true))
   }
   
   private loadText(url: string): Promise<string> {
@@ -418,13 +418,14 @@ class GameLoop implements GameContext {
     })
   }
 
-  loadJson(url: string): Promise<any> {
-
+  loadJson(url: string, log: boolean = false): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       // its an asset reference
       if (url.indexOf("_/") >= 0) {
-        return this.mainZip.file(url.substring(url.indexOf("_/"))).async("string").then((result: string) => {
-          resolve(JSON.parse(result));
+        url = url.substring(url.indexOf("_/"));
+        return this.mainZip.file(url).async("string").then((result: string) => {
+          const data = JSON.parse(result);
+          resolve(data);
         })
       } else {
         var req = new XMLHttpRequest();
