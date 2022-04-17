@@ -7,19 +7,44 @@ interface SoundPoint {
     volume: number
     source: AudioScheduledSourceNode
     gain: GainNode
-    // category: string // TODO: category-based volumes
+    category: string
+}
+
+export enum SoundEasing {
+    Linear,
+    Quadratic,
+    Cubic
+}
+
+interface SoundCategory {
+    name: string
+    volume: number
+    maxDistance2: number
+    scale2: number
+    easing: SoundEasing
 }
 
 export class SoundScape {
+    private _soundVolume: number = 1;
+
     private points: SoundPoint[] = []
     private listenerX: number = 0
     private listenerY: number = 0
-    private maxDistance2: number;
-    private scale2: number;
+    private categories: Record<string, SoundCategory> = {}
 
-    constructor(maxDistance: number, scale: number) {
-        this.maxDistance2 = maxDistance * maxDistance;
-        this.scale2 = scale * scale;
+    category(name: string, volume: number, maxDistance: number, scale: number, easing: SoundEasing): SoundScape {
+        this.categories[name] = {
+            name, volume, maxDistance2: maxDistance * maxDistance, scale2: scale * scale, easing
+        }
+        return this
+    }
+    
+    get soundVolume(): number {
+        return this._soundVolume;
+    }
+
+    set soundVolume(value: number) {
+        this._soundVolume = value;
     }
 
     moveTo(x: number, y: number) {
@@ -34,8 +59,8 @@ export class SoundScape {
         }
         this.points = []
     }
-    
-    play(sound: Sound, volume: number, x?: number, y?: number) {
+
+    play(sound: Sound, volume: number, category: string, x?: number, y?: number) {
         const impl = <SoundImpl>sound
         const source = AUDIO_CONTEXT.createBufferSource();
         source.buffer = impl.buffer;
@@ -44,7 +69,7 @@ export class SoundScape {
         gain.connect(AUDIO_CONTEXT.destination);
         const point: SoundPoint = {
             x, y, volume,
-            source, gain
+            source, gain, category
         }
         gain.gain.value = this.calculateVolume(point)
         const index = this.points.push(point) - 1
@@ -62,14 +87,26 @@ export class SoundScape {
     }
 
     private calculateVolume(point: SoundPoint): number {
+        const category = this.categories[point.category]
+        if (category === undefined) {
+            return point.volume * this._soundVolume
+        }
+        
         if (point.x === undefined || point.y === undefined) {
-            return point.volume
+            return point.volume * category.volume * this._soundVolume
         }
         const dx: number = point.x - this.listenerX
         const dy: number = point.y - this.listenerY
-        const distance = (dx * dx + dy * dy) / this.scale2;
+        const distance = (dx * dx + dy * dy) / category.scale2;
         // * (los ? 1 : 0.3) TODO: callback
-        const reduction = Math.max(1 - distance / this.maxDistance2, 0);
-        return point.volume * reduction * reduction * reduction
+        const reduction = Math.max(1 - distance / category.maxDistance2, 0);
+        switch (category.easing) {
+            case SoundEasing.Linear:
+                return this._soundVolume * point.volume * category.volume * reduction
+            case SoundEasing.Quadratic:
+                return this._soundVolume * point.volume * category.volume * reduction * reduction
+            case SoundEasing.Cubic:
+                return this._soundVolume * point.volume * category.volume * reduction * reduction * reduction
+        }
     }
 }

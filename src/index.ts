@@ -17,4 +17,4 @@ export { MapWorld } from "./tilemaps/MapWorld";
 export { MapLevel } from "./tilemaps/MapLevel";
 export { MapLayer } from "./tilemaps/MapLayer";
 export { MapEntity } from "./tilemaps/MapEntity";
-export { SoundScape } from "./SoundScape"
+export { SoundScape, SoundEasing } from "./SoundScape"
