@@ -25,6 +25,8 @@ interface SoundCategory {
 }
 
 export class SoundScape {
+    private _soundVolume: number = 1;
+
     private points: SoundPoint[] = []
     private listenerX: number = 0
     private listenerY: number = 0
@@ -35,6 +37,14 @@ export class SoundScape {
             name, volume, maxDistance2: maxDistance * maxDistance, scale2: scale * scale, easing
         }
         return this
+    }
+    
+    get soundVolume(): number {
+        return this._soundVolume;
+    }
+
+    set soundVolume(value: number) {
+        this._soundVolume = value;
     }
 
     moveTo(x: number, y: number) {
@@ -79,11 +89,11 @@ export class SoundScape {
     private calculateVolume(point: SoundPoint): number {
         const category = this.categories[point.category]
         if (category === undefined) {
-            return point.volume
+            return point.volume * this._soundVolume
         }
         
         if (point.x === undefined || point.y === undefined) {
-            return point.volume * category.volume
+            return point.volume * category.volume * this._soundVolume
         }
         const dx: number = point.x - this.listenerX
         const dy: number = point.y - this.listenerY
@@ -92,11 +102,11 @@ export class SoundScape {
         const reduction = Math.max(1 - distance / category.maxDistance2, 0);
         switch (category.easing) {
             case SoundEasing.Linear:
-                return point.volume * category.volume * reduction
+                return this._soundVolume * point.volume * category.volume * reduction
             case SoundEasing.Quadratic:
-                return point.volume * category.volume * reduction * reduction
+                return this._soundVolume * point.volume * category.volume * reduction * reduction
             case SoundEasing.Cubic:
-                return point.volume * category.volume * reduction * reduction * reduction
+                return this._soundVolume * point.volume * category.volume * reduction * reduction * reduction
         }
     }
 }
