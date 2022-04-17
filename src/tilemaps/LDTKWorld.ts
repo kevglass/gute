@@ -4,6 +4,12 @@ import { MapLayer } from "./MapLayer";
 import { MapLevel } from "./MapLevel";
 import { MapWorld } from "./MapWorld";
 
+interface EntityRef {
+  referenceIID: string
+  entity: MapEntity
+  field: string
+}
+
 export class LDTKWorld extends MapWorld implements Resource {
   name: string = "world";
 
@@ -14,6 +20,9 @@ export class LDTKWorld extends MapWorld implements Resource {
     this.name = file;
 
     return loader(file).then(json => {
+      const entityRefs : EntityRef[] = []
+      const entityMap: Record<string, MapEntity> = {}
+      
       this.gridSize = json.defaultGridSize;
       const tileset: any = json.defs.tilesets[0];
       this.tilesetScanline = tileset.pxWid / tileset.tileGridSize;
@@ -48,7 +57,7 @@ export class LDTKWorld extends MapWorld implements Resource {
         }
 
         asyncLevels.push(layers.then(data => {
-          LDTKWorld.loadLayers(level, data.layerInstances);
+          LDTKWorld.loadLayers(level, data.layerInstances, entityRefs, entityMap);
           
           if (level.layers.length > 0) {
             level.width = level.layers[0].width;
@@ -64,13 +73,21 @@ export class LDTKWorld extends MapWorld implements Resource {
       }
 
       return Promise.all(asyncLevels).then(value => {
+        // resolve all entity ids now that we have all the data
+        for (const ref of entityRefs) {
+          const entity = entityMap[ref.referenceIID]
+          if (entity) {
+            ref.entity.fields[ref.field] = entity
+          }
+        }
+
         this.loaded = true;
         return this
       })
     })
   }
   
-  private static loadLayers(level: MapLevel, layerInstances: any) {
+  private static loadLayers(level: MapLevel, layerInstances: any, entityRefs: EntityRef[], entityMap: Record<string, MapEntity>) {
     for (const layerData of layerInstances) {
       if (layerData.__type === "Entities") {
         for (const entityData of layerData.entityInstances) {
@@ -80,8 +97,19 @@ export class LDTKWorld extends MapWorld implements Resource {
               entityData.width / layerData.__gridSize,
               entityData.height / layerData.__gridSize,
               entityData.__identifier)
+
+          entityMap[entityData.iid] = entity
           for (const fieldInstance of entityData.fieldInstances) {
-            entity.fields[fieldInstance.__identifier] = fieldInstance.__value;
+            if (fieldInstance.__type === "EntityRef") {
+              // save information to resolve refs to entities later when all information will be loaded
+              entityRefs.push({
+                referenceIID: fieldInstance.__value.entityIid,
+                entity: entity,
+                field: fieldInstance.__identifier
+              })
+            } else {
+              entity.fields[fieldInstance.__identifier] = fieldInstance.__value;
+            }
           }
           level.entities.push(entity);
         }
