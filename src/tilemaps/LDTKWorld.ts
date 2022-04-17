@@ -74,7 +74,6 @@ export class LDTKWorld extends MapWorld implements Resource {
 
       return Promise.all(asyncLevels).then(value => {
         // resolve all entity ids now that we have all the data
-        console.log(entityRefs)
         for (const ref of entityRefs) {
           const entity = entityMap[ref.referenceIID]
           if (entity) {
