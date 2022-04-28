@@ -5,7 +5,7 @@ import { MapLevel } from "./MapLevel";
 import { MapWorld } from "./MapWorld";
 
 interface EntityRef {
-  referenceIID: string
+  value: string|string[]
   entity: MapEntity
   field: string
 }
@@ -75,9 +75,20 @@ export class LDTKWorld extends MapWorld implements Resource {
       return Promise.all(asyncLevels).then(value => {
         // resolve all entity ids now that we have all the data
         for (const ref of entityRefs) {
-          const entity = entityMap[ref.referenceIID]
-          if (entity) {
-            ref.entity.fields[ref.field] = entity
+          if (ref.value instanceof Array) {
+            const value : MapEntity[] = []
+            for (const item of ref.value) {
+              const entity = entityMap[item]
+              if (entity) {
+                value.push(entity)
+              }
+            }
+            ref.entity.fields[ref.field] = value
+          } else {
+            const entity = entityMap[ref.value]
+            if (entity) {
+              ref.entity.fields[ref.field] = entity
+            }
           }
         }
 
@@ -100,15 +111,24 @@ export class LDTKWorld extends MapWorld implements Resource {
 
           entityMap[entityData.iid] = entity
           for (const fieldInstance of entityData.fieldInstances) {
-            if (fieldInstance.__type === "EntityRef") {
-              // save information to resolve refs to entities later when all information will be loaded
-              entityRefs.push({
-                referenceIID: fieldInstance.__value.entityIid,
-                entity: entity,
-                field: fieldInstance.__identifier
-              })
-            } else {
-              entity.fields[fieldInstance.__identifier] = fieldInstance.__value;
+            switch (fieldInstance.__type) {
+              case "EntityRef": // save information to resolve refs to entities later when all information will be loaded
+                entityRefs.push({
+                  value: fieldInstance.__value.entityIid,
+                  entity: entity,
+                  field: fieldInstance.__identifier
+                })
+                break;
+              case "Array<EntityRef>":
+                entityRefs.push({
+                  value: (fieldInstance.__value as Array<any>).map(it => it.entityIid),
+                  entity: entity,
+                  field: fieldInstance.__identifier
+                });
+                break
+              default:
+                entity.fields[fieldInstance.__identifier] = fieldInstance.__value;
+                break;
             }
           }
           level.entities.push(entity);
