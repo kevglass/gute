@@ -148,8 +148,10 @@ export class GraphicsImpl implements Graphics {
   }
 
   fitScreen(pixelScale: number): void {
-    const realWidth: number = Math.floor(window.innerWidth / pixelScale) * pixelScale;
-    const realHeight: number = Math.floor(window.innerHeight / pixelScale) * pixelScale;
+    const width: number = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    const height: number = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+    const realWidth: number = Math.floor(width / pixelScale) * pixelScale;
+    const realHeight: number = Math.floor(height / pixelScale) * pixelScale;
     const virtualWidth: number = realWidth / pixelScale;
     const virtualHeight: number = realHeight / pixelScale;
     this.canvas.style.position = "absolute";
