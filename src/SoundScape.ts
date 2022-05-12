@@ -61,6 +61,11 @@ export class SoundScape {
     }
 
     play(sound: Sound, volume: number, category: string, x?: number, y?: number) {
+        // protect against playing sounds too early or without auto working
+        if (!AUDIO_CONTEXT) {
+            return;
+        }
+
         const impl = <SoundImpl>sound
         const source = AUDIO_CONTEXT.createBufferSource();
         source.buffer = impl.buffer;
