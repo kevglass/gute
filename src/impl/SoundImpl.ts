@@ -169,7 +169,7 @@ export class SoundImpl implements Sound {
     
     if (this.music && !isMusicOn()) {
       return;
-    } else if (!isSoundOn()) {
+    } else if (!this.music && !isSoundOn()) {
       return;
     }
 
