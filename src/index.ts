@@ -1,4 +1,4 @@
-export { startGame, isMusicOn, isSoundOn, setMusicOn, setSoundOn } from "./Gute";
+export { startGame, isMusicOn, isSoundOn, setMusicOn, setSoundOn, setPrescaleTilesets } from "./Gute";
 export { GameContext } from "./GameContext";
 export { Graphics, WHITE, BLACK, GREEN, RED, BLUE, Offscreen } from "./Graphics";
 export { Game } from "./Game";

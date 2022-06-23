@@ -13,12 +13,12 @@ export class AStarPathFinder {
     private objectPool: Array<MapNode> = [];
     private openList: Array<MapNode> = [];
     private parentList: Array<MapNode> = [];
-    private open: Array<Array<number>>;
-    private closed: Array<Array<number>>;
+    private open: Array<Array<number>> = [];
+    private closed: Array<Array<number>> = [];
 
-    private map: PathFinderMap;
-    private height: number;
-    private width: number;
+    private map!: PathFinderMap;
+    private height!: number;
+    private width!: number;
 
     private pathFindCounter: number = 1;
     private mover!: PathMover;
@@ -29,6 +29,10 @@ export class AStarPathFinder {
     private max!: number;
 
     public constructor(map: PathFinderMap) {
+        this.setMap(map);
+    }
+
+    public setMap(map: PathFinderMap) {
         this.width = map.getMapWidth();
         this.height = map.getMapHeight();
         this.map = map;

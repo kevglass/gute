@@ -19,6 +19,7 @@ import { Palette } from "./impl/Palette";
 let GAME_LOOP: GameLoop;
 let SOUND_ON: boolean = true;
 let MUSIC_ON: boolean = true;
+let PRESCALE_TILESETS: boolean = false;
 
 export function isSoundOn(): boolean {
   return SOUND_ON;
@@ -26,6 +27,14 @@ export function isSoundOn(): boolean {
 
 export function isMusicOn(): boolean {
   return MUSIC_ON;
+}
+
+export function shouldPrescaleTilesets(): boolean {
+  return PRESCALE_TILESETS;
+}
+
+export function setPrescaleTilesets(on: boolean): void {
+  PRESCALE_TILESETS = on;
 }
 
 export function setSoundOn(on: boolean): void {
@@ -63,7 +72,12 @@ class GameLoop implements GameContext {
   palette: Palette | undefined = undefined;
   lastWaiting: string | undefined = "";
   wait: number = 0;
+  shiftPressed: boolean = false;
 
+  isShiftPressed(): boolean {
+    return this.shiftPressed;
+  }
+  
   getGraphics(): Graphics {
     return this.graphics;
   }
@@ -236,6 +250,8 @@ class GameLoop implements GameContext {
     });
     this.graphics.canvas.addEventListener("mousedown", (event) => {
       try {
+        this.shiftPressed = event.shiftKey;
+
         this.mouseDownHandler(event.offsetX, event.offsetY, event.button);
         event.preventDefault();
         event.stopPropagation();
@@ -245,6 +261,8 @@ class GameLoop implements GameContext {
     });
     this.graphics.canvas.addEventListener("mousemove", (event) => {
       try {
+        this.shiftPressed = event.shiftKey;
+
         this.mouseMoveHandler(event.offsetX, event.offsetY);
         event.preventDefault();
         event.stopPropagation();
@@ -254,6 +272,7 @@ class GameLoop implements GameContext {
     });
     this.graphics.canvas.addEventListener("mouseup", (event) => {
       try {
+        this.shiftPressed = event.shiftKey;
         if (event.button === 0) {
           this.mouseUpHandler(event.offsetX, event.offsetY, event.button);
           event.preventDefault();
@@ -265,9 +284,13 @@ class GameLoop implements GameContext {
     });
 
     window.addEventListener("keydown", (event) => {
+      this.shiftPressed = event.shiftKey;
+
       this.keyDownHandler(event.code);
     });
     window.addEventListener("keyup", (event) => {
+      this.shiftPressed = event.shiftKey;
+
       this.keyUpHandler(event.code);
     });
 

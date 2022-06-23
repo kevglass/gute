@@ -6,6 +6,8 @@ import { Sound } from "./Sound";
 import { Tileset } from "./Tileset";
 
 export interface GameContext {
+  isShiftPressed(): boolean;
+  
   resourcesRemaining(): number;
 
   resourcesTotal(): number;
