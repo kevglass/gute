@@ -227,7 +227,10 @@ class GameLoop implements GameContext {
     this.graphics.canvas.addEventListener("touchend", (event) => {
       try {
         if (event.target) {
-          this.mouseUpHandler(0, 0);
+          var rect = (<any> event.target).getBoundingClientRect();
+          var x = event.targetTouches[0].pageX - rect.left;
+          var y = event.targetTouches[0].pageY - rect.top;
+          this.mouseUpHandler(x, y);
           event.preventDefault();
           event.stopPropagation();
         }
@@ -273,11 +276,9 @@ class GameLoop implements GameContext {
     this.graphics.canvas.addEventListener("mouseup", (event) => {
       try {
         this.shiftPressed = event.shiftKey;
-        if (event.button === 0) {
-          this.mouseUpHandler(event.offsetX, event.offsetY, event.button);
-          event.preventDefault();
-          event.stopPropagation();
-        }
+        this.mouseUpHandler(event.offsetX, event.offsetY, event.button);
+        event.preventDefault();
+        event.stopPropagation();
       } catch (e) {
         console.log(e);
       }
