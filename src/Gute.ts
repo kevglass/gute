@@ -227,10 +227,7 @@ class GameLoop implements GameContext {
     this.graphics.canvas.addEventListener("touchend", (event) => {
       try {
         if (event.target) {
-          var rect = (<any> event.target).getBoundingClientRect();
-          var x = event.targetTouches[0].pageX - rect.left;
-          var y = event.targetTouches[0].pageY - rect.top;
-          this.mouseUpHandler(x, y);
+          this.mouseUpHandler(0, 0);
           event.preventDefault();
           event.stopPropagation();
         }
