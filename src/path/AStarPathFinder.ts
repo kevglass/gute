@@ -37,20 +37,36 @@ export class AStarPathFinder {
         this.height = map.getMapHeight();
         this.map = map;
 
-        this.open = new Array<Array<number>>();
-        this.closed = new Array<Array<number>>();
+        if (!this.open) {
+            this.open = new Array<Array<number>>();
+        }
+        if (!this.closed) {
+            this.closed = new Array<Array<number>>();
+        }
 
         for (var i = 0; i < this.width * this.height; i++) {
-            var o = new Array<number>();
-            var c = new Array<number>();
+            let o = this.open[i] 
+            let c = this.closed[i];
 
-            for (var j = 0; j < 5; j++) {
-                o.push(0);
-                c.push(0);
+            if (!o) {
+                this.open[i] = o = new Array<number>();
+                this.open.push(o);
+                for (var j = 0; j < 5; j++) {
+                    o.push(0);
+                }
+            }
+            if (!c) {
+                this.closed[i] = c = new Array<number>();
+                this.closed.push(c);
+                for (var j = 0; j < 5; j++) {
+                    c.push(0);
+                }
             }
 
-            this.open.push(o);
-            this.closed.push(c);
+            for (var j = 0; j < 5; j++) {
+                o[j] = 0;
+                c[j] = 0;
+            }
         }
     }
 
