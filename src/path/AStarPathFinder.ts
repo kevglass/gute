@@ -50,14 +50,12 @@ export class AStarPathFinder {
 
             if (!o) {
                 this.open[i] = o = new Array<number>();
-                this.open.push(o);
                 for (var j = 0; j < 5; j++) {
                     o.push(0);
                 }
             }
             if (!c) {
                 this.closed[i] = c = new Array<number>();
-                this.closed.push(c);
                 for (var j = 0; j < 5; j++) {
                     c.push(0);
                 }
