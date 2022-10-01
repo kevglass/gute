@@ -7,11 +7,12 @@ export declare class TilesetImpl implements Tileset {
     tileHeight: number;
     originalTileWidth: number;
     originalTileHeight: number;
-    image: HTMLImageElement | null;
+    image: any | null;
     bitmaps: Bitmap[];
     scanline: number;
     tileCount: number;
     tints: Record<string, HTMLImageElement>;
+    tintTiles: Record<string, Bitmap[]>;
     scale: number;
     onLoaded: () => void;
     name: string;

@@ -23,6 +23,7 @@ export declare class AStarPathFinder {
     private cy;
     private max;
     constructor(map: PathFinderMap);
+    setMap(map: PathFinderMap): void;
     clear(): void;
     private generatePath;
     private blocked;

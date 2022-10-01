@@ -145,10 +145,10 @@ export class AStarPathFinder {
             }
         }
 
-        if (this.tx.length === 0)
-            return null // zero size
+        if (this.tx.length === 0) {
+            return null;
+        }
 
-        // console.log(`Destinations: (${tx},${ty})x(${width},${height}) => [${this.tx}] x [${this.ty}]`)
         this.clear();
 
         this.addLocation(null, Math.floor(mover.getTileMapX()), Math.floor(mover.getTileMapY()));
@@ -218,10 +218,6 @@ export class AStarPathFinder {
                 return;
             }
         }
-        if (!this.map.locationDiscovered(x, y)) {
-            this.closed[x + (y * this.width)][dir] = this.pathFindCounter;
-            return;
-        }
         if (this.blocked(sx, sy, x, y)) {
             this.closed[x + (y * this.width)][dir] = this.pathFindCounter;
             return;
@@ -233,7 +229,7 @@ export class AStarPathFinder {
         const dx: number = Math.abs(this.cx - x);
         const dy: number = Math.abs(this.cy - y);
 
-        const node: MapNode = this.createMapNode(x, y, parent, (dx * dx) + (dy * dy));
+        const node: MapNode = this.createMapNode(x, y, parent, dx + dy);
         const index = AStarPathFinder.binarySearch(this.openList, node.h)
         this.openList.splice(index, 0, node);
     }
@@ -263,12 +259,12 @@ export class AStarPathFinder {
         node.x = x;
         node.y = y;
         node.parent = parent;
-        node.h = h;
         if (parent != null) {
             node.depth = parent.depth + 1;
         } else {
             node.depth = 0;
         }
+        node.h = h + node.depth;
         return node;
     }
 
