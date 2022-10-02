@@ -73,6 +73,16 @@ class GameLoop implements GameContext {
   lastWaiting: string | undefined = "";
   wait: number = 0;
   shiftPressed: boolean = false;
+  commandPressed: boolean = false;
+  controlPressed: boolean = false;
+
+  isCommandPressed(): boolean {
+    return this.commandPressed;
+  }
+
+  isControlPressed(): boolean {
+    return this.controlPressed;
+  }
 
   isShiftPressed(): boolean {
     return this.shiftPressed;
@@ -251,6 +261,8 @@ class GameLoop implements GameContext {
     this.graphics.canvas.addEventListener("mousedown", (event) => {
       try {
         this.shiftPressed = event.shiftKey;
+        this.commandPressed = event.metaKey;
+        this.controlPressed = event.ctrlKey;
 
         this.mouseDownHandler(event.offsetX, event.offsetY, event.button);
         event.preventDefault();
@@ -262,6 +274,8 @@ class GameLoop implements GameContext {
     this.graphics.canvas.addEventListener("mousemove", (event) => {
       try {
         this.shiftPressed = event.shiftKey;
+        this.commandPressed = event.metaKey;
+        this.controlPressed = event.ctrlKey;
 
         this.mouseMoveHandler(event.offsetX, event.offsetY);
         event.preventDefault();
@@ -273,6 +287,9 @@ class GameLoop implements GameContext {
     this.graphics.canvas.addEventListener("mouseup", (event) => {
       try {
         this.shiftPressed = event.shiftKey;
+        this.commandPressed = event.metaKey;
+        this.controlPressed = event.ctrlKey;
+
         this.mouseUpHandler(event.offsetX, event.offsetY, event.button);
         event.preventDefault();
         event.stopPropagation();
@@ -283,11 +300,15 @@ class GameLoop implements GameContext {
 
     window.addEventListener("keydown", (event) => {
       this.shiftPressed = event.shiftKey;
+        this.commandPressed = event.metaKey;
+        this.controlPressed = event.ctrlKey;
 
       this.keyDownHandler(event.code);
     });
     window.addEventListener("keyup", (event) => {
       this.shiftPressed = event.shiftKey;
+      this.commandPressed = event.metaKey;
+      this.controlPressed = event.ctrlKey;
 
       this.keyUpHandler(event.code);
     });

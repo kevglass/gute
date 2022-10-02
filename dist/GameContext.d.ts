@@ -5,6 +5,9 @@ import { MapWorld } from "./tilemaps/MapWorld";
 import { Sound } from "./Sound";
 import { Tileset } from "./Tileset";
 export interface GameContext {
+    isShiftPressed(): boolean;
+    isCommandPressed(): boolean;
+    isControlPressed(): boolean;
     resourcesRemaining(): number;
     resourcesTotal(): number;
     allResourcesLoaded(): boolean;
