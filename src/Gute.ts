@@ -75,6 +75,7 @@ class GameLoop implements GameContext {
   shiftPressed: boolean = false;
   commandPressed: boolean = false;
   controlPressed: boolean = false;
+  lastTouch?: TouchEvent;
 
   isCommandPressed(): boolean {
     return this.commandPressed;
@@ -212,6 +213,7 @@ class GameLoop implements GameContext {
           var rect = (<any> event.target).getBoundingClientRect();
           var x = event.targetTouches[0].pageX - rect.left;
           var y = event.targetTouches[0].pageY - rect.top;
+          this.lastTouch = event;
           this.mouseDownHandler(x, y);
           event.preventDefault();
           event.stopPropagation();
@@ -226,6 +228,7 @@ class GameLoop implements GameContext {
           var rect = (<any> event.target).getBoundingClientRect();
           var x = event.targetTouches[0].pageX - rect.left;
           var y = event.targetTouches[0].pageY - rect.top;
+          this.lastTouch = event;
           this.mouseMoveHandler(x, y);
           event.preventDefault();
           event.stopPropagation();
@@ -237,7 +240,14 @@ class GameLoop implements GameContext {
     this.graphics.canvas.addEventListener("touchend", (event) => {
       try {
         if (event.target) {
-          this.mouseUpHandler(0, 0);
+          var rect = (<any> event.target).getBoundingClientRect();
+          if (this.lastTouch) {
+            var x = this.lastTouch.targetTouches[0].pageX - rect.left;
+            var y = this.lastTouch.targetTouches[0].pageY - rect.top;
+            this.mouseUpHandler(x, y);
+          } else {
+            this.mouseUpHandler(0,0);
+          }
           event.preventDefault();
           event.stopPropagation();
         }
