@@ -227,6 +227,21 @@ export class GraphicsImpl implements Graphics {
     (<any> this.ctx.globalCompositeOperation) = name;
   }
 
+  drawCircle(x: number, y: number, radius: number, col: string, width: number): void {
+    this.ctx.strokeStyle = col;
+    this.ctx.lineWidth = width;
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, radius, 0, Math.PI * 2);
+    this.ctx.stroke();
+  }
+
+  fillCircle(x: number, y: number, radius: number, col: string): void {
+    this.ctx.fillStyle = col;
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, radius, 0, Math.PI * 2);
+    this.ctx.fill();
+  }
+
   fillRect(x: number, y: number, width: number, height: number, col: string): void {
     this.ctx.fillStyle = col;
     this.ctx.fillRect(x,y,width,height);
