@@ -91,6 +91,10 @@ export class GraphicsImpl implements Graphics {
     }
   }
 
+  getTransform(): DOMMatrix {
+    return this.ctx.getTransform();
+  }
+  
   clear(): void {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }

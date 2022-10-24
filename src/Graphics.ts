@@ -71,4 +71,6 @@ export interface Graphics {
   getStringWidth(text: string): number;
 
   setAlpha(alpha: number): void;
+
+  getTransform(): DOMMatrix;
 }
