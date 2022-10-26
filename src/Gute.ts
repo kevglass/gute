@@ -480,6 +480,10 @@ class GameLoop implements GameContext {
           resolve(data);
         })
       } else {
+        if (url.startsWith("data:application/json;utf8,")) {
+          resolve(JSON.parse(url.substring(url.indexOf(",")+1)));
+          return;
+        }
         var req = new XMLHttpRequest();
         req.open("GET", url, true);
         
