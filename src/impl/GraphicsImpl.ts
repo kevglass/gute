@@ -71,7 +71,7 @@ export class GraphicsImpl implements Graphics {
 
   constructor() {
     this.canvas = <HTMLCanvasElement> document.getElementById("gamecanvas");
-    this.ctx = <CanvasRenderingContext2D> this.canvas.getContext("2d");
+    this.ctx = <CanvasRenderingContext2D> this.canvas.getContext("2d", { alpha: false });
     this.mainCtx = this.ctx;
 
     (<any> this.ctx).webkitImageSmoothingEnabled = false;
