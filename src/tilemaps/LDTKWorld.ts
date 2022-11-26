@@ -42,7 +42,8 @@ export class LDTKWorld extends MapWorld implements Resource {
 
         level.worldX = levelData.worldX;
         level.worldY = levelData.worldY;
-
+        level.worldDepth = levelData.worldDepth;
+        
         for (const fieldInstance of levelData.fieldInstances) {
           level.fields[fieldInstance.__identifier] = fieldInstance.__value;
         }

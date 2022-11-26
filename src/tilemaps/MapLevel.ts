@@ -13,6 +13,7 @@ export class MapLevel {
   fields: any = {};
   worldX: number = 0;
   worldY: number = 0;
+  worldDepth: number = 0;
 
   constructor(world: MapWorld, id: string) {
     this.world = world;
@@ -39,6 +40,7 @@ export class MapLevel {
     levelCopy.height = this.height;
     levelCopy.worldX = this.worldX;
     levelCopy.worldY = this.worldY;
+    levelCopy.worldDepth = this.worldDepth;
     levelCopy.fields = {...this.fields};
 
     for (const layer of this.layers) {
