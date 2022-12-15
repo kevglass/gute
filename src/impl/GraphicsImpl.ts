@@ -91,6 +91,15 @@ export class GraphicsImpl implements Graphics {
     }
   }
 
+  smooth(): void {
+    (<any> this.ctx).webkitImageSmoothingEnabled = true;
+    this.ctx.imageSmoothingEnabled = true;
+    (<any> this.canvas).style.fontSmooth = "initial";
+    (<any> this.canvas).style.webkitFontSmoothing = "initial";
+
+    this.canvas.style.imageRendering = "initial";
+  }
+
   getTransform(): DOMMatrix {
     return this.ctx.getTransform();
   }

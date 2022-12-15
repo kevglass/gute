@@ -16,6 +16,8 @@ export interface Offscreen {
 }
 
 export interface Graphics {
+  smooth(): void;
+  
   copy(): Bitmap;
 
   getOffscreen(): Offscreen | null;

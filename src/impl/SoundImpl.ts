@@ -127,6 +127,12 @@ export class SoundImpl implements Sound {
     }
   }
 
+  confirmAudioContext() {
+    if ((AUDIO_CONTEXT.state as any) === "interrupted") {
+      AUDIO_CONTEXT.resume();
+    }
+  }
+
   initOnFirstClick(): void {
     if (!AUDIO_CONTEXT) {
       try {
@@ -141,6 +147,7 @@ export class SoundImpl implements Sound {
   }
 
   play(volume: number, loop: boolean = false): void {
+    this.confirmAudioContext();
     this.volume = volume;
 
     if (!this.buffer) {
