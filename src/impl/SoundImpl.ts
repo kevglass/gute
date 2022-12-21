@@ -14,7 +14,10 @@ function handleVisibilityChange() {
       if (document.hidden) {
         SoundImpl.CURRENT_MUSIC.stop();
       } else {
-        SoundImpl.CURRENT_MUSIC.play(SoundImpl.CURRENT_MUSIC.volume);
+        AUDIO_CONTEXT.resume();
+        setTimeout(() => {
+          SoundImpl.CURRENT_MUSIC!.play(SoundImpl.CURRENT_MUSIC!.volume);
+        }, 500);
       }
     }
   }
@@ -128,9 +131,7 @@ export class SoundImpl implements Sound {
   }
 
   confirmAudioContext() {
-    if ((AUDIO_CONTEXT.state as any) === "interrupted") {
-      AUDIO_CONTEXT.resume();
-    }
+    AUDIO_CONTEXT.resume();
   }
 
   initOnFirstClick(): void {
