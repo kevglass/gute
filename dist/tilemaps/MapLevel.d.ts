@@ -12,6 +12,7 @@ export declare class MapLevel {
     fields: any;
     worldX: number;
     worldY: number;
+    worldDepth: number;
     constructor(world: MapWorld, id: string);
     entitiesOfType(type: string): MapEntity[];
     firstEntityOfType(type: string): MapEntity | undefined;

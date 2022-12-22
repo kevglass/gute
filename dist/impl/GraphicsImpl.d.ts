@@ -9,6 +9,8 @@ export declare class GraphicsImpl implements Graphics {
     fontSize: number;
     offscreen: Offscreen | null;
     constructor();
+    smooth(): void;
+    getTransform(): DOMMatrix;
     clear(): void;
     clip(x: number, y: number, width: number, height: number): void;
     createOffscreen(): Offscreen;
@@ -32,6 +34,8 @@ export declare class GraphicsImpl implements Graphics {
     getStringWidth(text: string): number;
     drawString(x: number, y: number, text: string, col: string): void;
     setComposite(name: string): void;
+    drawCircle(x: number, y: number, radius: number, col: string, width: number): void;
+    fillCircle(x: number, y: number, radius: number, col: string): void;
     fillRect(x: number, y: number, width: number, height: number, col: string): void;
     drawLine(x1: number, y1: number, x2: number, y2: number, col: string, width?: number): void;
     drawBitmap(x: number, y: number, bitmap: Bitmap): void;
