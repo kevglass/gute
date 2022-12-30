@@ -23,6 +23,7 @@ export declare class TilesetImpl implements Tileset {
     getTileCount(): number;
     initOnFirstClick(): void;
     getTile(tile: number): Bitmap;
+    getShadedTile(tile: number, tintName: string, shade: number): Bitmap;
     getTintedTile(tile: number, tintName: string, tint: number[]): Bitmap;
     getBlockColorTile(tile: number, tintName: string, col: number[]): Bitmap;
 }

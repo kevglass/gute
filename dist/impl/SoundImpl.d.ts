@@ -21,6 +21,7 @@ export declare class SoundImpl implements Sound {
     name: string;
     constructor(url: string, music: boolean, arrayBuffer: Promise<ArrayBuffer> | undefined);
     private tryLoad;
+    confirmAudioContext(): void;
     initOnFirstClick(): void;
     play(volume: number, loop?: boolean): void;
     stop(remove?: boolean): void;

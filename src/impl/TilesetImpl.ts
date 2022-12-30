@@ -144,6 +144,42 @@ export class TilesetImpl implements Tileset {
     return this.bitmaps[tile];
   }
 
+  getShadedTile(tile: number, tintName: string, shade: number): Bitmap {
+    let tiles = this.tintTiles[tintName];
+    if (!tiles) {
+      tiles = this.tintTiles[tintName] = [];
+    }
+
+    let tileRecord = tiles[tile];
+    if (!tileRecord) {
+      const x:number = tile % this.scanline;
+      const y:number = Math.floor(tile / this.scanline);
+      let image: HTMLImageElement = this.tints[tintName];
+      if (!image) {
+        const canvas: HTMLCanvasElement = document.createElement("canvas");
+        canvas.width = this.image!.width;
+        canvas.height = this.image!.height;
+        const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(this.image!, 0 , 0);
+          const id: ImageData = ctx.getImageData(0,0,canvas.width,canvas.height);
+          for (let i=0;i<id.data.length;i+=4) {
+            id.data[i] *= shade;
+            id.data[i + 1] *= shade;
+            id.data[i + 2] *= shade;
+          }
+          ctx.putImageData(id, 0, 0);
+        }
+        image = new Image();
+        image.src = canvas.toDataURL();
+        this.tints[tintName] = image;
+      }
+
+      tileRecord = tiles[tile] = new Tile(image, x * this.originalTileWidth, y * this.originalTileHeight, this.originalTileWidth, this.originalTileHeight, this.scale)
+    }
+    return tileRecord;
+  }
+
   getTintedTile(tile: number, tintName: string, tint: number[]): Bitmap {
     let tiles = this.tintTiles[tintName];
     if (!tiles) {
