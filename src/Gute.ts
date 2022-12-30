@@ -221,7 +221,7 @@ class GameLoop implements GameContext {
       } catch (e) {
         console.log(e);
       }
-    });
+    }, { passive: false });
     this.graphics.canvas.addEventListener("touchmove", (event) => {
       try {
         if (event.target) {
@@ -236,7 +236,7 @@ class GameLoop implements GameContext {
       } catch (e) {
         console.log(e);
       }
-    });
+    }, { passive: false });
     this.graphics.canvas.addEventListener("touchend", (event) => {
       try {
         if (event.target) {
@@ -254,7 +254,7 @@ class GameLoop implements GameContext {
       } catch (e) {
         console.log(e);
       }
-    });
+    },{ passive: false });
 
     window.addEventListener("contextmenu", (event) => {
       event.stopPropagation();
