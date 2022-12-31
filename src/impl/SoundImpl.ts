@@ -13,6 +13,7 @@ function handleVisibilityChange() {
     if (SoundImpl.CURRENT_MUSIC) {
       if (document.hidden) {
         SoundImpl.CURRENT_MUSIC.stop();
+        AUDIO_CONTEXT.suspend();
       } else {
         AUDIO_CONTEXT.resume();
         setTimeout(() => {
