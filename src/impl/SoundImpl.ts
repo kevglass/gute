@@ -13,9 +13,17 @@ function handleVisibilityChange() {
     if (SoundImpl.CURRENT_MUSIC) {
       if (document.hidden) {
         SoundImpl.CURRENT_MUSIC.stop();
-        AUDIO_CONTEXT.suspend();
+        try {
+          AUDIO_CONTEXT.suspend();
+        } catch (e) {
+          console.log("Suspend audio context failed");
+        }
       } else {
-        AUDIO_CONTEXT.resume();
+        try {
+          AUDIO_CONTEXT.resume();
+        } catch (e) {
+          console.log("Resume audio context failed");
+        }
         setTimeout(() => {
           SoundImpl.CURRENT_MUSIC!.play(SoundImpl.CURRENT_MUSIC!.volume);
         }, 500);
@@ -132,7 +140,11 @@ export class SoundImpl implements Sound {
   }
 
   confirmAudioContext() {
-    AUDIO_CONTEXT.resume();
+    try {
+      AUDIO_CONTEXT.resume();
+    } catch (e) {
+      console.log("Resume audio context failed");
+    }
   }
 
   initOnFirstClick(): void {
@@ -141,7 +153,7 @@ export class SoundImpl implements Sound {
         AUDIO_CONTEXT = new AudioContext();
         AUDIO_CONTEXT.resume();
       } catch (e) {
-        console.log("decodeAudioData exception on creating audio context");
+        console.log("Resume audio context failed");
       }
     }
 
