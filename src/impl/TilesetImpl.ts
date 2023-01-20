@@ -42,7 +42,7 @@ export class TilesetImpl implements Tileset {
   originalTileWidth: number;
   originalTileHeight: number;
   image: any | null;
-  bitmaps: Bitmap[] = [];
+  bitmaps: Tile[] = [];
   scanline: number = 0;
   tileCount: number = 0;
   tints: Record<string, HTMLImageElement> = {};
@@ -231,6 +231,9 @@ export class TilesetImpl implements Tileset {
     }
     this.image = new Image();
     this.image.src = canvas.toDataURL();
+    for (const tile of this.bitmaps) {
+      tile.image = this.image;
+    }
 
     return this;
   }

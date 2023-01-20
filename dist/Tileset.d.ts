@@ -10,4 +10,5 @@ export interface Tileset extends Resource {
     getTileWidth(): number;
     getTileHeight(): number;
     getTilesAcross(): number;
+    modify(modification: (imageData: ImageData) => void): Tileset;
 }

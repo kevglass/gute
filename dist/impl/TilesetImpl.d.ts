@@ -1,6 +1,20 @@
 import { Bitmap } from "..";
 import { Tileset } from "../Tileset";
 import { Palette } from "./Palette";
+declare class Tile implements Bitmap {
+    image: HTMLImageElement;
+    width: number;
+    height: number;
+    loaded: boolean;
+    x: number;
+    y: number;
+    scale: number;
+    name: string;
+    constructor(canvas: HTMLImageElement, x: number, y: number, width: number, height: number, scale: number);
+    draw(ctx: CanvasRenderingContext2D, x: number, y: number): void;
+    drawScaled(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void;
+    initOnFirstClick(): void;
+}
 export declare class TilesetImpl implements Tileset {
     loaded: boolean;
     tileWidth: number;
@@ -8,7 +22,7 @@ export declare class TilesetImpl implements Tileset {
     originalTileWidth: number;
     originalTileHeight: number;
     image: any | null;
-    bitmaps: Bitmap[];
+    bitmaps: Tile[];
     scanline: number;
     tileCount: number;
     tints: Record<string, HTMLImageElement>;
@@ -25,5 +39,7 @@ export declare class TilesetImpl implements Tileset {
     getTile(tile: number): Bitmap;
     getShadedTile(tile: number, tintName: string, shade: number): Bitmap;
     getTintedTile(tile: number, tintName: string, tint: number[]): Bitmap;
+    modify(modification: (imageData: ImageData) => void): Tileset;
     getBlockColorTile(tile: number, tintName: string, col: number[]): Bitmap;
 }
+export {};
