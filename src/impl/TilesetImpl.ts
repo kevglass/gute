@@ -218,6 +218,23 @@ export class TilesetImpl implements Tileset {
     return tileRecord;
   }
 
+  modify(modification: (imageData: ImageData) => void): Tileset {
+    const canvas: HTMLCanvasElement = document.createElement("canvas");
+    canvas.width = this.image!.width;
+    canvas.height = this.image!.height;
+    const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
+    if (ctx) {
+      ctx.drawImage(this.image!, 0 , 0);
+      const id: ImageData = ctx.getImageData(0,0,canvas.width,canvas.height);
+      modification(id);
+      ctx.putImageData(id, 0, 0);
+    }
+    this.image = new Image();
+    this.image.src = canvas.toDataURL();
+
+    return this;
+  }
+
   getBlockColorTile(tile: number, tintName: string, col: number[]): Bitmap {
     let tiles = this.tintTiles[tintName];
     if (!tiles) {
