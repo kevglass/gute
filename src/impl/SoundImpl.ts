@@ -14,15 +14,23 @@ function handleVisibilityChange() {
       if (document.hidden) {
         SoundImpl.CURRENT_MUSIC.stop();
         try {
-          AUDIO_CONTEXT.suspend();
+          AUDIO_CONTEXT.suspend().catch((e) => {
+            console.log("Suspend audio context failed");
+            console.error(e);
+          });
         } catch (e) {
           console.log("Suspend audio context failed");
+          console.error(e);
         }
       } else {
         try {
-          AUDIO_CONTEXT.resume();
+          AUDIO_CONTEXT.resume().catch((e) => {
+            console.log("Resume audio context failed");
+            console.error(e);
+          });
         } catch (e) {
           console.log("Resume audio context failed");
+          console.error(e);
         }
         setTimeout(() => {
           SoundImpl.CURRENT_MUSIC!.play(SoundImpl.CURRENT_MUSIC!.volume);
@@ -141,7 +149,10 @@ export class SoundImpl implements Sound {
 
   confirmAudioContext() {
     try {
-      AUDIO_CONTEXT.resume();
+      AUDIO_CONTEXT.resume().catch((e) => {
+        console.log("Resume audio context failed");
+        console.error(e);
+      });
     } catch (e) {
       console.log("Resume audio context failed");
     }
@@ -151,7 +162,10 @@ export class SoundImpl implements Sound {
     if (!AUDIO_CONTEXT) {
       try {
         AUDIO_CONTEXT = new AudioContext();
-        AUDIO_CONTEXT.resume();
+        AUDIO_CONTEXT.resume().catch((e) => {
+          console.log("Resume audio context failed");
+          console.error(e);
+        });
       } catch (e) {
         console.log("Resume audio context failed");
       }
