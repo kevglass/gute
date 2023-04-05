@@ -16,4 +16,16 @@ export class Path {
         this.steps.splice(0, 1);
         return result;
     }
+
+    copy(): Path {
+        const copy = new Path();
+        for (const step of this.steps) {
+            copy.steps.push(new Step(step.x, step.y));
+        }
+        if (copy.steps.length === 0) {
+            console.log("Created copy of path with zero steps: ");
+        }
+
+        return copy;
+    }
 }
