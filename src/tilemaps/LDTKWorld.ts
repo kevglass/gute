@@ -12,6 +12,7 @@ interface EntityRef {
 
 export class LDTKWorld extends MapWorld implements Resource {
   name: string = "world";
+  tilesets: any[] = [];
 
   initOnFirstClick(): void {
   }
@@ -25,6 +26,7 @@ export class LDTKWorld extends MapWorld implements Resource {
       
       this.gridSize = json.defaultGridSize;
       const tileset: any = json.defs.tilesets[0];
+      this.tilesets = json.defs.tilesets;
       this.tilesetScanline = tileset.pxWid / tileset.tileGridSize;
       this.tilesetSize = tileset.tileGridSize;
 
@@ -137,8 +139,10 @@ export class LDTKWorld extends MapWorld implements Resource {
       } else {
         const layer: MapLayer = new MapLayer(level, layerData.__identifier, layerData.__cWid, layerData.__cHei);
 
-        const scanline: number = level.world.tilesetScanline;
-        const tileSize: number = level.world.tilesetSize;
+        const tileset = (level.world as LDTKWorld).tilesets.find(t => t.uid === layerData.__tilesetDefUid);
+
+        const scanline: number =tileset.pxWid / tileset.tileGridSize;
+        const tileSize: number =tileset.tileGridSize;
 
         for (const tile of layerData.gridTiles) {
           const x: number = Math.floor(tile.px[0] / layerData.__gridSize);
