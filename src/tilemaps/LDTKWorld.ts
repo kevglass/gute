@@ -10,7 +10,15 @@ interface EntityRef {
   field: string
 }
 
+export interface LDTKLayerCompression {
+  from: string;
+  to: string;
+  offset: number;
+}
+
 export class LDTKWorld extends MapWorld implements Resource {
+  static LAYER_COMPRESSIONS: LDTKLayerCompression[] = [];
+
   name: string = "world";
   tilesets: any[] = [];
 
@@ -137,7 +145,20 @@ export class LDTKWorld extends MapWorld implements Resource {
           level.entities.push(entity);
         }
       } else {
-        const layer: MapLayer = new MapLayer(level, layerData.__identifier, layerData.__cWid, layerData.__cHei);
+        const compression = LDTKWorld.LAYER_COMPRESSIONS.find(c => c.from === layerData.__identifier);
+        let layer: MapLayer | undefined; 
+        let offset = 0;
+        if (compression) {
+          const targetLayer = level.layerByName[compression.to];
+          if (!targetLayer) {
+            throw "Unable to find compression layer: " + compression.to;
+          }
+
+          layer = targetLayer;
+          offset = compression.offset;
+        } else {
+          layer = new MapLayer(level, layerData.__identifier, layerData.__cWid, layerData.__cHei);
+        }
 
         const tileset = (level.world as LDTKWorld).tilesets.find(t => t.uid === layerData.__tilesetDefUid);
 
@@ -153,11 +174,13 @@ export class LDTKWorld extends MapWorld implements Resource {
           const ty: number = Math.floor(tile.src[1] / tileSize);
 
           const tileIndex: number = (ty * scanline) + tx;
-          layer.tiles[posIndex] = tileIndex + 1;
+          layer.tiles[posIndex] = tileIndex + 1 + offset;
         }
 
-        level.layers.splice(0, 0, layer);
-        level.layerByName[layer.name] = layer;
+        if (!compression) {
+          level.layers.splice(0, 0, layer);
+          level.layerByName[layer.name] = layer;
+        }
       }
     }
   }
