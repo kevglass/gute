@@ -1,8 +1,8 @@
 import { MapLevel } from "./MapLevel";
 
 export class MapLayer {
-  FLIP_X: number = 1;
-  FLIP_Y: number = 2;
+  static FLIP_X: number = 1;
+  static FLIP_Y: number = 2;
   
   name: string;
   level: MapLevel;
