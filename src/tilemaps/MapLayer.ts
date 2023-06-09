@@ -31,7 +31,7 @@ export class MapLayer {
     }
     const posIndex: number = x + (y * this.width);
     
-    return this.tiles[posIndex];
+    return this.flips[posIndex];
   }
 
   set(x: number, y: number, value: number): void {
@@ -55,6 +55,7 @@ export class MapLayer {
     const result: MapLayer = new MapLayer(level, this.name, this.width, this.height);
     for (let i=0;i<this.width*this.height;i++) {
       result.tiles[i] = this.tiles[i];
+      result.flips[i] = this.flips[i];
     }
 
     return result;
