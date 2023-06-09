@@ -1,11 +1,15 @@
 import { MapLevel } from "./MapLevel";
 
 export class MapLayer {
+  FLIP_X: number = 1;
+  FLIP_Y: number = 2;
+  
   name: string;
   level: MapLevel;
   width: number;
   height: number;
   tiles: number[];
+  flips: number[];
 
   constructor(level: MapLevel, name: string, width: number, height: number) {
     this.name = name;
@@ -14,9 +18,20 @@ export class MapLayer {
     this.height = height;
 
     this.tiles = [];
+    this.flips = [];
     for (let i=0;i<this.width*this.height;i++) {
       this.tiles.push(0);
+      this.flips.push(0);
     }
+  }
+
+  getFlipFlags(x: number, y: number): number {
+    if ((x < 0) || (y < 0) || (x >= this.width) || (y >= this.height)) {
+      return 0;
+    }
+    const posIndex: number = x + (y * this.width);
+    
+    return this.tiles[posIndex];
   }
 
   set(x: number, y: number, value: number): void {

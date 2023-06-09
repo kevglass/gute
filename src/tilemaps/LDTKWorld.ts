@@ -175,6 +175,7 @@ export class LDTKWorld extends MapWorld implements Resource {
 
           const tileIndex: number = (ty * scanline) + tx;
           layer.tiles[posIndex] = tileIndex + 1 + offset;
+          layer.flips[posIndex] = tile.f;
         }
 
         if (!compression) {
