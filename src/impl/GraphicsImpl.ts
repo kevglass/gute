@@ -259,6 +259,10 @@ export class GraphicsImpl implements Graphics {
     this.ctx.fillStyle = col;
     this.ctx.fillRect(x,y,width,height);
   }
+  
+  setLineDash(segments: number[]): void {
+    this.ctx.setLineDash(segments);
+  }
 
   drawLine(x1: number, y1: number, x2: number, y2: number, col: string, width: number = 1): void {
     this.ctx.strokeStyle = col;
