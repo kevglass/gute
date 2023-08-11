@@ -200,6 +200,12 @@ export class SoundImpl implements Sound {
       if (this.source) {
         return;
       }
+    } else {
+      // don't play sound effects in the background or they all
+      // get stacked up
+      if (document.hidden) {
+        return;
+      }
     }
     
     if (this.music && !isMusicOn()) {
