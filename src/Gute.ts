@@ -20,6 +20,7 @@ let GAME_LOOP: GameLoop;
 let SOUND_ON: boolean = true;
 let MUSIC_ON: boolean = true;
 let PRESCALE_TILESETS: boolean = false;
+let USE_XBR: boolean = false;
 
 export function isSoundOn(): boolean {
   return SOUND_ON;
@@ -27,6 +28,14 @@ export function isSoundOn(): boolean {
 
 export function isMusicOn(): boolean {
   return MUSIC_ON;
+}
+
+export function shouldUseXbr(): boolean {
+  return USE_XBR;
+}
+
+export function setUseXbr(on: boolean): void {
+  USE_XBR = on;
 }
 
 export function shouldPrescaleTilesets(): boolean {

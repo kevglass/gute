@@ -4,4 +4,5 @@ export declare class Path {
     add(x: number, y: number): void;
     getLastStep(): Step;
     pop(): Step;
+    copy(): Path;
 }

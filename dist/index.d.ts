@@ -12,7 +12,7 @@ export { PathFinderMap } from "./path/PathFinderMap";
 export { Path } from "./path/Path";
 export { PathMover } from "./path/PathMover";
 export { Step } from "./path/Step";
-export { LDTKWorld } from "./tilemaps/LDTKWorld";
+export { LDTKWorld, LDTKLayerCompression } from "./tilemaps/LDTKWorld";
 export { MapWorld } from "./tilemaps/MapWorld";
 export { MapLevel } from "./tilemaps/MapLevel";
 export { MapLayer } from "./tilemaps/MapLayer";

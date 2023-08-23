@@ -1,7 +1,9 @@
 import { Bitmap } from "..";
-import { shouldPrescaleTilesets } from "../Gute";
+import { shouldPrescaleTilesets, shouldUseXbr } from "../Gute";
 import { Tileset } from "../Tileset";
 import { Palette } from "./Palette";
+
+import {xbr2x, xbr3x, xbr4x} from 'xbr-js';
 
 class Tile implements Bitmap {
   image: HTMLImageElement;
@@ -12,6 +14,7 @@ class Tile implements Bitmap {
   y: number;
   scale: number;
   name: string = "tile";
+  cached: Record<number, HTMLCanvasElement> = {};
 
   constructor(canvas: HTMLImageElement, x: number, y: number, width: number, height: number, scale: number) {
     this.image = canvas;
@@ -24,11 +27,59 @@ class Tile implements Bitmap {
   }
 
   draw(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-    ctx.drawImage(this.image, this.x, this.y, this.width, this.height, x, y, this.width * this.scale, this.height * this.scale);
+    if (!shouldPrescaleTilesets() && shouldUseXbr() && (this.scale === 2 || this.scale === 3)) {
+      if (!this.cached[this.scale]) {
+          this.cached[this.scale] = document.createElement("canvas");
+          this.cached[this.scale].width = this.width;
+          this.cached[this.scale].height = this.height;
+          const ctx = this.cached[this.scale].getContext("2d");
+          ctx!.drawImage(this.image!, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
+
+          const originalImageData = ctx!.getImageData(0, 0, this.width, this.height);
+          const originalPixelView = new Uint32Array(originalImageData.data.buffer);
+          const scaledPixelView = this.scale === 2 ? xbr2x(originalPixelView, this.width, this.height) : xbr3x(originalPixelView, this.width, this.height);
+
+          const destWidth = this.width * this.scale;
+          const destHeight = this.height * this.scale;
+          this.cached[this.scale].width = destWidth;
+          this.cached[this.scale].height = destHeight;
+          const scaledImageData = new ImageData(new Uint8ClampedArray(scaledPixelView.buffer), this.cached[this.scale].width, this.cached[this.scale].height);
+
+          ctx!.putImageData(scaledImageData, 0, 0);
+      }
+      ctx.drawImage(this.cached[this.scale], x, y);
+    } else {
+      ctx.drawImage(this.image, this.x, this.y, this.width, this.height, x, y, this.width * this.scale, this.height * this.scale);
+    }
   }
 
   drawScaled(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
-    ctx.drawImage(this.image, this.x, this.y, this.width, this.height, x, y, width, height);
+    const scale = Math.min(Math.floor(width / this.width), Math.floor(height / this.height));
+
+    if (!shouldPrescaleTilesets() && shouldUseXbr() && (scale === 2 || scale === 3)) {
+      if (!this.cached[scale]) {
+        this.cached[scale] = document.createElement("canvas");
+          this.cached[scale].width = this.width;
+          this.cached[scale].height = this.height;
+          const ctx = this.cached[scale].getContext("2d");
+          ctx!.drawImage(this.image!, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
+
+          const originalImageData = ctx!.getImageData(0, 0, this.width, this.height);
+          const originalPixelView = new Uint32Array(originalImageData.data.buffer);
+          const scaledPixelView = scale === 2 ? xbr2x(originalPixelView, this.width, this.height) : xbr3x(originalPixelView, this.width, this.height);
+
+          const destWidth = this.width * scale;
+          const destHeight = this.height * scale;
+          this.cached[scale].width = destWidth;
+          this.cached[scale].height = destHeight;
+          const scaledImageData = new ImageData(new Uint8ClampedArray(scaledPixelView.buffer), this.cached[scale].width, this.cached[scale].height);
+
+          ctx!.putImageData(scaledImageData, 0, 0);
+      }
+      ctx.drawImage(this.cached[scale], x, y, width, height);
+    } else {
+      ctx.drawImage(this.image, this.x, this.y, this.width, this.height, x, y, width, height);
+    }
   }
 
   initOnFirstClick(): void {
@@ -50,7 +101,7 @@ export class TilesetImpl implements Tileset {
   scale: number;
   onLoaded: () => void = () => {};
   name: string;
-
+  
   constructor(url: string, dataUrlLoader: Promise<Blob> | undefined, tileWidth: number, tileHeight: number, scale: number = 1, pal: Palette | undefined = undefined) {
     this.tileWidth = this.originalTileWidth = tileWidth;
     this.tileHeight = this.originalTileHeight = tileHeight;
@@ -59,14 +110,32 @@ export class TilesetImpl implements Tileset {
     this.image = new Image();
   
     this.image.onload = () => {
-      if (shouldPrescaleTilesets()) {
+      if (shouldPrescaleTilesets() && scale !== 1) {
         const scaledImage = document.createElement("canvas");
-        scaledImage.width = this.image!.width * scale;
-        scaledImage.height = this.image!.height * scale;
-        const ctx = scaledImage.getContext("2d");
-        ctx!.imageSmoothingEnabled = false;
-        (<any> ctx!).webkitImageSmoothingEnabled = false;
-        ctx?.drawImage(this.image!, 0, 0, scaledImage.width, scaledImage.height);
+
+        if (shouldUseXbr()) {
+          const ctx = scaledImage.getContext("2d");
+          ctx!.drawImage(this.image!, 0, 0);
+
+          const originalImageData = ctx!.getImageData(0, 0, this.image!.width, this.image!.height);
+          const originalPixelView = new Uint32Array(originalImageData.data.buffer);
+          const scaledPixelView = scale === 2 ? xbr2x(originalPixelView, this.image!.width, this.image!.height) : xbr3x(originalPixelView, this.image!.width, this.image!.height);
+
+          scaledImage.width = this.image!.width * scale;
+          scaledImage.height = this.image!.height * scale;
+          const scaledImageData = new ImageData(new Uint8ClampedArray(scaledPixelView.buffer), scaledImage.width, scaledImage.height);
+
+          ctx!.putImageData(scaledImageData, 0, 0);
+        } else {
+          scaledImage.width = this.image!.width * scale;
+          scaledImage.height = this.image!.height * scale;
+          const ctx = scaledImage.getContext("2d");
+          ctx!.imageSmoothingEnabled = false;
+          (<any> ctx!).webkitImageSmoothingEnabled = false;
+          ctx?.drawImage(this.image!, 0, 0, scaledImage.width, scaledImage.height);
+        }
+
+
         this.image = scaledImage;
         this.tileWidth *= scale;
         this.tileHeight *= scale;

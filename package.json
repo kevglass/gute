@@ -25,6 +25,7 @@
 	},
 	"dependencies": {
 		"@types/jszip": "^3.4.1",
-		"jszip": "^3.7.1"
+		"jszip": "^3.7.1",
+		"xbr-js": "^2.0.1"
 	}
 }

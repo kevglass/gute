@@ -37,6 +37,7 @@ export declare class GraphicsImpl implements Graphics {
     drawCircle(x: number, y: number, radius: number, col: string, width: number): void;
     fillCircle(x: number, y: number, radius: number, col: string): void;
     fillRect(x: number, y: number, width: number, height: number, col: string): void;
+    setLineDash(segments: number[]): void;
     drawLine(x1: number, y1: number, x2: number, y2: number, col: string, width?: number): void;
     drawBitmap(x: number, y: number, bitmap: Bitmap): void;
     drawScaledBitmap(x: number, y: number, width: number, height: number, bitmap: Bitmap): void;

@@ -10,6 +10,7 @@ declare class Tile implements Bitmap {
     y: number;
     scale: number;
     name: string;
+    cached: Record<number, HTMLCanvasElement>;
     constructor(canvas: HTMLImageElement, x: number, y: number, width: number, height: number, scale: number);
     draw(ctx: CanvasRenderingContext2D, x: number, y: number): void;
     drawScaled(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void;
