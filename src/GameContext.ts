@@ -10,6 +10,8 @@ export interface GameContext {
   
   isCommandPressed(): boolean;
 
+  isAltPressed(): boolean;
+
   isControlPressed(): boolean;
   
   resourcesRemaining(): number;

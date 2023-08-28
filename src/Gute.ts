@@ -91,7 +91,7 @@ class GameLoop implements GameContext {
     return this.commandPressed;
   }
 
-  iaAltPressed(): boolean {
+  isAltPressed(): boolean {
     return this.altPressed;
   }
   
