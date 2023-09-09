@@ -42,7 +42,7 @@ export interface GameContext {
 
   getGraphics(): Graphics;
 
-  loadJson(url: string): Promise<any>;
+  loadJson(url: string, transform?: (text: string) => string): Promise<any>;
 
   isRunningStandalone(): boolean;
 

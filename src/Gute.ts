@@ -463,7 +463,7 @@ class GameLoop implements GameContext {
     const world: LDTKWorld = new LDTKWorld();
     this.resources.push(world);
 
-    return world.load(name, file => this.loadJson(locator(file), true))
+    return world.load(name, file => this.loadJson(locator(file)))
   }
   
   private loadText(url: string): Promise<string> {
@@ -491,18 +491,24 @@ class GameLoop implements GameContext {
     })
   }
 
-  loadJson(url: string, log: boolean = false): Promise<any> {
+  loadJson(url: string, transform?: (text: string) => string): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       // its an asset reference
       if (url.indexOf("_/") >= 0) {
         url = url.substring(url.indexOf("_/"));
         return this.mainZip.file(url).async("string").then((result: string) => {
-          const data = JSON.parse(result);
+          try {
+          const data = JSON.parse(transform ? transform(result): result);
           resolve(data);
+          } catch (e) {
+            console.log("Failed to parse JSON: " + url);
+            throw e;
+          }
         })
       } else {
         if (url.startsWith("data:application/json;utf8,")) {
-          resolve(JSON.parse(url.substring(url.indexOf(",")+1)));
+          const result = url.substring(url.indexOf(",")+1);
+          resolve(JSON.parse(transform ? transform(result): result));
           return;
         }
         var req = new XMLHttpRequest();
@@ -511,7 +517,7 @@ class GameLoop implements GameContext {
         req.onload = (event) => {
           if (req.responseText) {
             const result: string = req.responseText;
-            resolve(JSON.parse(result));
+            resolve(JSON.parse(transform ? transform(result): result));
           }
         };
         req.onerror = (e) => {
