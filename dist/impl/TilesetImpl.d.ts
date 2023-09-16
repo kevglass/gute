@@ -1,4 +1,4 @@
-import { Bitmap } from "..";
+import { Bitmap, Graphics } from "..";
 import { Tileset } from "../Tileset";
 import { Palette } from "./Palette";
 declare class Tile implements Bitmap {
@@ -12,8 +12,8 @@ declare class Tile implements Bitmap {
     name: string;
     cached: Record<number, HTMLCanvasElement>;
     constructor(canvas: HTMLImageElement, x: number, y: number, width: number, height: number, scale: number);
-    draw(ctx: CanvasRenderingContext2D, x: number, y: number): void;
-    drawScaled(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void;
+    draw(graphics: Graphics, x: number, y: number): void;
+    drawScaled(graphics: Graphics, x: number, y: number, width: number, height: number): void;
     initOnFirstClick(): void;
 }
 export declare class TilesetImpl implements Tileset {

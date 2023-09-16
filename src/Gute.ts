@@ -5,7 +5,7 @@ import { GameContext } from "./GameContext";
 import { Graphics } from "./Graphics";
 import { BitmapImpl } from "./impl/BitmapImpl";
 import { FontImpl } from "./impl/FontImpl";
-import { GraphicsImpl } from "./impl/GraphicsImpl";
+import { GraphicsImpl as CanvasGraphicsImpl } from "./impl/GraphicsImpl";
 import { SoundImpl } from "./impl/SoundImpl";
 import { TilesetImpl } from "./impl/TilesetImpl";
 import { Resource } from "./Resource";
@@ -15,6 +15,9 @@ import { MapWorld } from "./tilemaps/MapWorld";
 import { Tileset } from "./Tileset";
 import * as JSZip from "jszip";
 import { Palette } from "./impl/Palette";
+import { OpenGLGraphicsImpl } from "./opengl/OpenGLGraphicsImpl";
+import { OpenGLBitmap } from "./opengl/OpenGLBitmap";
+import { OpenGLTilesetImpl } from "./opengl/OpenGLTilesetImpl";
 
 let GAME_LOOP: GameLoop;
 let SOUND_ON: boolean = true;
@@ -66,15 +69,23 @@ export function setMusicOn(on: boolean): void {
   }
 }
 
-export function startGame(game: Game) {
-  GAME_LOOP = new GameLoop().start(game);
+export function startGame(game: Game, renderer: Renderer = Renderer.CANVAS) {
+  const loop = new GameLoop();
+  loop.renderer = renderer;
+
+  GAME_LOOP = loop.start(game);
 }
+
+export enum Renderer {
+  CANVAS = "Canvas",
+  OPENGL = "OpenGL",
+};
 
 class GameLoop implements GameContext {
   resources: Resource[] = [];
   game!: Game;
   lastFrame: number = 0;
-  graphics!: GraphicsImpl;
+  graphics!: Graphics;
   inited: boolean = false;
   mainZip: any | undefined = undefined;
   zipPercentLoaded: number = 0;
@@ -86,6 +97,8 @@ class GameLoop implements GameContext {
   controlPressed: boolean = false;
   altPressed: boolean = false;
   lastTouch?: TouchEvent;
+  renderer: Renderer = Renderer.OPENGL;
+  graphicsInited: boolean = false;
 
   isCommandPressed(): boolean {
     return this.commandPressed;
@@ -94,7 +107,7 @@ class GameLoop implements GameContext {
   isAltPressed(): boolean {
     return this.altPressed;
   }
-  
+
   isControlPressed(): boolean {
     return this.controlPressed;
   }
@@ -102,7 +115,7 @@ class GameLoop implements GameContext {
   isShiftPressed(): boolean {
     return this.shiftPressed;
   }
-  
+
   getGraphics(): Graphics {
     return this.graphics;
   }
@@ -114,13 +127,13 @@ class GameLoop implements GameContext {
   resourcesTotal(): number {
     return this.resources.length;
   }
-  
+
   allResourcesLoaded(): boolean {
     for (const resource of this.resources) {
       if (!resource.loaded) {
         if (this.lastWaiting !== resource.name) {
           if (this.lastWaiting) {
-            console.log("[GUTE] Was waiting on: " + this.lastWaiting + " for "+this.wait+" frames");
+            console.log("[GUTE] Was waiting on: " + this.lastWaiting + " for " + this.wait + " frames");
           }
           this.lastWaiting = resource.name;
           this.wait = 0;
@@ -130,8 +143,12 @@ class GameLoop implements GameContext {
       }
     }
     if (this.lastWaiting) {
-      console.log("[GUTE] Was waiting on last one: " + this.lastWaiting + " for "+this.wait+" frames");
+      console.log("[GUTE] Was waiting on last one: " + this.lastWaiting + " for " + this.wait + " frames");
       this.lastWaiting = undefined;
+      if (!this.graphicsInited) {
+        this.graphicsInited = true;
+        this.graphics.initResourceOnLoaded();
+      }
     }
 
     return true;
@@ -152,7 +169,7 @@ class GameLoop implements GameContext {
   }
 
   public applyPalette(hexFile: string): Promise<void> {
-    return new Promise<void>((resolve, reject) => { 
+    return new Promise<void>((resolve, reject) => {
       this.loadText(hexFile).then((text: string) => {
         this.palette = new Palette(text);
         resolve();
@@ -219,12 +236,12 @@ class GameLoop implements GameContext {
 
   start(game: Game): GameLoop {
     this.game = game;
-    this.graphics = new GraphicsImpl();
+    this.graphics = this.renderer === Renderer.CANVAS ? new CanvasGraphicsImpl() : new OpenGLGraphicsImpl();
 
     this.graphics.canvas.addEventListener("touchstart", (event) => {
       try {
         if (event.target) {
-          var rect = (<any> event.target).getBoundingClientRect();
+          var rect = (<any>event.target).getBoundingClientRect();
           var x = event.targetTouches[0].pageX - rect.left;
           var y = event.targetTouches[0].pageY - rect.top;
           this.lastTouch = event;
@@ -239,7 +256,7 @@ class GameLoop implements GameContext {
     this.graphics.canvas.addEventListener("touchmove", (event) => {
       try {
         if (event.target) {
-          var rect = (<any> event.target).getBoundingClientRect();
+          var rect = (<any>event.target).getBoundingClientRect();
           var x = event.targetTouches[0].pageX - rect.left;
           var y = event.targetTouches[0].pageY - rect.top;
           this.lastTouch = event;
@@ -254,13 +271,13 @@ class GameLoop implements GameContext {
     this.graphics.canvas.addEventListener("touchend", (event) => {
       try {
         if (event.target) {
-          var rect = (<any> event.target).getBoundingClientRect();
+          var rect = (<any>event.target).getBoundingClientRect();
           if (this.lastTouch) {
             var x = this.lastTouch.targetTouches[0].pageX - rect.left;
             var y = this.lastTouch.targetTouches[0].pageY - rect.top;
             this.mouseUpHandler(x, y);
           } else {
-            this.mouseUpHandler(0,0);
+            this.mouseUpHandler(0, 0);
           }
           event.preventDefault();
           event.stopPropagation();
@@ -268,7 +285,7 @@ class GameLoop implements GameContext {
       } catch (e) {
         console.log(e);
       }
-    },{ passive: false });
+    }, { passive: false });
 
     window.addEventListener("contextmenu", (event) => {
       event.stopPropagation();
@@ -287,7 +304,7 @@ class GameLoop implements GameContext {
         this.shiftPressed = event.shiftKey;
         this.commandPressed = event.metaKey;
         this.controlPressed = event.ctrlKey;
-        this.altPressed  = event.altKey;
+        this.altPressed = event.altKey;
 
         this.mouseDownHandler(event.offsetX, event.offsetY, event.button);
         event.preventDefault();
@@ -301,7 +318,7 @@ class GameLoop implements GameContext {
         this.shiftPressed = event.shiftKey;
         this.commandPressed = event.metaKey;
         this.controlPressed = event.ctrlKey;
-        this.altPressed  = event.altKey;
+        this.altPressed = event.altKey;
 
         this.mouseMoveHandler(event.offsetX, event.offsetY);
         event.preventDefault();
@@ -315,7 +332,7 @@ class GameLoop implements GameContext {
         this.shiftPressed = event.shiftKey;
         this.commandPressed = event.metaKey;
         this.controlPressed = event.ctrlKey;
-        this.altPressed  = event.altKey;
+        this.altPressed = event.altKey;
 
         this.mouseUpHandler(event.offsetX, event.offsetY, event.button);
         event.preventDefault();
@@ -329,7 +346,7 @@ class GameLoop implements GameContext {
       this.shiftPressed = event.shiftKey;
       this.commandPressed = event.metaKey;
       this.controlPressed = event.ctrlKey;
-      this.altPressed  = event.altKey;
+      this.altPressed = event.altKey;
 
       this.keyDownHandler(event.code);
     });
@@ -337,7 +354,7 @@ class GameLoop implements GameContext {
       this.shiftPressed = event.shiftKey;
       this.commandPressed = event.metaKey;
       this.controlPressed = event.ctrlKey;
-      this.altPressed  = event.altKey;
+      this.altPressed = event.altKey;
 
       this.keyUpHandler(event.code);
     });
@@ -359,9 +376,11 @@ class GameLoop implements GameContext {
     }
     this.lastFrame = now;
 
+    this.graphics.renderStart();
     this.graphics.applyFont();
     this.game.update(this, delta);
     this.game.render(this, this.graphics);
+    this.graphics.renderEnd();
 
     requestAnimationFrame(() => {
       this.loop();
@@ -389,16 +408,16 @@ class GameLoop implements GameContext {
       req.onerror = (e) => {
         reject(e);
       };
-      
+
       req.send();
     });
   }
 
   loadMusic(url: string): Sound {
-    let bufferPromise: undefined | Promise<ArrayBuffer>  = undefined;
+    let bufferPromise: undefined | Promise<ArrayBuffer> = undefined;
     if (url.indexOf("_/") >= 0) {
       bufferPromise = this.mainZip.file(url.substring(url.indexOf("_/"))).async("arraybuffer");
-    } 
+    }
 
     const sound: Sound = new SoundImpl(url, true, bufferPromise);
     if (!this.allResourcesLoaded()) {
@@ -409,10 +428,10 @@ class GameLoop implements GameContext {
   }
 
   loadSound(url: string): Sound {
-    let bufferPromise: undefined | Promise<ArrayBuffer>  = undefined;
+    let bufferPromise: undefined | Promise<ArrayBuffer> = undefined;
     if (url.indexOf("_/") >= 0) {
       bufferPromise = this.mainZip.file(url.substring(url.indexOf("_/"))).async("arraybuffer");
-    } 
+    }
 
     const sound: Sound = new SoundImpl(url, false, bufferPromise);
     this.resources.push(sound);
@@ -423,7 +442,7 @@ class GameLoop implements GameContext {
   private toPotentialZipLoadBlob(url: string): Promise<Blob> | undefined {
     if (url.indexOf("_/") >= 0) {
       return this.mainZip.file(url.substring(url.indexOf("_/"))).async("blob");
-    } 
+    }
 
     return undefined;
   }
@@ -431,28 +450,47 @@ class GameLoop implements GameContext {
   private toPotentialZipLoad(url: string): Promise<string> | undefined {
     if (url.indexOf("_/") >= 0) {
       return this.mainZip.file(url.substring(url.indexOf("_/"))).async("base64");
-    } 
+    }
 
     return undefined;
   }
 
   loadBitmap(url: string): Bitmap {
-    const bitmap: Bitmap = new BitmapImpl(url, this.toPotentialZipLoad(url), this.palette);
-    this.resources.push(bitmap);
+    if (this.renderer === Renderer.CANVAS) {
+      const bitmap: Bitmap = new BitmapImpl(url, this.toPotentialZipLoad(url), this.palette);
+      this.resources.push(bitmap);
+      return bitmap;
+    } else {
+      const bitmap: Bitmap = new OpenGLBitmap(this.graphics as OpenGLGraphicsImpl, url, this.toPotentialZipLoad(url), this.palette);
+      this.resources.push(bitmap);
 
-    return bitmap;
+      return bitmap;
+    }
+
   }
 
   loadScaledTileset(url: string, tileWidth: number, tileHeight: number, scale: number): Tileset {
-    const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoadBlob(url), tileWidth, tileHeight, scale, this.palette);
-    this.resources.push(tileset);
-    return tileset;
+    if (this.renderer === Renderer.CANVAS) {
+      const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoadBlob(url), tileWidth, tileHeight, scale, this.palette);
+      this.resources.push(tileset);
+      return tileset;
+    } else {
+      const tileset: Tileset = new OpenGLTilesetImpl(this.graphics as OpenGLGraphicsImpl, url, this.toPotentialZipLoadBlob(url), tileWidth, tileHeight, scale, this.palette);
+      this.resources.push(tileset);
+      return tileset;
+    }
   }
 
   loadTileset(url: string, tileWidth: number, tileHeight: number): Tileset {
-    const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoadBlob(url), tileWidth, tileHeight, 1, this.palette);
-    this.resources.push(tileset);
-    return tileset;
+    if (this.renderer === Renderer.CANVAS) {
+      const tileset: Tileset = new TilesetImpl(url, this.toPotentialZipLoadBlob(url), tileWidth, tileHeight, 1, this.palette);
+      this.resources.push(tileset);
+      return tileset;
+    } else {
+      const tileset: Tileset = new OpenGLTilesetImpl(this.graphics as OpenGLGraphicsImpl, url, this.toPotentialZipLoadBlob(url), tileWidth, tileHeight, 1, this.palette);
+      this.resources.push(tileset);
+      return tileset;
+    }
   }
 
   loadFont(url: string, name: string): Font {
@@ -465,7 +503,7 @@ class GameLoop implements GameContext {
 
     return world.load(name, file => this.loadJson(locator(file)))
   }
-  
+
   private loadText(url: string): Promise<string> {
     return new Promise<any>((resolve, reject) => {
       // its an asset reference
@@ -476,7 +514,7 @@ class GameLoop implements GameContext {
       } else {
         var req = new XMLHttpRequest();
         req.open("GET", url, true);
-        
+
         req.onload = (event) => {
           if (req.responseText) {
             resolve(req.responseText);
@@ -485,7 +523,7 @@ class GameLoop implements GameContext {
         req.onerror = (e) => {
           reject(e);
         };
-        
+
         req.send();
       }
     })
@@ -498,8 +536,8 @@ class GameLoop implements GameContext {
         url = url.substring(url.indexOf("_/"));
         return this.mainZip.file(url).async("string").then((result: string) => {
           try {
-          const data = JSON.parse(transform ? transform(result): result);
-          resolve(data);
+            const data = JSON.parse(transform ? transform(result) : result);
+            resolve(data);
           } catch (e) {
             console.log("Failed to parse JSON: " + url);
             throw e;
@@ -507,30 +545,30 @@ class GameLoop implements GameContext {
         })
       } else {
         if (url.startsWith("data:application/json;utf8,")) {
-          const result = url.substring(url.indexOf(",")+1);
-          resolve(JSON.parse(transform ? transform(result): result));
+          const result = url.substring(url.indexOf(",") + 1);
+          resolve(JSON.parse(transform ? transform(result) : result));
           return;
         }
         var req = new XMLHttpRequest();
         req.open("GET", url, true);
-        
+
         req.onload = (event) => {
           if (req.responseText) {
             const result: string = req.responseText;
-            resolve(JSON.parse(transform ? transform(result): result));
+            resolve(JSON.parse(transform ? transform(result) : result));
           }
         };
         req.onerror = (e) => {
           reject(e);
         };
-        
+
         req.send();
       }
     })
   }
 
   isRunningStandalone(): boolean {
-    return ((<any> window.navigator).standalone === true) || (window.matchMedia('(display-mode: standalone)').matches);
+    return ((<any>window.navigator).standalone === true) || (window.matchMedia('(display-mode: standalone)').matches);
   }
 
   isTablet(): boolean {
@@ -541,7 +579,7 @@ class GameLoop implements GameContext {
 
     return isTablet;
   }
-  
+
   isMobile(): boolean {
     return this.isIOS() || this.isAndroid();
   }
@@ -559,15 +597,15 @@ class GameLoop implements GameContext {
       'iPhone',
       'iPod'
     ].indexOf(navigator.platform) >= 0
-    // iPad on iOS 13 detection
-    || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+      // iPad on iOS 13 detection
+      || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
   }
 
   isPhone(): boolean {
     return this.isIOS() && window.matchMedia("only screen and (max-width: 760px)").matches;
   }
 
-  setSoundVolume(v: number) : void {
+  setSoundVolume(v: number): void {
     SoundImpl.setSoundVolume(v);
   }
 

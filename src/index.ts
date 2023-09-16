@@ -1,6 +1,7 @@
-export { startGame, isMusicOn, isSoundOn, setMusicOn, setSoundOn, setPrescaleTilesets } from "./Gute";
+export {startGame, isMusicOn, isSoundOn, setMusicOn, setSoundOn, setPrescaleTilesets, Renderer } from "./Gute";
 export { GameContext } from "./GameContext";
 export { Graphics, WHITE, BLACK, GREEN, RED, BLUE, Offscreen } from "./Graphics";
+export { getMaxTextureSize } from "./opengl/OpenGLGraphicsImpl";
 export { Game } from "./Game";
 export { Bitmap } from "./Bitmap";
 export { Font } from "./Font";

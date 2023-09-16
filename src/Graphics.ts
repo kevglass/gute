@@ -16,6 +16,14 @@ export interface Offscreen {
 }
 
 export interface Graphics {
+  initResourceOnLoaded(): void;
+
+  newResourceLoaded(): void;
+
+  get canvas(): HTMLCanvasElement;
+
+  applyFont(): void;
+
   smooth(): void;
   
   copy(): Bitmap;
@@ -38,7 +46,6 @@ export interface Graphics {
 
   drawCircle(x: number, y: number, radius: number, col: string, width: number): void;
 
-  
   setLineDash(segments: number[]): void;
   
   drawLine(x1: number, y1: number, x2: number, y2: number, col: string, width?: number): void;
@@ -78,4 +85,8 @@ export interface Graphics {
   setAlpha(alpha: number): void;
 
   getTransform(): DOMMatrix;
+
+  renderStart(): void;
+
+  renderEnd(): void;
 }

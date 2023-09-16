@@ -1,4 +1,6 @@
 import { Bitmap } from "../Bitmap";
+import { Graphics } from "../Graphics";
+import { GraphicsImpl } from "./GraphicsImpl";
 import { Palette } from "./Palette";
 
 export class BitmapImpl implements Bitmap {
@@ -34,11 +36,13 @@ export class BitmapImpl implements Bitmap {
     }
   }
 
-  draw(ctx: CanvasRenderingContext2D, x: number, y: number): void {
+  draw(graphics: Graphics, x: number, y: number): void {
+    const ctx = (graphics as GraphicsImpl).ctx;
     ctx.drawImage(this.image, x, y);
   }
 
-  drawScaled(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
+  drawScaled(graphics: Graphics, x: number, y: number, width: number, height: number): void {
+    const ctx = (graphics as GraphicsImpl).ctx;
     ctx.drawImage(this.image, x, y, width, height);
   }
   

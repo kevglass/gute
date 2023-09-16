@@ -11,6 +11,10 @@ export interface Offscreen {
     setDimension(width: number, height: number): void;
 }
 export interface Graphics {
+    initResourceOnLoaded(): void;
+    newResourceLoaded(): void;
+    get canvas(): HTMLCanvasElement;
+    applyFont(): void;
     smooth(): void;
     copy(): Bitmap;
     getOffscreen(): Offscreen | null;
@@ -42,4 +46,6 @@ export interface Graphics {
     getStringWidth(text: string): number;
     setAlpha(alpha: number): void;
     getTransform(): DOMMatrix;
+    renderStart(): void;
+    renderEnd(): void;
 }

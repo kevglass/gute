@@ -1,6 +1,7 @@
-import { Bitmap } from "..";
+import { Bitmap, Graphics } from "..";
 import { shouldPrescaleTilesets, shouldUseXbr } from "../Gute";
 import { Tileset } from "../Tileset";
+import { GraphicsImpl } from "./GraphicsImpl";
 import { Palette } from "./Palette";
 
 import {xbr2x, xbr3x, xbr4x} from 'xbr-js';
@@ -26,7 +27,9 @@ class Tile implements Bitmap {
     this.loaded = true;
   }
 
-  draw(ctx: CanvasRenderingContext2D, x: number, y: number): void {
+  draw(graphics: Graphics, x: number, y: number): void {
+    const ctx = (graphics as GraphicsImpl).ctx;
+
     if (!shouldPrescaleTilesets() && shouldUseXbr() && (this.scale === 2 || this.scale === 3)) {
       if (!this.cached[this.scale]) {
           this.cached[this.scale] = document.createElement("canvas");
@@ -53,7 +56,8 @@ class Tile implements Bitmap {
     }
   }
 
-  drawScaled(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
+  drawScaled(graphics: Graphics, x: number, y: number, width: number, height: number): void {
+    const ctx = (graphics as GraphicsImpl).ctx;
     const scale = Math.min(Math.floor(width / this.width), Math.floor(height / this.height));
 
     if (!shouldPrescaleTilesets() && shouldUseXbr() && (scale === 2 || scale === 3)) {

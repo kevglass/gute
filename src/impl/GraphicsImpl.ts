@@ -45,11 +45,13 @@ class CopyBitmap implements Bitmap {
     this.loaded = true;
   }
 
-  draw(ctx: CanvasRenderingContext2D, x: number, y: number): void {
+  draw(graphics: Graphics, x: number, y: number): void {
+    const ctx = (graphics as GraphicsImpl).ctx;
     ctx.drawImage(this.canvas, x, y);
   }
 
-  drawScaled(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number): void {
+  drawScaled(graphics: Graphics, x: number, y: number, width: number, height: number): void {
+    const ctx = (graphics as GraphicsImpl).ctx;
     ctx.drawImage(this.canvas, x, y, width, height);
   }
 
@@ -89,6 +91,20 @@ export class GraphicsImpl implements Graphics {
     if (this.font) {
       this.applyFont();
     }
+  }
+
+  renderStart(): void {
+
+  }
+
+  renderEnd(): void {
+
+  }
+  
+  newResourceLoaded(): void {
+  }
+
+  initResourceOnLoaded(): void {
   }
 
   smooth(): void {
@@ -279,7 +295,7 @@ export class GraphicsImpl implements Graphics {
 
     this.ctx.imageSmoothingEnabled = false;
     (<any> this.ctx).webkitImageSmoothingEnabled = false;
-    bitmap.draw(this.ctx, x, y);
+    bitmap.draw(this, x, y);
   }
 
   drawScaledBitmap(x: number, y: number, width: number, height: number, bitmap: Bitmap): void {
@@ -289,6 +305,6 @@ export class GraphicsImpl implements Graphics {
     
     this.ctx.imageSmoothingEnabled = false;
     (<any> this.ctx).webkitImageSmoothingEnabled = false;
-    bitmap.drawScaled(this.ctx, x, y, width, height);
+    bitmap.drawScaled(this, x, y, width, height);
   }
 }

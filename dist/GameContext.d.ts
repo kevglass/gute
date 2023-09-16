@@ -7,6 +7,7 @@ import { Tileset } from "./Tileset";
 export interface GameContext {
     isShiftPressed(): boolean;
     isCommandPressed(): boolean;
+    isAltPressed(): boolean;
     isControlPressed(): boolean;
     resourcesRemaining(): number;
     resourcesTotal(): number;
@@ -22,7 +23,7 @@ export interface GameContext {
     getZipProgress(): number;
     loadFont(url: string, name: string): Font;
     getGraphics(): Graphics;
-    loadJson(url: string): Promise<any>;
+    loadJson(url: string, transform?: (text: string) => string): Promise<any>;
     isRunningStandalone(): boolean;
     isTablet(): boolean;
     isMobile(): boolean;
