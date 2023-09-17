@@ -13,11 +13,12 @@ declare class OpenGLTile implements Bitmap, IOpenGLBitmap {
     y: number;
     scale: number;
     name: string;
-    cached: Record<number, HTMLCanvasElement>;
     texX: number;
     texY: number;
     image: HTMLImageElement;
+    col: number;
     constructor(parent: OpenGLTilesetImpl, image: HTMLImageElement, x: number, y: number, width: number, height: number, scale: number);
+    copyWithCol(rgba: number): OpenGLTile;
     draw(graphics: Graphics, x: number, y: number): void;
     drawScaled(graphics: Graphics, x: number, y: number, width: number, height: number): void;
     initOnFirstClick(): void;
@@ -37,20 +38,21 @@ export declare class OpenGLTilesetImpl implements Tileset, IOpenGLBitmap {
     name: string;
     texX: number;
     texY: number;
+    tintTiles: Record<string, OpenGLTile[]>;
     constructor(graphics: OpenGLGraphicsImpl, url: string, dataUrlLoader: Promise<Blob> | undefined, tileWidth: number, tileHeight: number, scale?: number, pal?: Palette | undefined);
     get height(): number;
     get width(): number;
     draw(graphics: Graphics, x: number, y: number): void;
     drawScaled(graphics: Graphics, x: number, y: number, width: number, height: number): void;
-    getBlockColorTile(tile: number, tintName: string, col: number[]): Bitmap;
+    getBlockColorTile(tile: number, tintName: string, rgba: number[]): Bitmap;
     getShadedTile(tile: number, tintName: string, shade: number): Bitmap;
-    getTintedTile(tile: number, tintName: string, tint: number[]): Bitmap;
+    getTintedTile(tile: number, tintName: string, rgba: number[]): Bitmap;
     modify(modification: (imageData: ImageData) => void): Tileset;
     getTilesAcross(): number;
     getTileWidth(): number;
     getTileHeight(): number;
     getTileCount(): number;
     initOnFirstClick(): void;
-    getTile(tile: number): Bitmap;
+    getTile(tile: number): OpenGLTile;
 }
 export {};

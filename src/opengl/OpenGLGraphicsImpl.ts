@@ -205,7 +205,7 @@ function parseColor(input: string): number[] {
     throw Error("'" + input + "' is not a valid color...");
 }
 
-function colToNumber(input: string): number {
+export function colToNumber(input: string): number {
     let result = COL_CACHE[input];
     if (result === undefined) {
         const rgba = parseColor(input);
@@ -456,7 +456,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         const records = list.map(image => { return { image: image, w: image.width, h: image.height } });
 
         const { w, h, fill } = potpack(records);
-        console.log("Width: " + w + " Height: " + h + " " + fill + "%");
+        console.log("Width: " + w + " Height: " + h + " " + (Math.floor(fill*1000)/10) + "%");
 
         for (const record of records) {
             record.image.texX = (record as any).x + 1;
@@ -507,8 +507,8 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         gl.uniform2f(gl.getUniformLocation(this.shaderProgram, "uCanvasSize"), this.canvas.width / 2, this.canvas.height / 2);
     }
 
-    _drawBitmap(img: IOpenGLBitmap, x: number, y: number, width: number, height: number): void {
-        this._drawImage(img.texX, img.texY, img.width, img.height, x, y, width, height, 0xFFFFFF00 + this.state.brightness,
+    _drawBitmap(img: IOpenGLBitmap, x: number, y: number, width: number, height: number, col: number = 0xFFFFFF00): void {
+        this._drawImage(img.texX, img.texY, img.width, img.height, x, y, width, height, col + this.state.brightness,
             this.state.alpha, this.state.alpha, this.state.alpha, this.state.alpha);
     }
 

@@ -16,11 +16,11 @@ class OpenGLTile implements Bitmap, IOpenGLBitmap {
     y: number;
     scale: number;
     name: string = "tile";
-    cached: Record<number, HTMLCanvasElement> = {};
     texX: number = 0;
     texY: number = 0;
     image: HTMLImageElement;
-
+    col: number = 0xFFFFFF00;
+    
     constructor(parent: OpenGLTilesetImpl, image: HTMLImageElement, x: number, y: number, width: number, height: number, scale: number) {
         this.parent = parent;
         this.width = width;
@@ -32,18 +32,29 @@ class OpenGLTile implements Bitmap, IOpenGLBitmap {
         this.image = image;
     }
 
+    copyWithCol(rgba: number): OpenGLTile {
+        const copy = new OpenGLTile(this.parent, this.image, this.x, this.y, this.width, this.height, this.scale);
+        copy.loaded = true;
+        copy.col = rgba;
+        copy.texX = this.texX;
+        copy.texY = this.texY;
+
+        return copy;
+    }
+
     draw(graphics: Graphics, x: number, y: number): void {
         const g = (graphics as OpenGLGraphicsImpl);
         this.texX = this.parent.texX + this.x;
         this.texY = this.parent.texY + this.y;
-        g._drawBitmap(this, x, y, Math.floor(this.width * this.scale), Math.floor(this.height * this.scale));
+
+        g._drawBitmap(this, x, y, Math.floor(this.width * this.scale), Math.floor(this.height * this.scale), this.col);
     }
 
     drawScaled(graphics: Graphics, x: number, y: number, width: number, height: number): void {
         const g = (graphics as OpenGLGraphicsImpl);
         this.texX = this.parent.texX + this.x;
         this.texY = this.parent.texY + this.y;
-        g._drawBitmap(this, x, y, width, height);
+        g._drawBitmap(this, x, y, width, height, this.col);
     }
 
     initOnFirstClick(): void {
@@ -65,6 +76,7 @@ export class OpenGLTilesetImpl implements Tileset, IOpenGLBitmap {
     name: string;
     texX: number = 0;
     texY: number = 0;
+    tintTiles: Record<string, OpenGLTile[]> = {};
 
     constructor(graphics: OpenGLGraphicsImpl, url: string, dataUrlLoader: Promise<Blob> | undefined, tileWidth: number, tileHeight: number, scale: number = 1, pal: Palette | undefined = undefined) {
         this.tileWidth = this.originalTileWidth = tileWidth;
@@ -74,41 +86,6 @@ export class OpenGLTilesetImpl implements Tileset, IOpenGLBitmap {
         this.image = new Image();
 
         this.image.onload = () => {
-            if (shouldPrescaleTilesets() && scale !== 1) {
-                const scaledImage = document.createElement("canvas");
-
-                if (shouldUseXbr()) {
-                    const ctx = scaledImage.getContext("2d");
-                    ctx!.drawImage(this.image!, 0, 0);
-
-                    const originalImageData = ctx!.getImageData(0, 0, this.image!.width, this.image!.height);
-                    const originalPixelView = new Uint32Array(originalImageData.data.buffer);
-                    const scaledPixelView = scale === 2 ? xbr2x(originalPixelView, this.image!.width, this.image!.height) : xbr3x(originalPixelView, this.image!.width, this.image!.height);
-
-                    scaledImage.width = this.image!.width * scale;
-                    scaledImage.height = this.image!.height * scale;
-                    const scaledImageData = new ImageData(new Uint8ClampedArray(scaledPixelView.buffer), scaledImage.width, scaledImage.height);
-
-                    ctx!.putImageData(scaledImageData, 0, 0);
-                } else {
-                    scaledImage.width = this.image!.width * scale;
-                    scaledImage.height = this.image!.height * scale;
-                    const ctx = scaledImage.getContext("2d");
-                    ctx!.imageSmoothingEnabled = false;
-                    (<any>ctx!).webkitImageSmoothingEnabled = false;
-                    ctx?.drawImage(this.image!, 0, 0, scaledImage.width, scaledImage.height);
-                }
-
-
-                this.image = scaledImage;
-                this.tileWidth *= scale;
-                this.tileHeight *= scale;
-                this.originalTileWidth *= scale;
-                this.originalTileHeight *= scale;
-                this.scale = 1;
-                scale = 1;
-            }
-
             this.scanline = Math.floor(this.image!.width / this.tileWidth);
             const depth: number = Math.floor(this.image!.height / this.tileHeight);
             this.tileCount = depth * this.scanline;
@@ -170,16 +147,57 @@ export class OpenGLTilesetImpl implements Tileset, IOpenGLBitmap {
     drawScaled(graphics: Graphics, x: number, y: number, width: number, height: number): void {
     }
 
-    getBlockColorTile(tile: number, tintName: string, col: number[]): Bitmap {
-        return this.getTile(tile);
+    getBlockColorTile(tile: number, tintName: string, rgba: number[]): Bitmap {
+        let tiles = this.tintTiles[tintName];
+        if (!tiles) {
+          tiles = this.tintTiles[tintName] = [];
+        }
+    
+        let tileRecord = tiles[tile];
+        if (!tileRecord) {
+            rgba[0] *= 255;
+            rgba[1] *= 255;
+            rgba[2] *= 255;
+
+            const value = (rgba[0] * (256 * 256 * 256)) + (rgba[1] * (256 * 256)) + (rgba[2] * 256) + Math.floor(rgba[3] * 255);
+            tiles[tile] = tileRecord = this.getTile(tile).copyWithCol(value)
+        }
+        return tileRecord;
     }
 
     getShadedTile(tile: number, tintName: string, shade: number): Bitmap {
-        return this.getTile(tile);
+        let tiles = this.tintTiles[tintName];
+        if (!tiles) {
+          tiles = this.tintTiles[tintName] = [];
+        }
+    
+        let tileRecord = tiles[tile];
+        if (!tileRecord) {
+            const value = (255 * (256 * 256 * 256)) + (255 * (256 * 256)) + (255 * 256) + Math.floor(shade * 255);
+            tiles[tile] = tileRecord = this.getTile(tile).copyWithCol(value)
+        }
+        return tileRecord;
     }
 
-    getTintedTile(tile: number, tintName: string, tint: number[]): Bitmap {
-        return this.getTile(tile);
+    getTintedTile(tile: number, tintName: string, rgba: number[]): Bitmap {
+        let tiles = this.tintTiles[tintName];
+        if (!tiles) {
+          tiles = this.tintTiles[tintName] = [];
+        }
+    
+        let tileRecord = tiles[tile];
+        if (!tileRecord) {
+            rgba[0] *= 255;
+            rgba[1] *= 255;
+            rgba[2] *= 255;
+            if (!rgba[3]) {
+                rgba[3] = 1;
+            }
+
+            const value = (rgba[0] * (256 * 256 * 256)) + (rgba[1] * (256 * 256)) + (rgba[2] * 256) + Math.floor(rgba[3] * 255);
+            tiles[tile] = tileRecord = this.getTile(tile).copyWithCol(value)
+        }
+        return tileRecord;
     }
 
     modify(modification: (imageData: ImageData) => void): Tileset {
@@ -221,7 +239,7 @@ export class OpenGLTilesetImpl implements Tileset, IOpenGLBitmap {
     initOnFirstClick(): void {
     }
 
-    getTile(tile: number): Bitmap {
+    getTile(tile: number): OpenGLTile {
         return this.bitmaps[tile];
     }
 

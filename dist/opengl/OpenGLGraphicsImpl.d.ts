@@ -4,6 +4,7 @@ import { Graphics, Offscreen } from "../Graphics";
 import { IOpenGLBitmap } from "./OpenGLBitmap";
 import { OpenGlOffscreen } from "./OpenGLOffscreen";
 import { RenderingState } from "./RenderingState";
+export declare function colToNumber(input: string): number;
 export declare function getMaxTextureSize(): number;
 export declare class OpenGLGraphicsImpl implements Graphics, RenderingState {
     canvas: HTMLCanvasElement;
@@ -48,7 +49,7 @@ export declare class OpenGLGraphicsImpl implements Graphics, RenderingState {
     initResourceOnLoaded(): void;
     resetState(): void;
     resize(): void;
-    _drawBitmap(img: IOpenGLBitmap, x: number, y: number, width: number, height: number): void;
+    _drawBitmap(img: IOpenGLBitmap, x: number, y: number, width: number, height: number, col?: number): void;
     _drawImage(texX: number, texY: number, texWidth: number, texHeight: number, drawX: number, drawY: number, width: number, height: number, rgba: number, topLeftA: number, topRightA: number, bottomLeftA: number, bottomRightA: number): void;
     glStartContext(): void;
     glCommitContext(): void;
