@@ -762,11 +762,15 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     drawBitmap(x: number, y: number, bitmap: Bitmap): void {
-        bitmap.draw(this, x, y);
+        if (bitmap) {
+            bitmap.draw(this, x, y);
+        }
     }
 
     drawScaledBitmap(x: number, y: number, width: number, height: number, bitmap: Bitmap): void {
-        bitmap.drawScaled(this, x, y, width, height);
+        if (bitmap) {
+            bitmap.drawScaled(this, x, y, width, height);
+        }
     }
 
     clearRect(x: number, y: number, width: number, height: number): void {
