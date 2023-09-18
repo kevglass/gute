@@ -9,6 +9,7 @@ export declare class GraphicsImpl implements Graphics {
     fontSize: number;
     offscreen: Offscreen | null;
     constructor();
+    getError(): string | undefined;
     renderStart(): void;
     renderEnd(): void;
     newResourceLoaded(): void;

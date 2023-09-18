@@ -14,6 +14,7 @@ export interface Graphics {
     initResourceOnLoaded(): void;
     newResourceLoaded(): void;
     get canvas(): HTMLCanvasElement;
+    getError(): string | undefined;
     applyFont(): void;
     smooth(): void;
     copy(): Bitmap;

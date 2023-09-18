@@ -49,8 +49,9 @@ export declare class OpenGLGraphicsImpl implements Graphics, RenderingState {
     initResourceOnLoaded(): void;
     resetState(): void;
     resize(): void;
+    getError(): string | undefined;
     _drawBitmap(img: IOpenGLBitmap, x: number, y: number, width: number, height: number, col?: number): void;
-    _drawImage(texX: number, texY: number, texWidth: number, texHeight: number, drawX: number, drawY: number, width: number, height: number, rgba: number, topLeftA: number, topRightA: number, bottomLeftA: number, bottomRightA: number): void;
+    _drawImage(texX: number, texY: number, texWidth: number, texHeight: number, drawX: number, drawY: number, width: number, height: number, rgba: number, alpha: number): void;
     glStartContext(): void;
     glCommitContext(): void;
     renderStart(): void;

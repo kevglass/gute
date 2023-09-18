@@ -10,4 +10,5 @@ export interface Game {
     onKeyUp(context: GameContext, key: string): void;
     update(context: GameContext, delta: number): void;
     render(context: GameContext, g: Graphics): void;
+    rendererError(message: string): void;
 }

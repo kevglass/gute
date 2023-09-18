@@ -423,7 +423,6 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 
         const textureSize = 4096 * 2;
 
-        // Create a gl texture from image file.
         if (this.atlasTexture) {
             this.gl.deleteTexture(this.atlasTexture);
         }
@@ -458,11 +457,9 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
             this.gl.texSubImage2D(this.gl.TEXTURE_2D, 0, image.texX, image.texY, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image.image!);
         }
 
-        // Tell gl that when draw images scaled up, keep it pixellated and don't smooth it.
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST); 
 
-        // Store texture size in vertex shader.
         this.texWidth = textureSize;
         this.texHeight = textureSize;
         this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), this.texWidth, this.texHeight);
@@ -817,13 +814,11 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     pop(): void {
         this.transformCtx.restore();
 
-        // Remove last state.
         this.state.states.pop();
         this.state.transforms = this.states[this.states.length - 1];
 
         this.resetState();
 
-        // Reapply all transforms.
         for (var transforms of this.state.states) {
             for (var transform of transforms) {
                 var name = transform[0];

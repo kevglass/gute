@@ -94,7 +94,6 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
             this.texture = this.gl.createTexture();
             this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
 
-            // define size and format of level 0
             const level = 0;
             const internalFormat = this.gl.RGBA;
             const border = 0;
@@ -105,7 +104,6 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
                 width, height, border,
                 format, type, data);
 
-            // set the filtering so we don't need mips
             this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
             this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
             this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
