@@ -57,7 +57,7 @@ class OpenGLTile implements Bitmap, IOpenGLBitmap {
         this.texX = this.parent.texX + this.x;
         this.texY = this.parent.texY + this.y;
         this.texIndex = this.parent.texIndex;
-        
+
         g._drawBitmap(this, x, y, width, height, this.col);
     }
 
@@ -184,7 +184,7 @@ export class OpenGLTilesetImpl implements Tileset, IOpenGLBitmap {
         return tileRecord;
     }
 
-    getTintedTile(tile: number, tintName: string, rgba: number[]): Bitmap {
+    getTintedTile(tile: number, tintName: string, source: number[]): Bitmap {
         let tiles = this.tintTiles[tintName];
         if (!tiles) {
           tiles = this.tintTiles[tintName] = [];
@@ -192,6 +192,7 @@ export class OpenGLTilesetImpl implements Tileset, IOpenGLBitmap {
     
         let tileRecord = tiles[tile];
         if (!tileRecord) {
+            const rgba = [...source];
             rgba[0] *= 255;
             rgba[1] *= 255;
             rgba[2] *= 255;
@@ -200,6 +201,7 @@ export class OpenGLTilesetImpl implements Tileset, IOpenGLBitmap {
             }
 
             const value = (rgba[0] * (256 * 256 * 256)) + (rgba[1] * (256 * 256)) + (rgba[2] * 256) + Math.floor(rgba[3] * 255);
+
             tiles[tile] = tileRecord = this.getTile(tile).copyWithCol(value)
         }
         return tileRecord;

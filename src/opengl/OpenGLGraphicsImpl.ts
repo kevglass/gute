@@ -224,6 +224,10 @@ const COL_CACHE: Record<string, number> = {
 };
 
 export function getMaxTextureSize(): number {
+    if (window.WebGLRenderingContext === undefined) {
+        return 0;
+    }
+    
     const canvas = document.createElement("canvas");
     const gl = canvas.getContext('experimental-webgl', { antialias: false, alpha: false, preserveDrawingBuffer: true }) as WebGLRenderingContext
     if (!gl) {
