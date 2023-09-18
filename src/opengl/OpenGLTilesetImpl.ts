@@ -18,6 +18,7 @@ class OpenGLTile implements Bitmap, IOpenGLBitmap {
     name: string = "tile";
     texX: number = 0;
     texY: number = 0;
+    texIndex: number = 0;
     image: HTMLImageElement;
     col: number = 0xFFFFFF00;
     
@@ -46,6 +47,7 @@ class OpenGLTile implements Bitmap, IOpenGLBitmap {
         const g = (graphics as OpenGLGraphicsImpl);
         this.texX = this.parent.texX + this.x;
         this.texY = this.parent.texY + this.y;
+        this.texIndex = this.parent.texIndex;
 
         g._drawBitmap(this, x, y, Math.floor(this.width * this.scale), Math.floor(this.height * this.scale), this.col);
     }
@@ -54,6 +56,8 @@ class OpenGLTile implements Bitmap, IOpenGLBitmap {
         const g = (graphics as OpenGLGraphicsImpl);
         this.texX = this.parent.texX + this.x;
         this.texY = this.parent.texY + this.y;
+        this.texIndex = this.parent.texIndex;
+        
         g._drawBitmap(this, x, y, width, height, this.col);
     }
 
@@ -76,6 +80,7 @@ export class OpenGLTilesetImpl implements Tileset, IOpenGLBitmap {
     name: string;
     texX: number = 0;
     texY: number = 0;
+    texIndex: number = 0;
     tintTiles: Record<string, OpenGLTile[]> = {};
 
     constructor(graphics: OpenGLGraphicsImpl, url: string, dataUrlLoader: Promise<Blob> | undefined, tileWidth: number, tileHeight: number, scale: number = 1, pal: Palette | undefined = undefined) {

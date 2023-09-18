@@ -113,7 +113,7 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
             this.gl.clearColor(0,0,0,1);
             this.gl.clear(this.gl.COLOR_BUFFER_BIT);
             this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
-            this.gl.bindTexture(this.gl.TEXTURE_2D, this.graphics.atlasTexture);
+            this.gl.bindTexture(this.gl.TEXTURE_2D, this.graphics.currentTexture);
         }
     }
 

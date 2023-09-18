@@ -239,7 +239,8 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     extension: ANGLE_instanced_arrays;
 
     images: IOpenGLBitmap[] = [];
-    atlasTexture: WebGLTexture | null = null;
+    atlasTextures: WebGLTexture[] | null = null;
+    currentTexture: WebGLTexture | null = null;
     texWidth: number = 0;
     texHeight: number = 0;
 
@@ -413,7 +414,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     newResourceLoaded(): void {
-        if (this.atlasTexture) {
+        if (this.atlasTextures) {
             this.initResourceOnLoaded();
         }
     }
@@ -421,48 +422,73 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     initResourceOnLoaded(): void {
         console.log("[WEBGL] Reloading texture");
 
-        const textureSize = 4096 * 2;
-
-        if (this.atlasTexture) {
-            this.gl.deleteTexture(this.atlasTexture);
-        }
-        this.atlasTexture = this.gl.createTexture();
-
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.atlasTexture);
-        this.gl.activeTexture(this.gl.TEXTURE0);
-        this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, textureSize, textureSize, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
+        const textureSize = Math.min(this.gl.getParameter(this.gl.MAX_TEXTURE_SIZE), 4096 * 2);
 
         let list = [...this.images];
         list.sort((a, b) => a.height > b.height ? -1 : 1);
 
-        const whitePixel = document.createElement("canvas");
-        const ctx = whitePixel.getContext("2d")!;
-        ctx.fillStyle = '#FFF';
-        ctx.fillRect(0, 0, 1, 1);
-        this.gl.texSubImage2D(this.gl.TEXTURE_2D, 0, 0, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, whitePixel);
-
         const placed: IOpenGLBitmap[] = [];
-        placed.push({ texX: 0, texY: 0, width: 1, height: 1 })
+        placed.push({ texX: 0, texY: 0, width: 1, height: 1, texIndex: -1 })
         const records = list.map(image => { return { image: image, w: image.width, h: image.height } });
 
-        const { w, h, fill } = potpack(records);
-        console.log("Width: " + w + " Height: " + h + " " + (Math.floor(fill * 1000) / 10) + "%");
+        let base = 0;
+        let step = 20;
+        let textureCount = 0;
+        for (let i = 0; i < records.length; i += step) {
+            let { w, h, fill } = potpack(records.slice(base, i));
+            if (w > textureSize || h > textureSize) {
+                let { w, h, fill } = potpack(records.slice(base, i - step));
+                records.slice(base, i - step).forEach(record => record.image.texIndex = textureCount);
+                console.log(base + " -> " + (i - step - 1) + " = " + w + "x" + h);
+                base = i - step;
+                textureCount++;
+            }
+        }
+        let { w, h, fill } = potpack(records.slice(base, records.length));
+        records.slice(base, records.length).forEach(record => record.image.texIndex = textureCount);
+        console.log(base + " -> " + (records.length - 1) + " = " + w + "x" + h);
+        textureCount++;
 
+        console.log("Packed into: " + textureCount + " textures");
         for (const record of records) {
             record.image.texX = (record as any).x + 1;
             record.image.texY = (record as any).y;
         }
 
-        for (var image of list) {
-            this.gl.texSubImage2D(this.gl.TEXTURE_2D, 0, image.texX, image.texY, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image.image!);
+        if (this.atlasTextures) {
+            for (const texture of this.atlasTextures) {
+                this.gl.deleteTexture(texture);
+            }
         }
+        this.atlasTextures = [];
 
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST); 
+        for (let i = 0; i < textureCount; i++) {
+            const texture = this.gl.createTexture();
+            if (texture) {
+                this.atlasTextures.push(texture);
 
-        this.texWidth = textureSize;
-        this.texHeight = textureSize;
-        this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), this.texWidth, this.texHeight);
+                this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
+                this.gl.activeTexture(this.gl.TEXTURE0);
+                this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, textureSize, textureSize, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
+
+                const whitePixel = document.createElement("canvas");
+                const ctx = whitePixel.getContext("2d")!;
+                ctx.fillStyle = '#FFF';
+                ctx.fillRect(0, 0, 1, 1);
+                this.gl.texSubImage2D(this.gl.TEXTURE_2D, 0, 0, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, whitePixel);
+
+                for (var image of list.filter(lImage => lImage.texIndex === i)) {
+                    this.gl.texSubImage2D(this.gl.TEXTURE_2D, 0, image.texX, image.texY, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image.image!);
+                }
+
+                this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
+                this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+
+                this.texWidth = textureSize;
+                this.texHeight = textureSize;
+                this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), this.texWidth, this.texHeight);
+            }
+        }
 
         this.resize();
         this.loaded = true;
@@ -518,11 +544,22 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     _drawBitmap(img: IOpenGLBitmap, x: number, y: number, width: number, height: number, col: number = 0xFFFFFF00): void {
-        this._drawImage(img.texX, img.texY, img.width, img.height, x, y, width, height, col + this.state.brightness,
+        this._drawImage(img.texIndex, img.texX, img.texY, img.width, img.height, x, y, width, height, col + this.state.brightness,
             this.state.alpha);
     }
 
-    _drawImage(texX: number, texY: number, texWidth: number, texHeight: number, drawX: number, drawY: number, width: number, height: number, rgba: number, alpha: number) {
+    _drawImage(texIndex: number, texX: number, texY: number, texWidth: number, texHeight: number, drawX: number, drawY: number, width: number, height: number, rgba: number, alpha: number) {
+        if (!this.atlasTextures) {
+            return;
+        }
+        
+        if ((texIndex >= 0) && (this.atlasTextures![texIndex] !== this.currentTexture)) {
+            this.glCommitContext();
+            this.currentTexture = this.atlasTextures![texIndex];
+            this.gl.bindTexture(this.gl.TEXTURE_2D, this.currentTexture);
+            this.glStartContext();
+        }
+
         let i = this.draws * 6;
 
         this.rgbas[i + 4] = rgba | alpha;
@@ -678,11 +715,11 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         this.glStartContext();
         this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), offscreen.width, offscreen.height);
         this.gl.bindTexture(this.gl.TEXTURE_2D, offscreen.texture);
-        this._drawImage(0, offscreen.height, offscreen.width, -offscreen.height, 0, 0, offscreen.width, offscreen.height, 0xFFFFFF00, 255);
+        this._drawImage(-100, 0, offscreen.height, offscreen.width, -offscreen.height, 0, 0, offscreen.width, offscreen.height, 0xFFFFFF00, 255);
         this.glCommitContext();
 
         this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), this.texWidth, this.texHeight);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.atlasTexture);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.currentTexture);
         this.glStartContext();
     }
 
@@ -693,11 +730,11 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         this.glStartContext();
         this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), offscreen.width, offscreen.height);
         this.gl.bindTexture(this.gl.TEXTURE_2D, offscreen.texture);
-        this._drawImage(0, offscreen.height, offscreen.width, -offscreen.height, x, y, width, height, 0xFFFFFF00, 255);
+        this._drawImage(-100, 0, offscreen.height, offscreen.width, -offscreen.height, x, y, width, height, 0xFFFFFF00, 255);
         this.glCommitContext();
 
         this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), this.texWidth, this.texHeight);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.atlasTexture);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.currentTexture);
         this.glStartContext();
     }
 
@@ -705,7 +742,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         const rgba = colToNumber(col);
         const a = (rgba % 256);
 
-        this._drawImage(0, 0, 1, 1, x, y, width, height, rgba, a)
+        this._drawImage(0, 0, 0, 1, 1, x, y, width, height, rgba, a)
     }
 
     fillCircle(x: number, y: number, radius: number, col: string): void {

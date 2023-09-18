@@ -6,6 +6,7 @@ import { OpenGLGraphicsImpl } from "./OpenGLGraphicsImpl";
 export interface IOpenGLBitmap {
     texX: number;
     texY: number;
+    texIndex: number;
     width: number;
     height: number;
     image?: HTMLImageElement;
@@ -19,6 +20,7 @@ export class OpenGLBitmap implements IOpenGLBitmap {
     image: HTMLImageElement;
     texX: number = 0;
     texY: number = 0;
+    texIndex: number = 0;
 
     constructor(graphics: OpenGLGraphicsImpl, url: string, dataUrlLoader: Promise<string> | undefined, pal: Palette | undefined = undefined) {
         graphics.registerImage(this);
