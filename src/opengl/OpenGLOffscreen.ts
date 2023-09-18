@@ -77,9 +77,6 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
     }
     
     setDimension(width: number, height: number): void {
-        width = Math.floor(width / 2) * 2;
-        height = Math.floor(height / 2) * 2;
-
         if (this.width !== width || this.height !== height) {
             this.width = width;
             this.height = height;
