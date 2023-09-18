@@ -22,6 +22,8 @@ export interface Graphics {
 
   get canvas(): HTMLCanvasElement;
 
+  getError(): string | undefined;
+
   applyFont(): void;
 
   smooth(): void;

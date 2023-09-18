@@ -19,4 +19,6 @@ export interface Game {
   update(context: GameContext, delta: number): void;
 
   render(context: GameContext, g: Graphics): void;
+
+  rendererError(message: string): void;
 }

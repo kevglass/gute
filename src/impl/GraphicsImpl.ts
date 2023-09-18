@@ -93,6 +93,10 @@ export class GraphicsImpl implements Graphics {
     }
   }
 
+  getError(): string | undefined {
+    return undefined;
+  }
+  
   renderStart(): void {
 
   }

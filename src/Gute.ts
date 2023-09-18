@@ -382,6 +382,12 @@ class GameLoop implements GameContext {
     this.game.render(this, this.graphics);
     this.graphics.renderEnd();
 
+    const error = this.graphics.getError();
+    if (error) {
+      this.game.rendererError(error);
+      throw new Error("Renderer Error - " + error);
+    }
+
     requestAnimationFrame(() => {
       this.loop();
     });

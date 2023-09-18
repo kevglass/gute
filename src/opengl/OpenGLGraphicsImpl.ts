@@ -226,7 +226,9 @@ const COL_CACHE: Record<string, number> = {
 export function getMaxTextureSize(): number {
     const canvas = document.createElement("canvas");
     const gl = canvas.getContext('experimental-webgl', { antialias: false, alpha: false, preserveDrawingBuffer: true }) as WebGLRenderingContext
-
+    if (!gl) {
+        return 0;
+    }
     return gl.getParameter(gl.MAX_TEXTURE_SIZE);
 }
 
@@ -290,7 +292,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 
         this.gl = this.canvas.getContext('experimental-webgl', { antialias: false, alpha: false, preserveDrawingBuffer: true }) as WebGLRenderingContext
         const extension = this.gl.getExtension('ANGLE_instanced_arrays') as ANGLE_instanced_arrays
-        this.extension = extension
+        this.extension = extension;
 
         this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
         this.gl.enable(this.gl.BLEND);
@@ -300,21 +302,13 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         const shortsPerImageSize = 2
         const shortsPerImageTexPos = 4
         const bytesPerImageRgba = 4
-        const bytesPerImageCornerAlpha = 4
         const floatsPerImageRotation = 1
 
-        // Total bytes stored into arrayBuffer per image = 28
-        const bytesPerImage = shortsPerImagePosition * 2 + shortsPerImageSize * 2 + shortsPerImageTexPos * 2 + bytesPerImageRgba + bytesPerImageCornerAlpha + floatsPerImageRotation * 4
+        const bytesPerImage = shortsPerImagePosition * 2 + shortsPerImageSize * 2 + shortsPerImageTexPos * 2 + bytesPerImageRgba + floatsPerImageRotation * 4
 
-        // Make a buffer big enough to have all the data for the max images we can show at the same time.
         this.arrayBuffer = new ArrayBuffer(this.maxDraws * bytesPerImage)
-
-        // Make 3 views on the same arrayBuffer, because we store 3 data types into this same byte array.
-        // When we store image positions/UVs into our arrayBuffer we store them as shorts (int16's)
         this.positions = new Int16Array(this.arrayBuffer)
-        // When we store image rotation into this.arrayBuffer arrayBuffer we store it as float, because it's radians.
         this.rotations = new Float32Array(this.arrayBuffer)
-        // When we store image rgbas into our arrayBuffer we store it as 1 4-byte int32.
         this.rgbas = new Uint32Array(this.arrayBuffer)
 
         const vertCode = "\
@@ -323,7 +317,6 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 			attribute vec2 aSize;\
 			attribute vec4 aTexPos;\
 			attribute vec4 aRgba;\
-			attribute vec4 aCornerA;\
 			attribute float aRotation;\
 			\
 			varying highp vec2 fragTexturePos;\
@@ -344,9 +337,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 				}\
 				gl_Position = vec4(drawPos.x - 1.0, 1.0 - drawPos.y, 0.0, 1.0);\
 				fragTexturePos = (aTexPos.xy + aTexPos.zw * aSizeMult) / uTexSize;\
-                vec2 topOrBot = aCornerA.zw * (1.0 - aSizeMult.y) + aCornerA.xy * aSizeMult.y;\
-                float alpha = topOrBot.y * (1.0 - aSizeMult.x) + topOrBot.x * aSizeMult.x;\
-                fragAbgr = vec4(aRgba.w/255.0, aRgba.z/255.0, aRgba.y/255.0, alpha/255.0);\
+                fragAbgr = vec4(aRgba.w/255.0, aRgba.z/255.0, aRgba.y/255.0, aRgba.x/255.0);\
 			}\
 		"
 
@@ -415,7 +406,6 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         setupAttribute("aTexPos", this.gl.SHORT, shortsPerImageTexPos);
         setupAttribute("aRgba", this.gl.UNSIGNED_BYTE, bytesPerImageRgba);
         setupAttribute("aRotation", this.gl.FLOAT, floatsPerImageRotation);
-        setupAttribute("aCornerA", this.gl.UNSIGNED_BYTE, bytesPerImageCornerAlpha);
     }
 
     registerImage(bitmap: IOpenGLBitmap) {
@@ -440,6 +430,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         this.atlasTexture = this.gl.createTexture();
 
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.atlasTexture);
+        this.gl.activeTexture(this.gl.TEXTURE0);
         this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, textureSize, textureSize, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
 
         let list = [...this.images];
@@ -456,7 +447,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         const records = list.map(image => { return { image: image, w: image.width, h: image.height } });
 
         const { w, h, fill } = potpack(records);
-        console.log("Width: " + w + " Height: " + h + " " + (Math.floor(fill*1000)/10) + "%");
+        console.log("Width: " + w + " Height: " + h + " " + (Math.floor(fill * 1000) / 10) + "%");
 
         for (const record of records) {
             record.image.texX = (record as any).x + 1;
@@ -469,7 +460,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 
         // Tell gl that when draw images scaled up, keep it pixellated and don't smooth it.
         this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.NEAREST);
-        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST);
+        this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.NEAREST); 
 
         // Store texture size in vertex shader.
         this.texWidth = textureSize;
@@ -496,29 +487,49 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     resize() {
-        var gl = this.gl;
-
         // Resize the gl viewport to be the new size of the canvas.
-        gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+        this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
 
         // Update the shader variables for canvas size.
         // Sending it to gl now so we don't have to do the math in JavaScript on every draw,
         // since gl wants to draw at a position from 0 to 1, and we want to do drawImage with a screen pixel position.
-        gl.uniform2f(gl.getUniformLocation(this.shaderProgram, "uCanvasSize"), this.canvas.width / 2, this.canvas.height / 2);
+        this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uCanvasSize"), this.canvas.width / 2, this.canvas.height / 2);
+    }
+
+    getError(): string | undefined {
+        if (this.gl.getError() !== 0) {
+            switch (this.gl.getError()) {
+                case WebGLRenderingContext.INVALID_ENUM:
+                    return "Invalid Enum";
+                case WebGLRenderingContext.INVALID_VALUE:
+                    return "Invalid Value";
+                case WebGLRenderingContext.INVALID_OPERATION:
+                    return "Invalid Operation";
+                case WebGLRenderingContext.INVALID_FRAMEBUFFER_OPERATION:
+                    return "Invalid Framebuffer Operation";
+                case WebGLRenderingContext.OUT_OF_MEMORY:
+                    return "Out of Memory";
+                case WebGLRenderingContext.CONTEXT_LOST_WEBGL:
+                    return "Lost WebGL Context";
+
+            }
+
+            return "Unknown error - " + this.gl.getError();
+        }
+
+        return undefined;
     }
 
     _drawBitmap(img: IOpenGLBitmap, x: number, y: number, width: number, height: number, col: number = 0xFFFFFF00): void {
         this._drawImage(img.texX, img.texY, img.width, img.height, x, y, width, height, col + this.state.brightness,
-            this.state.alpha, this.state.alpha, this.state.alpha, this.state.alpha);
+            this.state.alpha);
     }
 
-    _drawImage(texX: number, texY: number, texWidth: number, texHeight: number, drawX: number, drawY: number, width: number, height: number, rgba: number, topLeftA: number, topRightA: number, bottomLeftA: number, bottomRightA: number) {
-        let i = this.draws * 7;
+    _drawImage(texX: number, texY: number, texWidth: number, texHeight: number, drawX: number, drawY: number, width: number, height: number, rgba: number, alpha: number) {
+        let i = this.draws * 6;
 
-        this.rgbas[i + 4] = rgba;
+        this.rgbas[i + 4] = rgba | alpha;
         this.rotations[i + 5] = this.state.rotation * Math.sign(this.state.scaleX) * Math.sign(this.state.scaleY);
-        this.rgbas[i + 6] = (Math.floor(topLeftA) * 0x1000000) + (topRightA << 16) + (bottomLeftA << 8) + Math.floor(bottomRightA);
-
         i *= 2;
 
         var positions = this.positions;
@@ -599,9 +610,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 
     glCommitContext(): void {
         if (this.draws > 0) {
-            this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.glBuffer);
-            this.gl.bufferData(this.gl.ARRAY_BUFFER, this.arrayBuffer, this.gl.DYNAMIC_DRAW)
-            this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, this.rgbas.subarray(0, this.draws * 7));
+            this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, this.rgbas.subarray(0, this.draws * 6));
             this.extension.drawElementsInstancedANGLE(this.gl.TRIANGLES, 6, this.gl.UNSIGNED_BYTE, 0, this.draws);
             this.draws = 0;
         }
@@ -672,7 +681,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         this.glStartContext();
         this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), offscreen.width, offscreen.height);
         this.gl.bindTexture(this.gl.TEXTURE_2D, offscreen.texture);
-        this._drawImage(0, offscreen.height, offscreen.width, -offscreen.height, 0, 0, offscreen.width, offscreen.height, 0xFFFFFF00, 255, 255, 255, 255);
+        this._drawImage(0, offscreen.height, offscreen.width, -offscreen.height, 0, 0, offscreen.width, offscreen.height, 0xFFFFFF00, 255);
         this.glCommitContext();
 
         this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), this.texWidth, this.texHeight);
@@ -687,7 +696,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         this.glStartContext();
         this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), offscreen.width, offscreen.height);
         this.gl.bindTexture(this.gl.TEXTURE_2D, offscreen.texture);
-        this._drawImage(0, offscreen.height, offscreen.width, -offscreen.height, x, y, width, height, 0xFFFFFF00, 255, 255, 255, 255);
+        this._drawImage(0, offscreen.height, offscreen.width, -offscreen.height, x, y, width, height, 0xFFFFFF00, 255);
         this.glCommitContext();
 
         this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), this.texWidth, this.texHeight);
@@ -699,7 +708,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         const rgba = colToNumber(col);
         const a = (rgba % 256);
 
-        this._drawImage(0, 0, 1, 1, x, y, width, height, rgba, a, a, a, a)
+        this._drawImage(0, 0, 1, 1, x, y, width, height, rgba, a)
     }
 
     fillCircle(x: number, y: number, radius: number, col: string): void {
