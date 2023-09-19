@@ -289,6 +289,10 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         (<any>this.canvas).style.fontSmooth = "never";
         (<any>this.canvas).style.webkitFontSmoothing = "none";
 
+        this.canvas.addEventListener("webglcontextlost", (event) => {
+            event.preventDefault();
+        }, false);
+
         if (isFirefox) {
             this.canvas.style.imageRendering = "crisp-edges";
         } else {
