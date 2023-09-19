@@ -566,6 +566,11 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 
         let i = this.draws * 6;
 
+        // clamp alpha to prevent overflow
+        if (alpha > 255) {
+            alpha = 255;
+        }
+
         this.rgbas[i + 4] = rgba | alpha;
         this.rotations[i + 5] = this.state.rotation * Math.sign(this.state.scaleX) * Math.sign(this.state.scaleY);
         i *= 2;
