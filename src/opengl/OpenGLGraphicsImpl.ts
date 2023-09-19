@@ -743,9 +743,11 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     fillRect(x: number, y: number, width: number, height: number, col: string): void {
-        const rgba = colToNumber(col);
-        const a = (rgba % 256);
-
+        let rgba = colToNumber(col);
+        const a = this.alpha < 255 ? this.alpha : (rgba % 256);
+        if (a < 255) {
+            rgba = (rgba & 0xFFFFFF00) | a;
+        }
         this._drawImage(0, 0, 0, 1, 1, x, y, width, height, rgba, a)
     }
 

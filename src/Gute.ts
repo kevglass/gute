@@ -369,6 +369,16 @@ class GameLoop implements GameContext {
   }
 
   loop(): void {
+    const error = this.graphics.getError();
+    if (error) {
+      this.game.rendererError(error);
+      throw new Error("Renderer Error - " + error);
+    }
+
+    requestAnimationFrame(() => {
+      this.loop();
+    });
+
     const now: number = new Date().getTime();
     let delta: number = 0;
     if (this.lastFrame !== 0) {
@@ -381,16 +391,6 @@ class GameLoop implements GameContext {
     this.game.update(this, delta);
     this.game.render(this, this.graphics);
     this.graphics.renderEnd();
-
-    const error = this.graphics.getError();
-    if (error) {
-      this.game.rendererError(error);
-      throw new Error("Renderer Error - " + error);
-    }
-
-    requestAnimationFrame(() => {
-      this.loop();
-    });
   }
 
   getZipProgress(): number {
