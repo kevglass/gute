@@ -397,7 +397,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         const setupAttribute = (name: string, dataType: number, amount: number) => {
             if (this.shaderProgram) {
                 const attribute = this.gl.getAttribLocation(this.shaderProgram, name)
-                if (attribute) {
+                if (attribute !== -1) {
                     this.gl.enableVertexAttribArray(attribute)
                     this.gl.vertexAttribPointer(attribute, amount, dataType, false, bytesPerImage, byteOffset)
                     extension.vertexAttribDivisorANGLE(attribute, 1)
@@ -406,6 +406,8 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
                     if (dataType == this.gl.FLOAT)
                         amount *= 4
                     byteOffset += amount
+                } else {
+                    console.log("Attribute not found: " + name);
                 }
             }
         }
@@ -528,7 +530,8 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     getError(): string | undefined {
-        if (this.gl.getError() !== 0) {
+        const error = this.gl.getError();
+        if (error !== 0) {
             switch (this.gl.getError()) {
                 case WebGLRenderingContext.INVALID_ENUM:
                     return "Invalid Enum";
