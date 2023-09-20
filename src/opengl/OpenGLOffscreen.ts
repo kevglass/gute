@@ -26,6 +26,7 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
     clipX2: number = 0;
     clipY2: number = 0;
     alpha: number = 255;
+    refreshRequired: boolean = false;
 
     constructor(gl: WebGLRenderingContext, graphics: OpenGLGraphicsImpl, id: number) {
         this.gl = gl;
@@ -43,11 +44,23 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
         return this.height;
     }
 
+    recover(): void {
+        this.fb = null;
+        this.texture = null;
+        this.refreshRequired = true;
+        this.setDimension(this.width, this.height);
+    }
+
     use(): void {
+        if (!this.graphics.shaderProgram) {
+            return;
+        }
+
         if (this.inuse) {
             return;
         }
 
+        this.refreshRequired = false;
         this.graphics.glCommitContext();
 
         this.inuse = true;
@@ -62,6 +75,10 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
     }
 
     unuse(): void {
+        if (!this.graphics.shaderProgram) {
+            return;
+        }
+
         if (!this.inuse) {
             return;
         }
@@ -76,8 +93,12 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
         this.graphics.glStartContext();
     }
     
+    needsRefresh(): boolean {
+        return this.refreshRequired;
+    }
+
     setDimension(width: number, height: number): void {
-        if (this.width !== width || this.height !== height) {
+        if (this.width !== width || this.height !== height || !this.fb) {
             this.width = width;
             this.height = height;
 

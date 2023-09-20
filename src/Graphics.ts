@@ -13,6 +13,8 @@ export interface Offscreen {
   getHeight(): number;
 
   setDimension(width: number, height: number): void;
+
+  needsRefresh(): boolean;
 }
 
 export interface Graphics {

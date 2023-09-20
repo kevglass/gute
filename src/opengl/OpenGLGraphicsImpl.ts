@@ -240,7 +240,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     canvas: HTMLCanvasElement;
     offscreen: Offscreen | null = null;
     gl: WebGLRenderingContext;
-    extension: ANGLE_instanced_arrays;
+    extension?: ANGLE_instanced_arrays;
 
     images: IOpenGLBitmap[] = [];
     atlasTextures: WebGLTexture[] | null = null;
@@ -251,13 +251,13 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     offscreenId: number = 1;
     offscreens: OpenGlOffscreen[] = [];
     loaded: boolean = false;
-    arrayBuffer: ArrayBuffer;
-    shaderProgram: WebGLProgram;
-    glBuffer: WebGLBuffer | null;
+    arrayBuffer?: ArrayBuffer;
+    shaderProgram?: WebGLProgram;
+    glBuffer?: WebGLBuffer | null;
     maxDraws: number = 10000;
-    positions: Int16Array;
-    rotations: Float32Array;
-    rgbas: Uint32Array;
+    positions?: Int16Array;
+    rotations?: Float32Array;
+    rgbas?: Uint32Array;
     draws: number = 0;
 
     alphas: number[] = [];
@@ -290,7 +290,12 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         (<any>this.canvas).style.webkitFontSmoothing = "none";
 
         this.canvas.addEventListener("webglcontextlost", (event) => {
+            this.lostContext();
             event.preventDefault();
+        }, false);
+
+        this.canvas.addEventListener("webglcontextrestored", (event) => {
+            this.recoverContext();
         }, false);
 
         if (isFirefox) {
@@ -299,7 +304,28 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
             this.canvas.style.imageRendering = "pixelated";
         }
 
-        this.gl = this.canvas.getContext('experimental-webgl', { antialias: false, alpha: false, preserveDrawingBuffer: true }) as WebGLRenderingContext
+        this.gl = this.canvas.getContext('experimental-webgl', { antialias: false, alpha: false, preserveDrawingBuffer: true }) as WebGLRenderingContext;
+        this.initGlResources();
+    }
+
+    private lostContext(): void {
+        console.log("LOST GL CONTEXT");
+        this.shaderProgram = undefined;
+        this.atlasTextures = null;
+    }
+
+    private recoverContext(): void {
+        console.log("RECOVERED GL CONTEXT");
+        this.initGlResources();
+        this.initResourceOnLoaded();
+        for (const offscreen of this.offscreens) {
+            offscreen.recover();
+        }
+        this.resize();
+        console.log("RECREATE GL RESOURCES");
+    }
+
+    private initGlResources(): void {
         const extension = this.gl.getExtension('ANGLE_instanced_arrays') as ANGLE_instanced_arrays
         this.extension = extension;
 
@@ -496,7 +522,9 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 
                 this.texWidth = textureSize;
                 this.texHeight = textureSize;
-                this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), this.texWidth, this.texHeight);
+                if (this.shaderProgram) {
+                    this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), this.texWidth, this.texHeight);
+                }
             }
         }
 
@@ -526,7 +554,9 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         // Update the shader variables for canvas size.
         // Sending it to gl now so we don't have to do the math in JavaScript on every draw,
         // since gl wants to draw at a position from 0 to 1, and we want to do drawImage with a screen pixel position.
-        this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uCanvasSize"), this.canvas.width / 2, this.canvas.height / 2);
+        if (this.shaderProgram) {
+            this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uCanvasSize"), this.canvas.width / 2, this.canvas.height / 2);
+        }
     }
 
     getError(): string | undefined {
@@ -561,6 +591,9 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 
     _drawImage(texIndex: number, texX: number, texY: number, texWidth: number, texHeight: number, drawX: number, drawY: number, width: number, height: number, rgba: number, alpha: number) {
         if (!this.atlasTextures) {
+            return;
+        }
+        if (!this.rgbas || !this.rotations || !this.positions) {
             return;
         }
         
@@ -659,7 +692,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     glCommitContext(): void {
-        if (this.draws > 0) {
+        if (this.draws > 0 && this.rgbas && this.extension) {
             this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, this.rgbas.subarray(0, this.draws * 6));
             this.extension.drawElementsInstancedANGLE(this.gl.TRIANGLES, 6, this.gl.UNSIGNED_BYTE, 0, this.draws);
             this.draws = 0;
@@ -725,6 +758,10 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     drawOffscreen(screen: Offscreen): void {
+        if (!this.shaderProgram) {
+            return;
+        }
+
         const offscreen = (screen as OpenGlOffscreen);
         this.glCommitContext();
 
@@ -740,6 +777,10 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     drawScaledOffscreen(screen: Offscreen, x: number, y: number, width: number, height: number): void {
+        if (!this.shaderProgram) {
+            return;
+        }
+
         const offscreen = (screen as OpenGlOffscreen);
         this.glCommitContext();
 

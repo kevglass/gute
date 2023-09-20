@@ -17,6 +17,10 @@ class OffscreenImpl implements Offscreen {
     this.ctx = ctx;
   }
 
+  needsRefresh(): boolean {
+    return false;
+  }
+  
   getWidth(): number {
     return this.canvas.width;
   }
