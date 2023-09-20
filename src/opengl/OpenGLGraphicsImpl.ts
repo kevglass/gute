@@ -532,7 +532,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     getError(): string | undefined {
         const error = this.gl.getError();
         if (error !== 0) {
-            switch (this.gl.getError()) {
+            switch (error) {
                 case WebGLRenderingContext.INVALID_ENUM:
                     return "Invalid Enum";
                 case WebGLRenderingContext.INVALID_VALUE:
