@@ -97,17 +97,24 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
         return this.refreshRequired;
     }
 
+    release(): void {
+        if (this.texture) {
+            this.gl.deleteTexture(this.texture);
+        }
+        if (this.fb) {
+            this.gl.deleteFramebuffer(this.fb);
+        }
+
+        this.width = 0;
+        this.height = 0;
+    }
+
     setDimension(width: number, height: number): void {
         if (this.width !== width || this.height !== height || !this.fb) {
             this.width = width;
             this.height = height;
 
-            if (this.texture) {
-                this.gl.deleteTexture(this.texture);
-            }
-            if (this.fb) {
-                this.gl.deleteFramebuffer(this.fb);
-            }
+            this.release();
 
             this.texture = this.gl.createTexture();
             this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);

@@ -306,6 +306,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 
         this.gl = this.canvas.getContext('experimental-webgl', { antialias: false, alpha: false, preserveDrawingBuffer: true }) as WebGLRenderingContext;
         this.initGlResources();
+        console.log("Create GL Graphics");
     }
 
     private lostContext(): void {
@@ -326,6 +327,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     private initGlResources(): void {
+        console.log("Init GL");
         const extension = this.gl.getExtension('ANGLE_instanced_arrays') as ANGLE_instanced_arrays
         this.extension = extension;
 

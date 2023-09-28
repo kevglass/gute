@@ -15,6 +15,8 @@ export interface Offscreen {
   setDimension(width: number, height: number): void;
 
   needsRefresh(): boolean;
+
+  release(): void;
 }
 
 export interface Graphics {

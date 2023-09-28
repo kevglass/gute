@@ -17,6 +17,9 @@ class OffscreenImpl implements Offscreen {
     this.ctx = ctx;
   }
 
+  release(): void {
+  }
+  
   needsRefresh(): boolean {
     return false;
   }
