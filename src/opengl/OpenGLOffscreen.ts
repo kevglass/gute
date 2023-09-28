@@ -103,6 +103,7 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
         }
         if (this.fb) {
             this.gl.deleteFramebuffer(this.fb);
+            this.fb = 0;
         }
 
         this.width = 0;
@@ -111,10 +112,10 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
 
     setDimension(width: number, height: number): void {
         if (this.width !== width || this.height !== height || !this.fb) {
+            this.release();
+
             this.width = width;
             this.height = height;
-
-            this.release();
 
             this.texture = this.gl.createTexture();
             this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture);
