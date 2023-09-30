@@ -536,7 +536,6 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         this.currentContextState.clipY = 0;
         this.currentContextState.clipY2 = 0;
         this.currentContextState.alpha = 255;
-        this.transformCtx.resetTransform();
     }
 
     resize() {
@@ -617,6 +616,11 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         drawY2 = t2.y;
         width = drawX2 - drawX;
         height = drawY2 - drawY;
+
+        drawX = Math.floor(drawX);
+        drawY = Math.floor(drawY);
+        drawX2 = Math.floor(drawX2);
+        drawY2 = Math.floor(drawY2);
 
         if (this.currentContextState.clipX < this.currentContextState.clipX2) {
             if (drawX > this.currentContextState.clipX2) {
