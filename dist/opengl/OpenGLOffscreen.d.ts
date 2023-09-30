@@ -1,6 +1,7 @@
 import { Offscreen } from "../Graphics";
 import { OpenGLGraphicsImpl } from "./OpenGLGraphicsImpl";
 import { RenderingState } from "./RenderingState";
+
 export declare class OpenGlOffscreen implements Offscreen, RenderingState {
     width: number;
     height: number;

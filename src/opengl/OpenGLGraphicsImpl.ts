@@ -212,6 +212,10 @@ export function colToNumber(input: string): number {
         const value = (rgba[0] * (256 * 256 * 256)) + (rgba[1] * (256 * 256)) + (rgba[2] * 256) + Math.floor(rgba[3] * 255);
         COL_CACHE[input] = value;
         result = value;
+
+        if (Object.keys(COL_CACHE).length === 2000) {
+            alert("2000 color caches have been created");
+        }
     }
 
     return result;
@@ -237,6 +241,8 @@ export function getMaxTextureSize(): number {
 }
 
 export class OpenGLGraphicsImpl implements Graphics, RenderingState {
+    static NULL_COPY: NullBitmap = new NullBitmap();
+    
     canvas: HTMLCanvasElement;
     offscreen: Offscreen | null = null;
     gl: WebGLRenderingContext;
@@ -260,22 +266,13 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     rgbas?: Uint32Array;
     draws: number = 0;
 
-    alphas: number[] = [];
-    transforms: any[] = [];
-    states: any[] = [];
-    brightness: number = 0;
-    translateX: number = 0;
-    translateY: number = 0;
-    scaleX: number = 1;
-    scaleY: number = 1;
-    rotation: number = 0;
     clipX: number = 0;
     clipY: number = 0;
     clipX2: number = 0;
     clipY2: number = 0;
     alpha: number = 255;
 
-    state: RenderingState;
+    currentContextState: RenderingState;
 
     transformCanvas: HTMLCanvasElement;
     transformCtx: CanvasRenderingContext2D;
@@ -284,7 +281,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         this.transformCanvas = document.createElement("canvas");
         this.transformCtx = this.transformCanvas.getContext("2d")!;
 
-        this.state = this;
+        this.currentContextState = this;
         this.canvas = <HTMLCanvasElement>document.getElementById("gamecanvas");
         (<any>this.canvas).style.fontSmooth = "never";
         (<any>this.canvas).style.webkitFontSmoothing = "none";
@@ -534,17 +531,12 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 
     resetState(): void {
         this.gl.blendFunc(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA);
-        this.state.alphas = [];
-        this.state.translateX = 0;
-        this.state.translateY = 0;
-        this.state.scaleX = 1;
-        this.state.scaleY = 1;
-        this.state.rotation = 0;
-        this.state.clipX = 0;
-        this.state.clipX2 = 0;
-        this.state.clipY = 0;
-        this.state.clipY2 = 0;
-        this.state.alpha = 255;
+        this.currentContextState.clipX = 0;
+        this.currentContextState.clipX2 = 0;
+        this.currentContextState.clipY = 0;
+        this.currentContextState.clipY2 = 0;
+        this.currentContextState.alpha = 255;
+        this.transformCtx.resetTransform();
     }
 
     resize() {
@@ -585,8 +577,8 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     _drawBitmap(img: IOpenGLBitmap, x: number, y: number, width: number, height: number, col: number = 0xFFFFFF00): void {
-        this._drawImage(img.texIndex, img.texX, img.texY, img.width, img.height, x, y, width, height, col + this.state.brightness,
-            this.state.alpha);
+        this._drawImage(img.texIndex, img.texX, img.texY, img.width, img.height, x, y, width, height, col,
+            this.currentContextState.alpha);
     }
 
     _drawImage(texIndex: number, texX: number, texY: number, texWidth: number, texHeight: number, drawX: number, drawY: number, width: number, height: number, rgba: number, alpha: number) {
@@ -612,78 +604,71 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         }
 
         this.rgbas[i + 4] = rgba | alpha;
-        this.rotations[i + 5] = this.state.rotation * Math.sign(this.state.scaleX) * Math.sign(this.state.scaleY);
+        this.rotations[i + 5] = 0;
         i *= 2;
 
-        var positions = this.positions;
+        let drawX2 = drawX + width;
+        let drawY2 = drawY + height;
+        const t1 = this.transformCtx.getTransform().transformPoint({x : drawX, y: drawY });
+        const t2 = this.transformCtx.getTransform().transformPoint({x : drawX2, y: drawY2 });
+        drawX = t1.x;
+        drawY = t1.y;
+        drawX2 = t2.x;
+        drawY2 = t2.y;
+        width = drawX2 - drawX;
+        height = drawY2 - drawY;
 
-        if (this.state.rotation) {
-            const dist = Math.sqrt(drawX * drawX + drawY * drawY);
-            const angle = Math.atan2(drawY, drawX);
-            drawX = Math.cos(angle + this.state.rotation) * dist;
-            drawY = Math.sin(angle + this.state.rotation) * dist;
-        }
-
-        width *= this.state.scaleX;
-        height *= this.state.scaleY;
-        drawX *= this.state.scaleX;
-        drawY *= this.state.scaleY;
-        drawX += this.state.translateX;
-        drawY += this.state.translateY;
-
-        if (this.state.clipX < this.state.clipX2) {
-            if (drawX > this.state.clipX2) {
+        if (this.currentContextState.clipX < this.currentContextState.clipX2) {
+            if (drawX > this.currentContextState.clipX2) {
                 return;
             }
-            const drawX2 = drawX + width;
-            if (drawX2 < this.state.clipX) {
+            if (drawX2 < this.currentContextState.clipX) {
                 return;
             }
-            if (drawX2 > this.state.clipX2) {
-                const showPercent = 1 - (drawX2 - this.state.clipX2) / width;
+            if (drawX2 > this.currentContextState.clipX2) {
+                const showPercent = 1 - (drawX2 - this.currentContextState.clipX2) / width;
                 texWidth *= showPercent;
                 width *= showPercent;
             }
-            if (drawX < this.state.clipX) {
-                const showPercent = 1 - (this.state.clipX - drawX) / width;
-                width -= this.state.clipX - drawX;
-                drawX = this.state.clipX;
+            if (drawX < this.currentContextState.clipX) {
+                const showPercent = 1 - (this.currentContextState.clipX - drawX) / width;
+                width -= this.currentContextState.clipX - drawX;
+                drawX = this.currentContextState.clipX;
                 texX += texWidth * (1 - showPercent);
                 texWidth *= showPercent;
             }
         }
 
-        if (this.state.clipY < this.state.clipY2) {
-            if (drawY > this.state.clipY2) {
+        if (this.currentContextState.clipY < this.currentContextState.clipY2) {
+            if (drawY > this.currentContextState.clipY2) {
                 return;
             }
-            const drawY2 = drawY + height;
-            if (drawY2 < this.state.clipY) {
+            if (drawY2 < this.currentContextState.clipY) {
                 return;
             }
-            if (drawY2 > this.state.clipY2) {
-                const showPercent = 1 - (drawY2 - this.state.clipY2) / height;
+            if (drawY2 > this.currentContextState.clipY2) {
+                const showPercent = 1 - (drawY2 - this.currentContextState.clipY2) / height;
                 texHeight *= showPercent;
                 height *= showPercent;
             }
-            if (drawY < this.state.clipY) {
-                const showPercent = 1 - (this.state.clipY - drawY) / height;
-                height -= this.state.clipY - drawY;
-                drawY = this.state.clipY;
+            if (drawY < this.currentContextState.clipY) {
+                const showPercent = 1 - (this.currentContextState.clipY - drawY) / height;
+                height -= this.currentContextState.clipY - drawY;
+                drawY = this.currentContextState.clipY;
                 texY += texHeight * (1 - showPercent);
                 texHeight *= showPercent;
             }
         }
 
-        positions[i] = drawX;
-        positions[i + 1] = drawY;
-        positions[i + 2] = width;
-        positions[i + 3] = height;
+        this.positions[i] = drawX;
+        this.positions[i + 1] = drawY;
+        this.positions[i + 2] = width;
+        this.positions[i + 3] = height;
 
-        positions[i + 4] = texX;
-        positions[i + 5] = texY;
-        positions[i + 6] = texWidth;
-        positions[i + 7] = texHeight;
+        this.positions[i + 4] = texX;
+        this.positions[i + 5] = texY;
+        this.positions[i + 6] = texWidth;
+        this.positions[i + 7] = texHeight;
 
         this.draws++
     }
@@ -700,8 +685,6 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     renderStart(): void {
-        this.state.transforms = [];
-        this.state.states = [this.state.transforms];
         this.draws = 0;
         this.resetState();
 
@@ -719,7 +702,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     copy(): Bitmap {
-        return new NullBitmap();
+        return OpenGLGraphicsImpl.NULL_COPY;
     }
 
     getOffscreen(): Offscreen | null {
@@ -727,20 +710,22 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     clip(x: number, y: number, width: number, height: number): void {
-        x *= this.state.scaleX;
-        y *= this.state.scaleY;
-        x += this.state.translateX;
-        y += this.state.translateY;
-        this.state.clipX = x;
-        this.state.clipY = y;
-        this.state.clipX2 = x + width;
-        this.state.clipY2 = y + height;
+        const t1 = this.transformCtx.getTransform().transformPoint({ x, y });
+        const t2 = this.transformCtx.getTransform().transformPoint({ x: x + width , y: y + height });
+
+        this.currentContextState.clipX = t1.x;
+        this.currentContextState.clipY = t1.y;
+        this.currentContextState.clipX2 = t2.x;
+        this.currentContextState.clipY2 = t2.y;
     }
 
     createOffscreen(): Offscreen {
         this.offscreenId++;
         const offscreen = new OpenGlOffscreen(this.gl, this, this.offscreenId);
         this.offscreens.push(offscreen);
+        if (this.offscreens.length === 50) {
+            console.log("50 offscreens have been created!");
+        }
 
         return offscreen;
     }
@@ -873,65 +858,20 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     translate(x: number, y: number) {
-        x = Math.floor(x)
-        y = Math.floor(y)
-        this._translate(x, y)
         this.transformCtx.translate(x, y);
-        this.state.transforms.push(["translate", x, y])
-    }
-
-    _translate(x: number, y: number) {
-        x *= this.state.scaleX;
-        y *= this.state.scaleY;
-        if (this.state.rotation) {
-            var angle = Math.atan2(y, x);
-            var dist = Math.sqrt(x * x + y * y);
-            this.state.translateX += Math.cos(angle + this.state.rotation * Math.sign(this.state.scaleX)) * dist;
-            this.state.translateY += Math.sin(angle + this.state.rotation * Math.sign(this.state.scaleY)) * dist;
-        } else {
-            this.state.translateX += x;
-            this.state.translateY += y;
-        }
     }
 
     scale(x: number, y: number): void {
-        this.state.scaleX *= x;
-        this.state.scaleY *= y;
         this.transformCtx.scale(x, y);
-        this.state.transforms.push(["scale", x, y]);
     }
 
     push(): void {
         this.transformCtx.save();
-
-        this.state.transforms = [];
-        this.state.states.push(this.state.transforms);
-        this.state.alphas.push(this.state.alpha);
-
-        if (this.state.states.length > 99) console.error("save() without restore()!");
     }
 
     pop(): void {
         this.transformCtx.restore();
-
-        this.state.states.pop();
-        this.state.transforms = this.states[this.states.length - 1];
-
         this.resetState();
-
-        for (var transforms of this.state.states) {
-            for (var transform of transforms) {
-                var name = transform[0];
-                if (name == 'translate') {
-                    this._translate(transform[1], transform[2]);
-                } else if (name == 'scale') {
-                    this.state.scaleX *= transform[1];
-                    this.state.scaleY *= transform[2];
-                } else if (name == 'rotate') {
-                    this.state.rotation += transform[1];
-                }
-            }
-        }
     }
 
     getWidth(): number {
@@ -963,7 +903,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     setAlpha(alpha: number): void {
-        this.state.alpha = Math.floor(alpha * 255);
+        this.currentContextState.alpha = Math.floor(alpha * 255);
     }
 
     getTransform(): DOMMatrix {

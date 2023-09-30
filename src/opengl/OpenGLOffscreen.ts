@@ -12,15 +12,6 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
     id: number = 0;
     inuse: boolean = false;
 
-    alphas: number[] = [];
-    transforms: any[] = [];
-    states: any[] = [];
-    brightness: number = 0;
-    translateX: number = 0;
-    translateY: number = 0;
-    scaleX: number = 1;
-    scaleY: number = 1;
-    rotation: number = 0;
     clipX: number = 0;
     clipY: number = 0;
     clipX2: number = 0;
@@ -69,7 +60,7 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
         
         this.gl.viewport(0, 0, this.width, this.height);
 
-        this.graphics.state = this;
+        this.graphics.currentContextState = this;
         this.graphics.resetState();
         this.graphics.glStartContext();
     }
@@ -85,7 +76,7 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
         
         this.inuse = false;
         this.graphics.glCommitContext();
-        this.graphics.state = this.graphics;
+        this.graphics.currentContextState = this.graphics;
 
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
         this.gl.viewport(0, 0, this.graphics.canvas.width, this.graphics.canvas.height);

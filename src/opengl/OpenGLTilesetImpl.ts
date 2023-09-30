@@ -1,8 +1,6 @@
 import { Bitmap } from "../Bitmap";
-import { shouldPrescaleTilesets, shouldUseXbr } from "../Gute";
 import { Tileset } from "../Tileset";
 import { Palette } from "../impl/Palette";
-import { xbr2x, xbr3x, xbr4x } from 'xbr-js';
 import { OpenGLGraphicsImpl } from "./OpenGLGraphicsImpl";
 import { IOpenGLBitmap } from "./OpenGLBitmap";
 import { Graphics } from "../Graphics";
