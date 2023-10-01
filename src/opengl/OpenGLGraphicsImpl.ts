@@ -300,7 +300,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
             this.canvas.style.imageRendering = "pixelated";
         }
 
-        this.gl = this.canvas.getContext('experimental-webgl', { antialias: false, alpha: false, preserveDrawingBuffer: false }) as WebGLRenderingContext;
+        this.gl = this.canvas.getContext('experimental-webgl', { antialias: false, alpha: false, preserveDrawingBuffer: true }) as WebGLRenderingContext;
         this.initGlResources();
     }
 
@@ -354,11 +354,19 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 			uniform vec2 uTexSize;\
 			\
 			void main(void){\
-				vec2 drawPos;\
-				drawPos = (aPos + aSize*aSizeMult) / uCanvasSize;\
-				gl_Position = vec4(drawPos.x - 1.0, 1.0 - drawPos.y, 0.0, 1.0);\
+				vec2 drawPos = (aPos + aSize*aSizeMult) / uCanvasSize;\
+                \
+				gl_Position.x = drawPos.x - 1.0; \
+                gl_Position.y = 1.0 - drawPos.y; \
+                gl_Position.z = 0.0; \
+                gl_Position.w = 1.0; \
+                \
 				fragTexturePos = (aTexPos.xy + aTexPos.zw * aSizeMult) / uTexSize;\
-                fragAbgr = vec4(aRgba.w/255.0, aRgba.z/255.0, aRgba.y/255.0, aRgba.x/255.0);\
+                \
+                fragAbgr.x = aRgba.w/255.0; \
+                fragAbgr.y = aRgba.z/255.0; \
+                fragAbgr.z = aRgba.y/255.0; \
+                fragAbgr.w = aRgba.x/255.0; \
 			}\
 		"
 
