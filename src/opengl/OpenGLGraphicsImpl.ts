@@ -262,7 +262,6 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     glBuffer?: WebGLBuffer | null;
     maxDraws: number = 10000;
     positions?: Int16Array;
-    rotations?: Float32Array;
     rgbas?: Uint32Array;
     draws: number = 0;
 
@@ -301,7 +300,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
             this.canvas.style.imageRendering = "pixelated";
         }
 
-        this.gl = this.canvas.getContext('experimental-webgl', { antialias: false, alpha: false, preserveDrawingBuffer: true }) as WebGLRenderingContext;
+        this.gl = this.canvas.getContext('experimental-webgl', { antialias: false, alpha: false, preserveDrawingBuffer: false }) as WebGLRenderingContext;
         this.initGlResources();
     }
 
@@ -334,13 +333,11 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         const shortsPerImageSize = 2
         const shortsPerImageTexPos = 4
         const bytesPerImageRgba = 4
-        const floatsPerImageRotation = 1
 
-        const bytesPerImage = shortsPerImagePosition * 2 + shortsPerImageSize * 2 + shortsPerImageTexPos * 2 + bytesPerImageRgba + floatsPerImageRotation * 4
+        const bytesPerImage = shortsPerImagePosition * 2 + shortsPerImageSize * 2 + shortsPerImageTexPos * 2 + bytesPerImageRgba;
 
         this.arrayBuffer = new ArrayBuffer(this.maxDraws * bytesPerImage)
         this.positions = new Int16Array(this.arrayBuffer)
-        this.rotations = new Float32Array(this.arrayBuffer)
         this.rgbas = new Uint32Array(this.arrayBuffer)
 
         const vertCode = "\
@@ -349,7 +346,6 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 			attribute vec2 aSize;\
 			attribute vec4 aTexPos;\
 			attribute vec4 aRgba;\
-			attribute float aRotation;\
 			\
 			varying highp vec2 fragTexturePos;\
 			varying vec4 fragAbgr;\
@@ -359,14 +355,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 			\
 			void main(void){\
 				vec2 drawPos;\
-				if(aRotation != 0.0){\
-					float goX = cos(aRotation);\
-					float goY = sin(aRotation);\
-					vec2 cornerPos = aSize * (aSizeMult);\
-					drawPos = (aPos + vec2(goX*cornerPos.x - goY*cornerPos.y, goY*cornerPos.x + goX*cornerPos.y)) / uCanvasSize;\
-				} else {\
-					drawPos = (aPos + aSize*aSizeMult) / uCanvasSize;\
-				}\
+				drawPos = (aPos + aSize*aSizeMult) / uCanvasSize;\
 				gl_Position = vec4(drawPos.x - 1.0, 1.0 - drawPos.y, 0.0, 1.0);\
 				fragTexturePos = (aTexPos.xy + aTexPos.zw * aSizeMult) / uTexSize;\
                 fragAbgr = vec4(aRgba.w/255.0, aRgba.z/255.0, aRgba.y/255.0, aRgba.x/255.0);\
@@ -439,7 +428,6 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         setupAttribute("aSize", this.gl.SHORT, shortsPerImageSize);
         setupAttribute("aTexPos", this.gl.SHORT, shortsPerImageTexPos);
         setupAttribute("aRgba", this.gl.UNSIGNED_BYTE, bytesPerImageRgba);
-        setupAttribute("aRotation", this.gl.FLOAT, floatsPerImageRotation);
     }
 
     registerImage(bitmap: IOpenGLBitmap) {
@@ -564,8 +552,11 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
                     return "Invalid Framebuffer Operation";
                 case WebGLRenderingContext.OUT_OF_MEMORY:
                     return "Out of Memory";
+                // in this case we're expecting our handler to pop up
+                // and restore it - so don't return an error since
+                // that'll stop the rendering thread
                 case WebGLRenderingContext.CONTEXT_LOST_WEBGL:
-                    return "Lost WebGL Context";
+                    return undefined;
 
             }
 
@@ -584,7 +575,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         if (!this.atlasTextures) {
             return;
         }
-        if (!this.rgbas || !this.rotations || !this.positions) {
+        if (!this.rgbas || !this.positions) {
             return;
         }
         
@@ -595,7 +586,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
             this.glStartContext();
         }
 
-        let i = this.draws * 6;
+        let i = this.draws * 5;
 
         // clamp alpha to prevent overflow
         if (alpha > 255) {
@@ -603,7 +594,6 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         }
 
         this.rgbas[i + 4] = rgba | alpha;
-        this.rotations[i + 5] = 0;
         i *= 2;
 
         let drawX2 = drawX + width;
@@ -682,7 +672,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 
     glCommitContext(): void {
         if (this.draws > 0 && this.rgbas && this.extension) {
-            this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, this.rgbas.subarray(0, this.draws * 6));
+            this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, this.rgbas.subarray(0, this.draws * 5));
             this.extension.drawElementsInstancedANGLE(this.gl.TRIANGLES, 6, this.gl.UNSIGNED_BYTE, 0, this.draws);
             this.draws = 0;
         }

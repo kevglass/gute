@@ -2458,8 +2458,11 @@ var OpenGLGraphicsImpl = /** @class */ (function () {
                     return "Invalid Framebuffer Operation";
                 case WebGLRenderingContext.OUT_OF_MEMORY:
                     return "Out of Memory";
+                // in this case we're expecting our handler to pop up
+                // and restore it - so don't return an error since
+                // that'll stop the rendering thread
                 case WebGLRenderingContext.CONTEXT_LOST_WEBGL:
-                    return "Lost WebGL Context";
+                    return undefined;
             }
             return "Unknown error - " + this.gl.getError();
         }
