@@ -132,7 +132,7 @@ export class GraphicsImpl implements Graphics {
   }
   
   clear(): void {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
   }
 
   clip(x: number, y: number, width: number, height: number): void {
@@ -217,11 +217,11 @@ export class GraphicsImpl implements Graphics {
   }
 
   getWidth(): number {
-    return this.canvas.width;
+    return this.ctx.canvas.width;
   }
 
   getHeight(): number {
-    return this.canvas.height;
+    return this.ctx.canvas.height;
   }
   
   push(): void {
