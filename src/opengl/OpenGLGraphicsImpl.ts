@@ -612,13 +612,31 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         drawY = t1.y;
         drawX2 = t2.x;
         drawY2 = t2.y;
-        width = drawX2 - drawX;
-        height = drawY2 - drawY;
 
         drawX = Math.floor(drawX);
         drawY = Math.floor(drawY);
         drawX2 = Math.floor(drawX2);
         drawY2 = Math.floor(drawY2);
+
+        width = drawX2 - drawX;
+        height = drawY2 - drawY;
+
+        let screenHeight = this.canvas.height;
+        if (this.offscreen) {
+            screenHeight = this.offscreen.getHeight();
+        }
+        let screenWidth = this.canvas.width;
+        if (this.offscreen) {
+            screenWidth = this.offscreen.getWidth();
+        }
+
+
+        if ((this.currentContextState.clipY2 === 0) && (this.currentContextState.clipX2 === 0)) {
+            this.currentContextState.clipY = -100;
+            this.currentContextState.clipY2 = screenHeight + 100;
+            this.currentContextState.clipX = -100;
+            this.currentContextState.clipX2 = screenWidth + 100;
+        }
 
         if (this.currentContextState.clipX < this.currentContextState.clipX2) {
             if (drawX > this.currentContextState.clipX2) {
