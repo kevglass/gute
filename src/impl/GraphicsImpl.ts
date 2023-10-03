@@ -165,6 +165,7 @@ export class GraphicsImpl implements Graphics {
   drawToOffscreen(screen: Offscreen | null): void {
     if (screen) {
       this.ctx = (screen as OffscreenImpl).ctx;
+      this.ctx.resetTransform();
     } else {
       this.ctx = this.mainCtx;
     }

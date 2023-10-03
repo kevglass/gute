@@ -52,7 +52,7 @@ class Tile implements Bitmap {
       }
       ctx.drawImage(this.cached[this.scale], x, y);
     } else {
-      ctx.drawImage(this.image, this.x, this.y, this.width, this.height, x, y, this.width * this.scale, this.height * this.scale);
+      ctx.drawImage(this.image, this.x, this.y, this.width-0.1, this.height-0.1, x, y, this.width * this.scale, this.height * this.scale);
     }
   }
 
