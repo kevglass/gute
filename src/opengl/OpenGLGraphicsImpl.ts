@@ -300,7 +300,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
             this.canvas.style.imageRendering = "pixelated";
         }
 
-        this.gl = this.canvas.getContext('experimental-webgl', { antialias: false, alpha: false, preserveDrawingBuffer: true }) as WebGLRenderingContext;
+        this.gl = this.canvas.getContext('experimental-webgl', { antialias: false, alpha: false, preserveDrawingBuffer: false }) as WebGLRenderingContext;
         this.initGlResources();
     }
 
@@ -354,10 +354,8 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 			uniform vec2 uTexSize;\
 			\
 			void main(void){\
-				vec2 drawPos = (aPos + aSize*aSizeMult) / uCanvasSize;\
-                \
-				gl_Position.x = drawPos.x - 1.0; \
-                gl_Position.y = 1.0 - drawPos.y; \
+				gl_Position.x = ( (aPos.x + (aSize.x * aSizeMult.x) ) / uCanvasSize.x ) - 1.0; \
+                gl_Position.y = 1.0 -  ( (aPos.y + (aSize.y * aSizeMult.y) ) / uCanvasSize.y ); \
                 gl_Position.z = 0.0; \
                 gl_Position.w = 1.0; \
                 \
@@ -695,6 +693,8 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 
     glStartContext(): void {
     }
+
+    first = true;
 
     glCommitContext(): void {
         if (this.draws > 0 && this.rgbas && this.extension) {
