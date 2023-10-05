@@ -275,6 +275,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 
     transformCanvas: HTMLCanvasElement;
     transformCtx: CanvasRenderingContext2D;
+    uniforms: Record<string, WebGLUniformLocation> = {};
 
     constructor() {
         this.transformCanvas = document.createElement("canvas");
@@ -322,6 +323,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     private initGlResources(): void {
+        console.log("Init GL Resources");
         const extension = this.gl.getExtension('ANGLE_instanced_arrays') as ANGLE_instanced_arrays
         this.extension = extension;
 
@@ -514,7 +516,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
                 this.texWidth = textureSize;
                 this.texHeight = textureSize;
                 if (this.shaderProgram) {
-                    this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), this.texWidth, this.texHeight);
+                    this.gl.uniform2f(this.getUniformLoc("uTexSize"), this.texWidth, this.texHeight);
                 }
             }
         }
@@ -532,6 +534,18 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         this.currentContextState.alpha = 255;
     }
 
+    getUniformLoc(name: string): WebGLUniformLocation {
+        let result: WebGLUniformLocation = this.uniforms[name];
+        if (!result && this.shaderProgram) {
+            const loc = this.gl.getUniformLocation(this.shaderProgram, name);
+            if (loc) {
+                this.uniforms[name] = result = loc;
+            }
+        }
+        
+        return result;
+    }
+
     resize() {
         // Resize the gl viewport to be the new size of the canvas.
         this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
@@ -540,7 +554,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         // Sending it to gl now so we don't have to do the math in JavaScript on every draw,
         // since gl wants to draw at a position from 0 to 1, and we want to do drawImage with a screen pixel position.
         if (this.shaderProgram) {
-            this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uCanvasSize"), this.canvas.width / 2, this.canvas.height / 2);
+            this.gl.uniform2f(this.getUniformLoc("uCanvasSize"), this.canvas.width / 2, this.canvas.height / 2);
         }
     }
 
@@ -694,8 +708,6 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     glStartContext(): void {
     }
 
-    first = true;
-
     glCommitContext(): void {
         if (this.draws > 0 && this.rgbas && this.extension) {
             this.gl.bufferSubData(this.gl.ARRAY_BUFFER, 0, this.rgbas.subarray(0, this.draws * 5));
@@ -710,6 +722,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
 
         this.glStartContext();
     }
+
 
     renderEnd(): void {
         this.glCommitContext();
@@ -771,12 +784,12 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         this.glCommitContext();
 
         this.glStartContext();
-        this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), offscreen.width, offscreen.height);
+        this.gl.uniform2f(this.getUniformLoc("uTexSize"), offscreen.width, offscreen.height);
         this.gl.bindTexture(this.gl.TEXTURE_2D, offscreen.texture);
         this._drawImage(-100, 0, offscreen.height, offscreen.width, -offscreen.height, 0, 0, offscreen.width, offscreen.height, 0xFFFFFF00, 255);
         this.glCommitContext();
 
-        this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), this.texWidth, this.texHeight);
+        this.gl.uniform2f(this.getUniformLoc("uTexSize"), this.texWidth, this.texHeight);
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.currentTexture);
         this.glStartContext();
     }
@@ -790,12 +803,12 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         this.glCommitContext();
 
         this.glStartContext();
-        this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), offscreen.width, offscreen.height);
+        this.gl.uniform2f(this.getUniformLoc("uTexSize"), offscreen.width, offscreen.height);
         this.gl.bindTexture(this.gl.TEXTURE_2D, offscreen.texture);
         this._drawImage(-100, 0, offscreen.height, offscreen.width, -offscreen.height, x, y, width, height, 0xFFFFFF00, 255);
         this.glCommitContext();
 
-        this.gl.uniform2f(this.gl.getUniformLocation(this.shaderProgram, "uTexSize"), this.texWidth, this.texHeight);
+        this.gl.uniform2f(this.getUniformLoc("uTexSize"), this.texWidth, this.texHeight);
         this.gl.bindTexture(this.gl.TEXTURE_2D, this.currentTexture);
         this.glStartContext();
     }
