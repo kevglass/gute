@@ -9,6 +9,8 @@ export interface Offscreen {
     getWidth(): number;
     getHeight(): number;
     setDimension(width: number, height: number): void;
+    needsRefresh(): boolean;
+    release(): void;
 }
 export interface Graphics {
     initResourceOnLoaded(): void;

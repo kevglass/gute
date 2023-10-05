@@ -15,6 +15,7 @@ declare class OpenGLTile implements Bitmap, IOpenGLBitmap {
     name: string;
     texX: number;
     texY: number;
+    texIndex: number;
     image: HTMLImageElement;
     col: number;
     constructor(parent: OpenGLTilesetImpl, image: HTMLImageElement, x: number, y: number, width: number, height: number, scale: number);
@@ -38,6 +39,7 @@ export declare class OpenGLTilesetImpl implements Tileset, IOpenGLBitmap {
     name: string;
     texX: number;
     texY: number;
+    texIndex: number;
     tintTiles: Record<string, OpenGLTile[]>;
     constructor(graphics: OpenGLGraphicsImpl, url: string, dataUrlLoader: Promise<Blob> | undefined, tileWidth: number, tileHeight: number, scale?: number, pal?: Palette | undefined);
     get height(): number;
@@ -46,7 +48,7 @@ export declare class OpenGLTilesetImpl implements Tileset, IOpenGLBitmap {
     drawScaled(graphics: Graphics, x: number, y: number, width: number, height: number): void;
     getBlockColorTile(tile: number, tintName: string, rgba: number[]): Bitmap;
     getShadedTile(tile: number, tintName: string, shade: number): Bitmap;
-    getTintedTile(tile: number, tintName: string, rgba: number[]): Bitmap;
+    getTintedTile(tile: number, tintName: string, source: number[]): Bitmap;
     modify(modification: (imageData: ImageData) => void): Tileset;
     getTilesAcross(): number;
     getTileWidth(): number;

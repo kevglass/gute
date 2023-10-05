@@ -56,7 +56,7 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
 
         this.inuse = true;
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fb);
-        this.gl.uniform2f(this.gl.getUniformLocation(this.graphics.shaderProgram, "uCanvasSize"), Math.floor(this.width / 2), Math.floor(this.height / 2));
+        this.gl.uniform2f(this.graphics.getUniformLoc("uCanvasSize"), Math.floor(this.width / 2), Math.floor(this.height / 2));
         
         this.gl.viewport(0, 0, this.width, this.height);
 
@@ -82,7 +82,7 @@ export class OpenGlOffscreen implements Offscreen, RenderingState {
 
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
         this.gl.viewport(0, 0, this.graphics.canvas.width, this.graphics.canvas.height);
-        this.gl.uniform2f(this.gl.getUniformLocation(this.graphics.shaderProgram, "uCanvasSize"), this.graphics.canvas.width / 2, this.graphics.canvas.height / 2);
+        this.gl.uniform2f(this.graphics.getUniformLoc("uCanvasSize"), this.graphics.canvas.width / 2, this.graphics.canvas.height / 2);
         this.graphics.pop();
         this.graphics.glStartContext();
     }
