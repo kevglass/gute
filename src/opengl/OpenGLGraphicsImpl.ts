@@ -717,6 +717,8 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     renderStart(): void {
+        (this.transformCtx as any).reset();
+        
         this.draws = 0;
         this.resetState();
 
