@@ -276,6 +276,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     transformCanvas: HTMLCanvasElement;
     transformCtx: CanvasRenderingContext2D;
     uniforms: Record<string, WebGLUniformLocation> = {};
+    saves: number = 0;
 
     constructor() {
         this.transformCanvas = document.createElement("canvas");
@@ -717,8 +718,13 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     renderStart(): void {
-        (this.transformCtx as any).reset();
-        
+        if ((this.transformCtx as any).reset) {
+            (this.transformCtx as any).reset();
+        } else {
+            // old way of reset all the state
+            this.canvas.width += 0;
+        }
+
         this.draws = 0;
         this.resetState();
 
@@ -901,10 +907,12 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     push(): void {
+        this.saves++;
         this.transformCtx.save();
     }
 
     pop(): void {
+        this.saves--;
         this.transformCtx.restore();
         this.resetState();
     }
