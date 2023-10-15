@@ -45,7 +45,9 @@ export interface Graphics {
   drawOffscreen(screen: Offscreen): void;
 
   drawScaledOffscreen(screen: Offscreen, x: number, y: number, width: number, height: number): void;
-
+  
+  drawScaledOffscreenSegment(screen: Offscreen, sx: number, sy: number, swidth: number, sheight: number, x: number, y: number, width: number, height: number): void;
+   
   fillRect(x: number, y: number, width: number, height: number, col: string): void;
 
   fillCircle(x: number, y: number, radius: number, col: string): void;

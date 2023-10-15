@@ -184,6 +184,12 @@ export class GraphicsImpl implements Graphics {
     this.ctx.drawImage((screen as OffscreenImpl).canvas, x, y, width, height);
   }
 
+  drawScaledOffscreenSegment(screen: Offscreen, sx: number, sy: number, swidth: number, sheight: number, x: number, y: number, width: number, height: number): void {
+    (<any> this.ctx).webkitImageSmoothingEnabled = false;
+    this.ctx.imageSmoothingEnabled = false;
+    this.ctx.drawImage((screen as OffscreenImpl).canvas, sx, sy, swidth, sheight,  x, y, width, height);
+  }
+
   clearRect(x: number, y: number, width: number, height: number): void {
     this.ctx.clearRect(x, y, width, height);
   }

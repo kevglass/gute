@@ -821,6 +821,25 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         this.glStartContext();
     }
 
+    drawScaledOffscreenSegment(screen: Offscreen, sx: number, sy: number, swidth: number, sheight: number, x: number, y: number, width: number, height: number): void {
+        if (!this.shaderProgram) {
+            return;
+        }
+
+        const offscreen = (screen as OpenGlOffscreen);
+        this.glCommitContext();
+
+        this.glStartContext();
+        this.gl.uniform2f(this.getUniformLoc("uTexSize"), offscreen.width, offscreen.height);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, offscreen.texture);
+        this._drawImage(-100, sx, offscreen.height-sy, swidth, -sheight, x, y, width, height, 0xFFFFFF00, 255);
+        this.glCommitContext();
+
+        this.gl.uniform2f(this.getUniformLoc("uTexSize"), this.texWidth, this.texHeight);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.currentTexture);
+        this.glStartContext();
+    }
+
     fillRect(x: number, y: number, width: number, height: number, col: string): void {
         let rgba = colToNumber(col);
         const a = this.alpha < 255 ? this.alpha : (rgba % 256);
