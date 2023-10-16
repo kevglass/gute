@@ -301,11 +301,6 @@ class GameLoop implements GameContext {
     });
     this.graphics.canvas.addEventListener("mousedown", (event) => {
       try {
-        this.shiftPressed = event.shiftKey;
-        this.commandPressed = event.metaKey;
-        this.controlPressed = event.ctrlKey;
-        this.altPressed = event.altKey;
-
         this.mouseDownHandler(event.offsetX, event.offsetY, event.button);
         event.preventDefault();
         event.stopPropagation();
@@ -315,11 +310,6 @@ class GameLoop implements GameContext {
     });
     this.graphics.canvas.addEventListener("mousemove", (event) => {
       try {
-        this.shiftPressed = event.shiftKey;
-        this.commandPressed = event.metaKey;
-        this.controlPressed = event.ctrlKey;
-        this.altPressed = event.altKey;
-
         this.mouseMoveHandler(event.offsetX, event.offsetY);
         event.preventDefault();
         event.stopPropagation();
@@ -329,11 +319,6 @@ class GameLoop implements GameContext {
     });
     this.graphics.canvas.addEventListener("mouseup", (event) => {
       try {
-        this.shiftPressed = event.shiftKey;
-        this.commandPressed = event.metaKey;
-        this.controlPressed = event.ctrlKey;
-        this.altPressed = event.altKey;
-
         this.mouseUpHandler(event.offsetX, event.offsetY, event.button);
         event.preventDefault();
         event.stopPropagation();
@@ -343,18 +328,39 @@ class GameLoop implements GameContext {
     });
 
     window.addEventListener("keydown", (event) => {
-      this.shiftPressed = event.shiftKey;
-      this.commandPressed = event.metaKey;
-      this.controlPressed = event.ctrlKey;
-      this.altPressed = event.altKey;
+      // this.shiftPressed = event.shiftKey;
+      // this.commandPressed = event.metaKey;
+      // this.controlPressed = event.ctrlKey;
+      // this.altPressed = event.altKey;
+
+      if (event.key === "Shift") {
+        this.shiftPressed = true;
+      }
+      if (event.key === "Meta") {
+        this.commandPressed = true;
+      }
+      if (event.key === "Control") {
+        this.controlPressed = true;
+      }
+      if (event.key === "Alt") {
+        this.altPressed = true;
+      }
 
       this.keyDownHandler(event.code);
     });
     window.addEventListener("keyup", (event) => {
-      this.shiftPressed = event.shiftKey;
-      this.commandPressed = event.metaKey;
-      this.controlPressed = event.ctrlKey;
-      this.altPressed = event.altKey;
+      if (event.key === "Shift") {
+        this.shiftPressed = false;
+      }
+      if (event.key === "Meta") {
+        this.commandPressed = false;
+      }
+      if (event.key === "Control") {
+        this.controlPressed = false;
+      }
+      if (event.key === "Alt") {
+        this.altPressed = false;
+      }
 
       this.keyUpHandler(event.code);
     });
