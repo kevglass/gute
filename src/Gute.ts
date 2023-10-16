@@ -299,7 +299,19 @@ class GameLoop implements GameContext {
         console.log(e);
       }
     });
+    window.addEventListener("blur", (event) => {
+      this.shiftPressed = false;
+      this.commandPressed = false;
+      this.controlPressed = false;
+      this.altPressed = false;
+    });
+
     this.graphics.canvas.addEventListener("mousedown", (event) => {
+      this.shiftPressed = event.shiftKey;
+      this.commandPressed = event.metaKey;
+      this.controlPressed = event.ctrlKey;
+      this.altPressed = event.altKey;
+
       try {
         this.mouseDownHandler(event.offsetX, event.offsetY, event.button);
         event.preventDefault();
@@ -309,6 +321,11 @@ class GameLoop implements GameContext {
       }
     });
     this.graphics.canvas.addEventListener("mousemove", (event) => {
+      this.shiftPressed = event.shiftKey;
+      this.commandPressed = event.metaKey;
+      this.controlPressed = event.ctrlKey;
+      this.altPressed = event.altKey;
+      
       try {
         this.mouseMoveHandler(event.offsetX, event.offsetY);
         event.preventDefault();
@@ -318,6 +335,11 @@ class GameLoop implements GameContext {
       }
     });
     this.graphics.canvas.addEventListener("mouseup", (event) => {
+      this.shiftPressed = event.shiftKey;
+      this.commandPressed = event.metaKey;
+      this.controlPressed = event.ctrlKey;
+      this.altPressed = event.altKey;
+
       try {
         this.mouseUpHandler(event.offsetX, event.offsetY, event.button);
         event.preventDefault();
@@ -328,11 +350,6 @@ class GameLoop implements GameContext {
     });
 
     window.addEventListener("keydown", (event) => {
-      // this.shiftPressed = event.shiftKey;
-      // this.commandPressed = event.metaKey;
-      // this.controlPressed = event.ctrlKey;
-      // this.altPressed = event.altKey;
-
       if (event.key === "Shift") {
         this.shiftPressed = true;
       }
