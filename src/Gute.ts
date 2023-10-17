@@ -631,7 +631,7 @@ class GameLoop implements GameContext {
   }
 
   isPhone(): boolean {
-    return this.isIOS() && window.matchMedia("only screen and (max-width: 760px)").matches;
+    return this.isIOS() && (window.matchMedia("only screen and (max-width: 760px)").matches || window.matchMedia("only screen and (max-height: 760px)").matches);
   }
 
   setSoundVolume(v: number): void {
