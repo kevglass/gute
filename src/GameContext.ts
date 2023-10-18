@@ -18,6 +18,10 @@ export interface GameContext {
 
   resourcesTotal(): number;
 
+  currentResource(): string;
+
+  dumpResourceIssues(): void;
+  
   allResourcesLoaded(): boolean;
 
   applyPalette(hexFile: string): Promise<void>;
