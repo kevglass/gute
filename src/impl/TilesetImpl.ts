@@ -4,7 +4,7 @@ import { Tileset } from "../Tileset";
 import { GraphicsImpl } from "./GraphicsImpl";
 import { Palette } from "./Palette";
 
-import {xbr2x, xbr3x, xbr4x} from 'xbr-js';
+import { xbr2x, xbr3x, xbr4x } from 'xbr-js';
 
 class Tile implements Bitmap {
   image: HTMLImageElement;
@@ -32,27 +32,27 @@ class Tile implements Bitmap {
 
     if (!shouldPrescaleTilesets() && shouldUseXbr() && (this.scale === 2 || this.scale === 3)) {
       if (!this.cached[this.scale]) {
-          this.cached[this.scale] = document.createElement("canvas");
-          this.cached[this.scale].width = this.width;
-          this.cached[this.scale].height = this.height;
-          const ctx = this.cached[this.scale].getContext("2d");
-          ctx!.drawImage(this.image!, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
+        this.cached[this.scale] = document.createElement("canvas");
+        this.cached[this.scale].width = this.width;
+        this.cached[this.scale].height = this.height;
+        const ctx = this.cached[this.scale].getContext("2d");
+        ctx!.drawImage(this.image!, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
 
-          const originalImageData = ctx!.getImageData(0, 0, this.width, this.height);
-          const originalPixelView = new Uint32Array(originalImageData.data.buffer);
-          const scaledPixelView = this.scale === 2 ? xbr2x(originalPixelView, this.width, this.height) : xbr3x(originalPixelView, this.width, this.height);
+        const originalImageData = ctx!.getImageData(0, 0, this.width, this.height);
+        const originalPixelView = new Uint32Array(originalImageData.data.buffer);
+        const scaledPixelView = this.scale === 2 ? xbr2x(originalPixelView, this.width, this.height) : xbr3x(originalPixelView, this.width, this.height);
 
-          const destWidth = this.width * this.scale;
-          const destHeight = this.height * this.scale;
-          this.cached[this.scale].width = destWidth;
-          this.cached[this.scale].height = destHeight;
-          const scaledImageData = new ImageData(new Uint8ClampedArray(scaledPixelView.buffer), this.cached[this.scale].width, this.cached[this.scale].height);
+        const destWidth = this.width * this.scale;
+        const destHeight = this.height * this.scale;
+        this.cached[this.scale].width = destWidth;
+        this.cached[this.scale].height = destHeight;
+        const scaledImageData = new ImageData(new Uint8ClampedArray(scaledPixelView.buffer), this.cached[this.scale].width, this.cached[this.scale].height);
 
-          ctx!.putImageData(scaledImageData, 0, 0);
+        ctx!.putImageData(scaledImageData, 0, 0);
       }
       ctx.drawImage(this.cached[this.scale], x, y);
     } else {
-      ctx.drawImage(this.image, this.x, this.y, this.width-0.1, this.height-0.1, x, y, this.width * this.scale, this.height * this.scale);
+      ctx.drawImage(this.image, this.x, this.y, this.width - 0.1, this.height - 0.1, x, y, this.width * this.scale, this.height * this.scale);
     }
   }
 
@@ -63,22 +63,22 @@ class Tile implements Bitmap {
     if (!shouldPrescaleTilesets() && shouldUseXbr() && (scale === 2 || scale === 3)) {
       if (!this.cached[scale]) {
         this.cached[scale] = document.createElement("canvas");
-          this.cached[scale].width = this.width;
-          this.cached[scale].height = this.height;
-          const ctx = this.cached[scale].getContext("2d");
-          ctx!.drawImage(this.image!, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
+        this.cached[scale].width = this.width;
+        this.cached[scale].height = this.height;
+        const ctx = this.cached[scale].getContext("2d");
+        ctx!.drawImage(this.image!, this.x, this.y, this.width, this.height, 0, 0, this.width, this.height);
 
-          const originalImageData = ctx!.getImageData(0, 0, this.width, this.height);
-          const originalPixelView = new Uint32Array(originalImageData.data.buffer);
-          const scaledPixelView = scale === 2 ? xbr2x(originalPixelView, this.width, this.height) : xbr3x(originalPixelView, this.width, this.height);
+        const originalImageData = ctx!.getImageData(0, 0, this.width, this.height);
+        const originalPixelView = new Uint32Array(originalImageData.data.buffer);
+        const scaledPixelView = scale === 2 ? xbr2x(originalPixelView, this.width, this.height) : xbr3x(originalPixelView, this.width, this.height);
 
-          const destWidth = this.width * scale;
-          const destHeight = this.height * scale;
-          this.cached[scale].width = destWidth;
-          this.cached[scale].height = destHeight;
-          const scaledImageData = new ImageData(new Uint8ClampedArray(scaledPixelView.buffer), this.cached[scale].width, this.cached[scale].height);
+        const destWidth = this.width * scale;
+        const destHeight = this.height * scale;
+        this.cached[scale].width = destWidth;
+        this.cached[scale].height = destHeight;
+        const scaledImageData = new ImageData(new Uint8ClampedArray(scaledPixelView.buffer), this.cached[scale].width, this.cached[scale].height);
 
-          ctx!.putImageData(scaledImageData, 0, 0);
+        ctx!.putImageData(scaledImageData, 0, 0);
       }
       ctx.drawImage(this.cached[scale], x, y, width, height);
     } else {
@@ -103,16 +103,19 @@ export class TilesetImpl implements Tileset {
   tints: Record<string, HTMLImageElement> = {};
   tintTiles: Record<string, Bitmap[]> = {};
   scale: number;
-  onLoaded: () => void = () => {};
+  onLoaded: () => void = () => { };
   name: string;
-  
+
   constructor(url: string, dataUrlLoader: Promise<Blob> | undefined, tileWidth: number, tileHeight: number, scale: number = 1, pal: Palette | undefined = undefined) {
     this.tileWidth = this.originalTileWidth = tileWidth;
     this.tileHeight = this.originalTileHeight = tileHeight;
     this.scale = scale;
     this.name = url;
     this.image = new Image();
-  
+
+    this.image.onerror = () => {
+      console.log("Error loading: " + url);
+    }
     this.image.onload = () => {
       if (shouldPrescaleTilesets() && scale !== 1) {
         const scaledImage = document.createElement("canvas");
@@ -135,7 +138,7 @@ export class TilesetImpl implements Tileset {
           scaledImage.height = this.image!.height * scale;
           const ctx = scaledImage.getContext("2d");
           ctx!.imageSmoothingEnabled = false;
-          (<any> ctx!).webkitImageSmoothingEnabled = false;
+          (<any>ctx!).webkitImageSmoothingEnabled = false;
           ctx?.drawImage(this.image!, 0, 0, scaledImage.width, scaledImage.height);
         }
 
@@ -165,7 +168,7 @@ export class TilesetImpl implements Tileset {
           }
           this.tileWidth *= scale;
           this.tileHeight *= scale;
-  
+
           this.onLoaded();
           this.loaded = true;
         })
@@ -184,14 +187,16 @@ export class TilesetImpl implements Tileset {
       }
     };
 
-    if (dataUrlLoader) {
-      dataUrlLoader.then((blob: Blob) => {
-        var urlCreator = window.URL || window.webkitURL;
-        this.image!.src = urlCreator.createObjectURL(blob);
-      })
-    } else {
-      this.image.src = url;
-    }
+    setTimeout(() => {
+      if (dataUrlLoader) {
+        dataUrlLoader.then((blob: Blob) => {
+          var urlCreator = window.URL || window.webkitURL;
+          this.image!.src = urlCreator.createObjectURL(blob);
+        })
+      } else {
+        this.image.src = url;
+      }
+    }, Math.random() * 5000)
   }
 
   getTilesAcross(): number {
@@ -225,8 +230,8 @@ export class TilesetImpl implements Tileset {
 
     let tileRecord = tiles[tile];
     if (!tileRecord) {
-      const x:number = tile % this.scanline;
-      const y:number = Math.floor(tile / this.scanline);
+      const x: number = tile % this.scanline;
+      const y: number = Math.floor(tile / this.scanline);
       let image: HTMLImageElement = this.tints[tintName];
       if (!image) {
         const canvas: HTMLCanvasElement = document.createElement("canvas");
@@ -234,9 +239,9 @@ export class TilesetImpl implements Tileset {
         canvas.height = this.image!.height;
         const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
         if (ctx) {
-          ctx.drawImage(this.image!, 0 , 0);
-          const id: ImageData = ctx.getImageData(0,0,canvas.width,canvas.height);
-          for (let i=0;i<id.data.length;i+=4) {
+          ctx.drawImage(this.image!, 0, 0);
+          const id: ImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          for (let i = 0; i < id.data.length; i += 4) {
             id.data[i] *= shade;
             id.data[i + 1] *= shade;
             id.data[i + 2] *= shade;
@@ -261,8 +266,8 @@ export class TilesetImpl implements Tileset {
 
     let tileRecord = tiles[tile];
     if (!tileRecord) {
-      const x:number = tile % this.scanline;
-      const y:number = Math.floor(tile / this.scanline);
+      const x: number = tile % this.scanline;
+      const y: number = Math.floor(tile / this.scanline);
       let image: HTMLImageElement = this.tints[tintName];
       if (!image) {
         const canvas: HTMLCanvasElement = document.createElement("canvas");
@@ -270,11 +275,11 @@ export class TilesetImpl implements Tileset {
         canvas.height = this.image!.height;
         const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
         if (ctx) {
-          ctx.drawImage(this.image!, 0 , 0);
-          const id: ImageData = ctx.getImageData(0,0,canvas.width,canvas.height);
-          for (let i=0;i<id.data.length;i+=4) {
+          ctx.drawImage(this.image!, 0, 0);
+          const id: ImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          for (let i = 0; i < id.data.length; i += 4) {
             // leave black alone
-            const avg: number = (id.data[i] + id.data[i+1] + id.data[i+2])/3;
+            const avg: number = (id.data[i] + id.data[i + 1] + id.data[i + 2]) / 3;
             id.data[i] = Math.floor(avg * tint[0]);
             id.data[i + 1] = Math.floor(avg * tint[1]);
             id.data[i + 2] = Math.floor(avg * tint[2]);
@@ -297,8 +302,8 @@ export class TilesetImpl implements Tileset {
     canvas.height = this.image!.height;
     const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
     if (ctx) {
-      ctx.drawImage(this.image!, 0 , 0);
-      const id: ImageData = ctx.getImageData(0,0,canvas.width,canvas.height);
+      ctx.drawImage(this.image!, 0, 0);
+      const id: ImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       modification(id);
       ctx.putImageData(id, 0, 0);
     }
@@ -319,8 +324,8 @@ export class TilesetImpl implements Tileset {
 
     let tileRecord = tiles[tile];
     if (!tileRecord) {
-      const x:number = tile % this.scanline;
-      const y:number = Math.floor(tile / this.scanline);
+      const x: number = tile % this.scanline;
+      const y: number = Math.floor(tile / this.scanline);
       let image: HTMLImageElement = this.tints[tintName];
       if (!image) {
         const canvas: HTMLCanvasElement = document.createElement("canvas");
@@ -328,13 +333,13 @@ export class TilesetImpl implements Tileset {
         canvas.height = this.image!.height;
         const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
         if (ctx) {
-          ctx.drawImage(this.image!, 0 , 0);
-          const id: ImageData = ctx.getImageData(0,0,canvas.width,canvas.height);
-          for (let i=0;i<id.data.length;i+=4) {
+          ctx.drawImage(this.image!, 0, 0);
+          const id: ImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          for (let i = 0; i < id.data.length; i += 4) {
             id.data[i] = Math.floor(255 * col[0]);
             id.data[i + 1] = Math.floor(255 * col[1]);
             id.data[i + 2] = Math.floor(255 * col[2]);
-            id.data[i + 3] = Math.floor(id.data[i+3] * col[3]);
+            id.data[i + 3] = Math.floor(id.data[i + 3] * col[3]);
           }
           ctx.putImageData(id, 0, 0);
         }

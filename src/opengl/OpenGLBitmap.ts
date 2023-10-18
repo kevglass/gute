@@ -27,6 +27,9 @@ export class OpenGLBitmap implements IOpenGLBitmap {
 
         this.name = url;
         this.image = new Image();
+        this.image.onerror = () => {
+          console.log("Error loading: " + url);
+        }
         this.image.onload = () => {
           this.width = this.image.width;
           this.height = this.image.height;

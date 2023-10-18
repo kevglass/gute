@@ -13,6 +13,9 @@ export class BitmapImpl implements Bitmap {
   constructor(url: string, dataUrlLoader: Promise<string> | undefined, pal: Palette | undefined = undefined) {
     this.name = url;
     this.image = new Image();
+    this.image.onerror = () => {
+      console.log("Error loading: " + url);
+    }
     this.image.onload = () => {
       this.width = this.image.width;
       this.height = this.image.height;
@@ -27,13 +30,15 @@ export class BitmapImpl implements Bitmap {
       }
     };
 
-    if (dataUrlLoader) {
-      dataUrlLoader.then((base64: string) => {
-        this.image.src = "data:"+url.substring(url.length-3)+";base64,"+base64;
-      })
-    } else {
-      this.image.src = url;
-    }
+    setTimeout(() => {
+      if (dataUrlLoader) {
+        dataUrlLoader.then((base64: string) => {
+          this.image.src = "data:"+url.substring(url.length-3)+";base64,"+base64;
+        })
+      } else {
+        this.image.src = url;
+      }
+    }, Math.random() * 5000)
   }
 
   draw(graphics: Graphics, x: number, y: number): void {

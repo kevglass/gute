@@ -88,6 +88,9 @@ export class OpenGLTilesetImpl implements Tileset, IOpenGLBitmap {
         this.name = url;
         this.image = new Image();
 
+        this.image.onerror = () => {
+            console.log("Error loading: " + url);
+        }
         this.image.onload = () => {
             this.scanline = Math.floor(this.image!.width / this.tileWidth);
             const depth: number = Math.floor(this.image!.height / this.tileHeight);
