@@ -30,15 +30,13 @@ export class BitmapImpl implements Bitmap {
       }
     };
 
-    setTimeout(() => {
-      if (dataUrlLoader) {
-        dataUrlLoader.then((base64: string) => {
-          this.image.src = "data:"+url.substring(url.length-3)+";base64,"+base64;
-        })
-      } else {
-        this.image.src = url;
-      }
-    }, Math.random() * 5000)
+    if (dataUrlLoader) {
+      dataUrlLoader.then((base64: string) => {
+        this.image.src = "data:"+url.substring(url.length-3)+";base64,"+base64;
+      })
+    } else {
+      this.image.src = url;
+    }
   }
 
   draw(graphics: Graphics, x: number, y: number): void {

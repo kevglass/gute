@@ -187,16 +187,14 @@ export class TilesetImpl implements Tileset {
       }
     };
 
-    setTimeout(() => {
-      if (dataUrlLoader) {
-        dataUrlLoader.then((blob: Blob) => {
-          var urlCreator = window.URL || window.webkitURL;
-          this.image!.src = urlCreator.createObjectURL(blob);
-        })
-      } else {
-        this.image.src = url;
-      }
-    }, Math.random() * 5000)
+    if (dataUrlLoader) {
+      dataUrlLoader.then((blob: Blob) => {
+        var urlCreator = window.URL || window.webkitURL;
+        this.image!.src = urlCreator.createObjectURL(blob);
+      })
+    } else {
+      this.image.src = url;
+    }
   }
 
   getTilesAcross(): number {
