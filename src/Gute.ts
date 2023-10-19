@@ -87,7 +87,7 @@ class GameLoop implements GameContext {
   lastFrame: number = 0;
   graphics!: Graphics;
   inited: boolean = false;
-  mainZip: any | undefined = undefined;
+  mainZipFile: any | undefined = undefined;
   zipPercentLoaded: number = 0;
   palette: Palette | undefined = undefined;
   lastWaiting: string | undefined = "";
@@ -450,7 +450,8 @@ class GameLoop implements GameContext {
       };
       req.onload = (event) => {
         JSZip.loadAsync(req.response).then((zip) => {
-          this.mainZip = zip;
+          this.mainZipFile = zip;
+          console.log("Loaded Zip");
           resolve();
         });
       };
@@ -462,10 +463,63 @@ class GameLoop implements GameContext {
     });
   }
 
+  getZipFile(name: string): any {
+    const file = this.mainZipFile.file(name);
+    if (!file) {
+      console.log("zip file entry: " + name + " not found!");
+      throw Error("Zip file entry not found: " + name);
+    }
+    return file;
+  }
+
+  getZipFileText(name: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      this.getZipFile(name).async("string").then((result: string) => {
+        resolve(result);
+      }).catch((e: any) => {
+        console.error(e);
+        reject(e);
+      })
+    });
+  }
+
+  getZipArrayBuffer(name: string): Promise<ArrayBuffer> {
+    return new Promise<ArrayBuffer>((resolve, reject) => {
+      this.getZipFile(name).async("arraybuffer").then((result: ArrayBuffer) => {
+        resolve(result);
+      }).catch((e: any) => {
+        console.error(e);
+        reject(e);
+      })
+    });
+  }
+
+  getZipBase64(name: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      this.getZipFile(name).async("arraybuffer").then((result: string) => {
+        resolve(result);
+      }).catch((e: any) => {
+        console.error(e);
+        reject(e);
+      })
+    });
+  }
+
+  getZipBlob(name: string): Promise<Blob> {
+    return new Promise<Blob>((resolve, reject) => {
+      this.getZipFile(name).async("blob").then((result: Blob) => {
+        resolve(result);
+      }).catch((e: any) => {
+        console.error(e);
+        reject(e);
+      })
+    });
+  }
+
   loadMusic(url: string): Sound {
     let bufferPromise: undefined | Promise<ArrayBuffer> = undefined;
     if (url.indexOf("_/") >= 0) {
-      bufferPromise = this.mainZip.file(url.substring(url.indexOf("_/"))).async("arraybuffer");
+      bufferPromise = this.getZipArrayBuffer(url.substring(url.indexOf("_/")));
     }
 
     const sound: Sound = new SoundImpl(url, true, bufferPromise);
@@ -479,7 +533,7 @@ class GameLoop implements GameContext {
   loadSound(url: string): Sound {
     let bufferPromise: undefined | Promise<ArrayBuffer> = undefined;
     if (url.indexOf("_/") >= 0) {
-      bufferPromise = this.mainZip.file(url.substring(url.indexOf("_/"))).async("arraybuffer");
+      bufferPromise = this.getZipArrayBuffer(url.substring(url.indexOf("_/")));
     }
 
     const sound: Sound = new SoundImpl(url, false, bufferPromise);
@@ -490,7 +544,7 @@ class GameLoop implements GameContext {
 
   private toPotentialZipLoadBlob(url: string): Promise<Blob> | undefined {
     if (url.indexOf("_/") >= 0) {
-      return this.mainZip.file(url.substring(url.indexOf("_/"))).async("blob");
+      return this.getZipBlob(url.substring(url.indexOf("_/")));
     }
 
     return undefined;
@@ -498,7 +552,7 @@ class GameLoop implements GameContext {
 
   private toPotentialZipLoad(url: string): Promise<string> | undefined {
     if (url.indexOf("_/") >= 0) {
-      return this.mainZip.file(url.substring(url.indexOf("_/"))).async("base64");
+      return this.getZipBase64(url.substring(url.indexOf("_/")));
     }
 
     return undefined;
@@ -557,7 +611,7 @@ class GameLoop implements GameContext {
     return new Promise<any>((resolve, reject) => {
       // its an asset reference
       if (url.indexOf("_/") >= 0) {
-        return this.mainZip.file(url.substring(url.indexOf("_/"))).async("string").then((result: string) => {
+        return this.getZipFileText(url.substring(url.indexOf("_/"))).then((result: string) => {
           resolve(result);
         })
       } else {
@@ -583,7 +637,7 @@ class GameLoop implements GameContext {
       // its an asset reference
       if (url.indexOf("_/") >= 0) {
         url = url.substring(url.indexOf("_/"));
-        return this.mainZip.file(url).async("string").then((result: string) => {
+        return this.getZipFileText(url).then((result: string) => {
           try {
             const data = JSON.parse(transform ? transform(result) : result);
             resolve(data);
@@ -604,7 +658,9 @@ class GameLoop implements GameContext {
         req.onload = (event) => {
           if (req.responseText) {
             const result: string = req.responseText;
+            console.log("Resolving: " + url);
             resolve(JSON.parse(transform ? transform(result) : result));
+            console.log("Complete: " + url);
           }
         };
         req.onerror = (e) => {
