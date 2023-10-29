@@ -523,9 +523,7 @@ class GameLoop implements GameContext {
     }
 
     const sound: Sound = new SoundImpl(url, true, bufferPromise);
-    if (!this.allResourcesLoaded()) {
-      this.resources.push(sound);
-    }
+    this.resources.push(sound);
 
     return sound;
   }
