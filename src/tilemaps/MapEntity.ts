@@ -1,6 +1,7 @@
 import { MapLevel } from "./MapLevel";
 
 export class MapEntity {
+  id?: string;
   type: string;
   x: number;
   y: number;
@@ -21,6 +22,7 @@ export class MapEntity {
   copy(level: MapLevel): MapEntity {
     const result: MapEntity = new MapEntity(level, this.x, this.y, this.width, this.height, this.type);
     result.fields = {...this.fields};
+    result.id = this.id;
 
     return result;
   }

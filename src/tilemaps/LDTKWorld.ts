@@ -120,6 +120,7 @@ export class LDTKWorld extends MapWorld implements Resource {
               entityData.height / layerData.__gridSize,
               entityData.__identifier)
 
+          entity.id = entityData.iid;
           entityMap[entityData.iid] = entity
           for (const fieldInstance of entityData.fieldInstances) {
             switch (fieldInstance.__type) {
