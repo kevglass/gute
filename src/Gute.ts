@@ -129,13 +129,15 @@ class GameLoop implements GameContext {
   }
 
   dumpResourceIssues(): void {
-    console.log("The following resources are still pending completion:");
-    console.log("");
-    for (const resource of this.resources) {
-      if (!resource.loaded) {
-        console.log("  " +resource.name);
-      }
-    }
+    console.log("There are " + this.resources.length + " resources pending.");
+
+    // console.log("The following resources are still pending completion:");
+    // console.log("");
+    // for (const resource of this.resources) {
+    //   if (!resource.loaded) {
+    //     console.log("  " +resource.name);
+    //   }
+    // }
   }
 
   currentResource(): string {

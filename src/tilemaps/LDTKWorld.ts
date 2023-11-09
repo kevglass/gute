@@ -106,7 +106,10 @@ export class LDTKWorld extends MapWorld implements Resource {
         this.loaded = true;
         return this
       })
-    })
+    }).catch((e) => {
+      console.error(e);
+      throw e;
+    });
   }
   
   private static loadLayers(level: MapLevel, layerInstances: any, entityRefs: EntityRef[], entityMap: Record<string, MapEntity>) {
