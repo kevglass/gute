@@ -1,4 +1,5 @@
 import { isMusicOn, isSoundOn } from "../Gute";
+import { GuteLog } from "../Log";
 import { Sound } from "../Sound";
 
 let AudioContext: any;
@@ -15,22 +16,22 @@ function handleVisibilityChange() {
         SoundImpl.CURRENT_MUSIC.stop();
         try {
           AUDIO_CONTEXT.suspend().catch((e) => {
-            console.log("Suspend audio context failed");
-            console.error(e);
+            GuteLog.trace("Suspend audio context failed");
+            GuteLog.trace(e);
           });
         } catch (e) {
-          console.log("Suspend audio context failed");
-          console.error(e);
+          GuteLog.trace("Suspend audio context failed");
+          GuteLog.trace(e);
         }
       } else {
         try {
           AUDIO_CONTEXT.resume().catch((e) => {
-            console.log("Resume audio context failed");
-            console.error(e);
+            GuteLog.trace("Resume audio context failed");
+            GuteLog.trace(e);
           });
         } catch (e) {
-          console.log("Resume audio context failed");
-          console.error(e);
+          GuteLog.trace("Resume audio context failed");
+          GuteLog.trace(e);
         }
         setTimeout(() => {
           SoundImpl.CURRENT_MUSIC!.play(SoundImpl.CURRENT_MUSIC!.volume);
@@ -137,12 +138,12 @@ export class SoundImpl implements Sound {
             SoundImpl.CURRENT_MUSIC = null;
             this.play(this.volume);
           }
-        }, (e) => { console.log("Failed to load: "+ this.url) });
+        }, (e) => { GuteLog.log("Failed to load: "+ this.url) });
         if (promise) {
           promise.then(() => {}).catch((e) => {});
         }
       } catch (e) {
-        console.log("decodeAudioData exception on loading " + this.url);
+        GuteLog.log("decodeAudioData exception on loading " + this.url);
       }
     }
   }
@@ -150,11 +151,11 @@ export class SoundImpl implements Sound {
   confirmAudioContext() {
     try {
       AUDIO_CONTEXT.resume().catch((e) => {
-        console.log("Resume audio context failed");
-        console.error(e);
+        GuteLog.trace("Resume audio context failed");
+        GuteLog.trace(e);
       });
     } catch (e) {
-      console.log("Resume audio context failed");
+      GuteLog.trace("Resume audio context failed");
     }
   }
 
@@ -163,11 +164,11 @@ export class SoundImpl implements Sound {
       try {
         AUDIO_CONTEXT = new AudioContext();
         AUDIO_CONTEXT.resume().catch((e) => {
-          console.log("Resume audio context failed");
-          console.error(e);
+          GuteLog.trace("Resume audio context failed");
+          GuteLog.trace(e);
         });
       } catch (e) {
-        console.log("Resume audio context failed");
+        GuteLog.trace("Resume audio context failed");
       }
     }
 

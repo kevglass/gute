@@ -97,7 +97,7 @@ var GameLoop = /** @class */ (function () {
                 event.stopPropagation();
             }
             catch (e) {
-                console.log(e);
+                GuteLog.log(e);
             }
         });
         this.graphics.canvas.addEventListener("mouseup", function (event) {
@@ -107,7 +107,7 @@ var GameLoop = /** @class */ (function () {
                 event.stopPropagation();
             }
             catch (e) {
-                console.log(e);
+                GuteLog.log(e);
             }
         });
         window.addEventListener("keydown", function (event) {
@@ -397,7 +397,7 @@ var SoundImpl = /** @class */ (function () {
                     SoundImpl.CURRENT_MUSIC = null;
                     _this.play(_this.volume);
                 }
-            }, function (e) { console.log("Failed to load: " + _this.url); });
+            }, function (e) { GuteLog.log("Failed to load: " + _this.url); });
         }
     };
     SoundImpl.prototype.initOnFirstClick = function () {

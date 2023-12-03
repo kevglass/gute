@@ -1,3 +1,4 @@
+import { GuteLog } from "../Log";
 import { Step } from "./Step";
 
 export class Path {
@@ -23,7 +24,7 @@ export class Path {
             copy.steps.push(new Step(step.x, step.y));
         }
         if (copy.steps.length === 0) {
-            console.log("Created copy of path with zero steps: ");
+            GuteLog.log("Created copy of path with zero steps: ");
         }
 
         return copy;

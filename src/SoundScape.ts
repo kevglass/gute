@@ -81,10 +81,10 @@ export class SoundScape {
         source.addEventListener("ended", ev => {
             const index = this.points.indexOf(point)
             this.points.splice(index, 1)
-            // console.log(`Sound ended: ${sound.name}, total: ${this.points.length}`)
+            // GuteLog.log(`Sound ended: ${sound.name}, total: ${this.points.length}`)
         })
         source.start()
-        // console.log(`Sound started: ${sound.name}, total: ${this.points.length}`)
+        // GuteLog.log(`Sound started: ${sound.name}, total: ${this.points.length}`)
     }
 
     private updateVolumes() {

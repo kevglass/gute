@@ -16,8 +16,9 @@ import { Tileset } from "./Tileset";
 import * as JSZip from "jszip";
 import { Palette } from "./impl/Palette";
 import { OpenGLGraphicsImpl } from "./opengl/OpenGLGraphicsImpl";
-import { OpenGLBitmap } from "./opengl/OpenGLBitmap";
+import { OpenGLBitmap } from "./opengl/OpenGLBitmap.1";
 import { OpenGLTilesetImpl } from "./opengl/OpenGLTilesetImpl";
+import { GuteLog } from "./Log";
 
 let GAME_LOOP: GameLoop;
 let SOUND_ON: boolean = true;
@@ -129,13 +130,13 @@ class GameLoop implements GameContext {
   }
 
   dumpResourceIssues(): void {
-    console.log("There are " + this.resources.length + " resources pending.");
+    GuteLog.log("There are " + this.resources.length + " resources pending.");
 
-    // console.log("The following resources are still pending completion:");
-    // console.log("");
+    // GuteLog.log("The following resources are still pending completion:");
+    // GuteLog.log("");
     // for (const resource of this.resources) {
     //   if (!resource.loaded) {
-    //     console.log("  " +resource.name);
+    //     GuteLog.log("  " +resource.name);
     //   }
     // }
   }
@@ -155,7 +156,7 @@ class GameLoop implements GameContext {
       if (!resource.loaded) {
         if (this.lastWaiting !== resource.name) {
           if (this.lastWaiting) {
-            console.log("[GUTE] Was waiting on: " + this.lastWaiting + " for " + this.wait + " frames");
+            GuteLog.log("[GUTE] Was waiting on: " + this.lastWaiting + " for " + this.wait + " frames");
           }
           this.lastWaiting = resource.name;
           this.wait = 0;
@@ -165,7 +166,7 @@ class GameLoop implements GameContext {
       }
     }
     if (this.lastWaiting) {
-      console.log("[GUTE] Was waiting on last one: " + this.lastWaiting + " for " + this.wait + " frames");
+      GuteLog.log("[GUTE] Was waiting on last one: " + this.lastWaiting + " for " + this.wait + " frames");
       this.lastWaiting = undefined;
       if (!this.graphicsInited) {
         this.graphicsInited = true;
@@ -272,7 +273,7 @@ class GameLoop implements GameContext {
           event.stopPropagation();
         }
       } catch (e) {
-        console.log(e);
+        GuteLog.log(e);
       }
     }, { passive: false });
     this.graphics.canvas.addEventListener("touchmove", (event) => {
@@ -287,7 +288,7 @@ class GameLoop implements GameContext {
           event.stopPropagation();
         }
       } catch (e) {
-        console.log(e);
+        GuteLog.log(e);
       }
     }, { passive: false });
     this.graphics.canvas.addEventListener("touchend", (event) => {
@@ -305,7 +306,7 @@ class GameLoop implements GameContext {
           event.stopPropagation();
         }
       } catch (e) {
-        console.log(e);
+        GuteLog.log(e);
       }
     }, { passive: false });
 
@@ -318,7 +319,7 @@ class GameLoop implements GameContext {
       try {
         this.mouseWheelHandler(event.deltaY);
       } catch (e) {
-        console.log(e);
+        GuteLog.log(e);
       }
     });
     window.addEventListener("blur", (event) => {
@@ -339,7 +340,7 @@ class GameLoop implements GameContext {
         event.preventDefault();
         event.stopPropagation();
       } catch (e) {
-        console.log(e);
+        GuteLog.log(e);
       }
     });
     this.graphics.canvas.addEventListener("mousemove", (event) => {
@@ -353,7 +354,7 @@ class GameLoop implements GameContext {
         event.preventDefault();
         event.stopPropagation();
       } catch (e) {
-        console.log(e);
+        GuteLog.log(e);
       }
     });
     this.graphics.canvas.addEventListener("mouseup", (event) => {
@@ -367,7 +368,7 @@ class GameLoop implements GameContext {
         event.preventDefault();
         event.stopPropagation();
       } catch (e) {
-        console.log(e);
+        GuteLog.log(e);
       }
     });
 
@@ -453,7 +454,7 @@ class GameLoop implements GameContext {
       req.onload = (event) => {
         JSZip.loadAsync(req.response).then((zip) => {
           this.mainZipFile = zip;
-          console.log("Loaded Zip");
+          GuteLog.log("Loaded Zip");
           resolve();
         });
       };
@@ -468,7 +469,7 @@ class GameLoop implements GameContext {
   getZipFile(name: string): any {
     const file = this.mainZipFile.file(name);
     if (!file) {
-      console.log("zip file entry: " + name + " not found!");
+      GuteLog.log("zip file entry: " + name + " not found!");
       throw Error("Zip file entry not found: " + name);
     }
     return file;
@@ -479,7 +480,7 @@ class GameLoop implements GameContext {
       this.getZipFile(name).async("string").then((result: string) => {
         resolve(result);
       }).catch((e: any) => {
-        console.error(e);
+        GuteLog.error(e);
         reject(e);
       })
     });
@@ -490,7 +491,7 @@ class GameLoop implements GameContext {
       this.getZipFile(name).async("arraybuffer").then((result: ArrayBuffer) => {
         resolve(result);
       }).catch((e: any) => {
-        console.error(e);
+        GuteLog.error(e);
         reject(e);
       })
     });
@@ -501,7 +502,7 @@ class GameLoop implements GameContext {
       this.getZipFile(name).async("arraybuffer").then((result: string) => {
         resolve(result);
       }).catch((e: any) => {
-        console.error(e);
+        GuteLog.error(e);
         reject(e);
       })
     });
@@ -512,7 +513,7 @@ class GameLoop implements GameContext {
       this.getZipFile(name).async("blob").then((result: Blob) => {
         resolve(result);
       }).catch((e: any) => {
-        console.error(e);
+        GuteLog.error(e);
         reject(e);
       })
     });
@@ -642,7 +643,7 @@ class GameLoop implements GameContext {
             const data = JSON.parse(transform ? transform(result) : result);
             resolve(data);
           } catch (e) {
-            console.log("Failed to parse JSON: " + url);
+            GuteLog.log("Failed to parse JSON: " + url);
             throw e;
           }
         })

@@ -11,6 +11,8 @@ export interface GameContext {
     isControlPressed(): boolean;
     resourcesRemaining(): number;
     resourcesTotal(): number;
+    currentResource(): string;
+    dumpResourceIssues(): void;
     allResourcesLoaded(): boolean;
     applyPalette(hexFile: string): Promise<void>;
     loadZip(url: string): Promise<void>;

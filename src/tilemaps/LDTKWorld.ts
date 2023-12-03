@@ -1,3 +1,4 @@
+import { GuteLog } from "../Log";
 import { Resource } from "../Resource";
 import { MapEntity } from "./MapEntity";
 import { MapLayer } from "./MapLayer";
@@ -107,7 +108,7 @@ export class LDTKWorld extends MapWorld implements Resource {
         return this
       })
     }).catch((e) => {
-      console.error(e);
+      GuteLog.error(e);
       throw e;
     });
   }

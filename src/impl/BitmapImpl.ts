@@ -1,5 +1,6 @@
 import { Bitmap } from "../Bitmap";
 import { Graphics } from "../Graphics";
+import { GuteLog } from "../Log";
 import { GraphicsImpl } from "./GraphicsImpl";
 import { Palette } from "./Palette";
 
@@ -14,7 +15,7 @@ export class BitmapImpl implements Bitmap {
     this.name = url;
     this.image = new Image();
     this.image.onerror = () => {
-      console.log("Error loading: " + url);
+      GuteLog.log("Error loading: " + url);
     }
     this.image.onload = () => {
       this.width = this.image.width;

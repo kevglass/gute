@@ -1,7 +1,9 @@
 import { Bitmap } from "../Bitmap";
 import { Font } from "../Font";
 import { Graphics, Offscreen } from "../Graphics";
-import { IOpenGLBitmap, NullBitmap, OpenGLBitmap } from "./OpenGLBitmap";
+import { GuteLog } from "../Log";
+import { IOpenGLBitmap, NullBitmap } from "./OpenGLBitmap";
+import { OpenGLBitmap } from "./OpenGLBitmap.1";
 import { OpenGlOffscreen } from "./OpenGLOffscreen";
 import { RenderingState } from "./RenderingState";
 import potpack from "potpack"
@@ -307,24 +309,24 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     private lostContext(): void {
-        console.log("LOST GL CONTEXT");
+        GuteLog.log("LOST GL CONTEXT");
         this.shaderProgram = undefined;
         this.atlasTextures = null;
     }
 
     private recoverContext(): void {
-        console.log("RECOVERED GL CONTEXT");
+        GuteLog.log("RECOVERED GL CONTEXT");
         this.initGlResources();
         this.initResourceOnLoaded();
         for (const offscreen of this.offscreens) {
             offscreen.recover();
         }
         this.resize();
-        console.log("RECREATE GL RESOURCES");
+        GuteLog.log("RECREATE GL RESOURCES");
     }
 
     private initGlResources(): void {
-        console.log("Init GL Resources");
+        GuteLog.log("Init GL Resources");
         const extension = this.gl.getExtension('ANGLE_instanced_arrays') as ANGLE_instanced_arrays
         this.extension = extension;
 
@@ -428,7 +430,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
                         amount *= 4
                     byteOffset += amount
                 } else {
-                    console.log("Attribute not found: " + name);
+                    GuteLog.log("Attribute not found: " + name);
                 }
             }
         }
@@ -450,7 +452,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
     }
 
     initResourceOnLoaded(): void {
-        console.log("[WEBGL] Reloading texture");
+        GuteLog.log("[WEBGL] Reloading texture");
 
         const textureSize = Math.min(this.gl.getParameter(this.gl.MAX_TEXTURE_SIZE), 4096 * 2);
 
@@ -469,17 +471,17 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
             if (w > textureSize || h > textureSize) {
                 let { w, h, fill } = potpack(records.slice(base, i - step));
                 records.slice(base, i - step).forEach(record => record.image.texIndex = textureCount);
-                console.log(base + " -> " + (i - step - 1) + " = " + w + "x" + h);
+                GuteLog.log(base + " -> " + (i - step - 1) + " = " + w + "x" + h);
                 base = i - step;
                 textureCount++;
             }
         }
         let { w, h, fill } = potpack(records.slice(base, records.length));
         records.slice(base, records.length).forEach(record => record.image.texIndex = textureCount);
-        console.log(base + " -> " + (records.length - 1) + " = " + w + "x" + h);
+        GuteLog.log(base + " -> " + (records.length - 1) + " = " + w + "x" + h);
         textureCount++;
 
-        console.log("Packed into: " + textureCount + " textures");
+        GuteLog.log("Packed into: " + textureCount + " textures");
         for (const record of records) {
             record.image.texX = (record as any).x + 1;
             record.image.texY = (record as any).y;
@@ -765,7 +767,7 @@ export class OpenGLGraphicsImpl implements Graphics, RenderingState {
         const offscreen = new OpenGlOffscreen(this.gl, this, this.offscreenId);
         this.offscreens.push(offscreen);
         if (this.offscreens.length === 50) {
-            console.log("50 offscreens have been created!");
+            GuteLog.log("50 offscreens have been created!");
         }
 
         return offscreen;

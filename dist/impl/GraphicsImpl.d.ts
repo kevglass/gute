@@ -23,6 +23,7 @@ export declare class GraphicsImpl implements Graphics {
     drawToOffscreen(screen: Offscreen | null): void;
     drawOffscreen(screen: Offscreen): void;
     drawScaledOffscreen(screen: Offscreen, x: number, y: number, width: number, height: number): void;
+    drawScaledOffscreenSegment(screen: Offscreen, sx: number, sy: number, swidth: number, sheight: number, x: number, y: number, width: number, height: number): void;
     clearRect(x: number, y: number, width: number, height: number): void;
     fitScreen(pixelScale: number): void;
     setAlpha(alpha: number): void;

@@ -1,5 +1,6 @@
 import { MapLevel } from "./MapLevel";
 export declare class MapEntity {
+    id?: string;
     type: string;
     x: number;
     y: number;

@@ -4,6 +4,7 @@ import { Palette } from "../impl/Palette";
 import { OpenGLGraphicsImpl } from "./OpenGLGraphicsImpl";
 import { IOpenGLBitmap } from "./OpenGLBitmap";
 import { Graphics } from "../Graphics";
+import { GuteLog } from "../Log";
 
 class OpenGLTile implements Bitmap, IOpenGLBitmap {
     parent: OpenGLTilesetImpl;
@@ -89,7 +90,7 @@ export class OpenGLTilesetImpl implements Tileset, IOpenGLBitmap {
         this.image = new Image();
 
         this.image.onerror = () => {
-            console.log("Error loading: " + url);
+            GuteLog.log("Error loading: " + url);
         }
         this.image.onload = () => {
             this.scanline = Math.floor(this.image!.width / this.tileWidth);

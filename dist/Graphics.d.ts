@@ -26,6 +26,7 @@ export interface Graphics {
     drawToOffscreen(screen: Offscreen | null): void;
     drawOffscreen(screen: Offscreen): void;
     drawScaledOffscreen(screen: Offscreen, x: number, y: number, width: number, height: number): void;
+    drawScaledOffscreenSegment(screen: Offscreen, sx: number, sy: number, swidth: number, sheight: number, x: number, y: number, width: number, height: number): void;
     fillRect(x: number, y: number, width: number, height: number, col: string): void;
     fillCircle(x: number, y: number, radius: number, col: string): void;
     drawCircle(x: number, y: number, radius: number, col: string, width: number): void;

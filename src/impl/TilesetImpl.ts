@@ -1,4 +1,4 @@
-import { Bitmap, Graphics } from "..";
+import { Bitmap, Graphics, GuteLog } from "..";
 import { shouldPrescaleTilesets, shouldUseXbr } from "../Gute";
 import { Tileset } from "../Tileset";
 import { GraphicsImpl } from "./GraphicsImpl";
@@ -114,7 +114,7 @@ export class TilesetImpl implements Tileset {
     this.image = new Image();
 
     this.image.onerror = () => {
-      console.log("Error loading: " + url);
+      GuteLog.log("Error loading: " + url);
     }
     this.image.onload = () => {
       if (shouldPrescaleTilesets() && scale !== 1) {
