@@ -658,9 +658,7 @@ class GameLoop implements GameContext {
         req.onload = (event) => {
           if (req.responseText) {
             const result: string = req.responseText;
-            console.log("Resolving: " + url);
             resolve(JSON.parse(transform ? transform(result) : result));
-            console.log("Complete: " + url);
           }
         };
         req.onerror = (e) => {
