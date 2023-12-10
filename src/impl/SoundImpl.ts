@@ -87,7 +87,7 @@ export class SoundImpl implements Sound {
   static getMusicVolume(): number {
     return this.musicVolume;
   }
-  
+
   loaded: boolean = false;
   data!: ArrayBuffer;
   volume: number = 1;
@@ -103,7 +103,7 @@ export class SoundImpl implements Sound {
     this.name = url;
     this.url = url;
     this.music = music;
-    
+
     if (arrayBuffer) {
       this.loaded = true;
       arrayBuffer.then((arrayBuffer: ArrayBuffer) => {
@@ -114,18 +114,18 @@ export class SoundImpl implements Sound {
       var req = new XMLHttpRequest();
       req.open("GET", url, true);
       req.responseType = "arraybuffer";
-      
+
       req.onload = (event) => {
-        var arrayBuffer = req.response; 
+        var arrayBuffer = req.response;
         if (arrayBuffer) {
           this.data = arrayBuffer;
           this.tryLoad();
         }
       };
-      
+
       req.send();
     }
-    
+
     this.loaded = true;
   }
 
@@ -138,9 +138,13 @@ export class SoundImpl implements Sound {
             SoundImpl.CURRENT_MUSIC = null;
             this.play(this.volume);
           }
-        }, (e) => { GuteLog.log("Failed to load: "+ this.url) });
+        }, (e) => {
+          GuteLog.error(e);
+          GuteLog.log("Sound decode failed for this: " + this.name);
+          GuteLog.log("Failed to load: " + this.url)
+        });
         if (promise) {
-          promise.then(() => {}).catch((e) => {});
+          promise.then(() => { }).catch((e) => { });
         }
       } catch (e) {
         GuteLog.log("decodeAudioData exception on loading " + this.url);
@@ -208,7 +212,7 @@ export class SoundImpl implements Sound {
         return;
       }
     }
-    
+
     if (this.music && !isMusicOn()) {
       return;
     } else if (!this.music && !isSoundOn()) {
@@ -226,13 +230,13 @@ export class SoundImpl implements Sound {
       this.gain.gain.value = 0;
       this.source.loop = true;
       this.looped = true;
-    } 
+    }
 
     this.source.start(0);
-    
+
     if (this.music || loop) {
       this.gain.gain.linearRampToValueAtTime(volume * (loop ? SoundImpl.soundVolume : SoundImpl.musicVolume), AUDIO_CONTEXT.currentTime + 2);
-    }  else {
+    } else {
       this.gain.gain.value = volume * SoundImpl.soundVolume;
     }
 
