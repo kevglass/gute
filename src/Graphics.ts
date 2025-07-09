@@ -97,4 +97,6 @@ export interface Graphics {
   renderStart(): void;
 
   renderEnd(): void;
+
+  resize(): void;
 }

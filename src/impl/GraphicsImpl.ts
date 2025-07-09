@@ -100,6 +100,10 @@ export class GraphicsImpl implements Graphics {
     }
   }
 
+  resize(): void {
+
+  }
+  
   getError(): string | undefined {
     return undefined;
   }
