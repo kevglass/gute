@@ -52,4 +52,5 @@ export interface Graphics {
     getTransform(): DOMMatrix;
     renderStart(): void;
     renderEnd(): void;
+    resize(): void;
 }
